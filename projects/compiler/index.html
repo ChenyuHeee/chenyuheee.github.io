@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>C 语言在线编译器（简洁版）</title>
+    <title>C 语言在线编译器 | HCY ZJU</title>
     <!-- 字体图标和 Monaco 加载器 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js"></script>
@@ -47,7 +47,7 @@
         .main{flex:1;display:flex;min-height:0}
 
         /* 编辑区 */
-    .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(0,0,0,0.06);transition:background-color .4s ease,border-color .4s ease}
+    .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(0,0,0,0.06);transition:background-color .4s ease,border-color .4s ease;z-index:10}
     .editor-wrap.full{border-right:none}
         .editor-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
         .editor-head h2{font-size:14px;color:#dbe9ff}
@@ -60,7 +60,7 @@
     .btn.ghost{border:1px solid rgba(0,0,0,0.06)}
 
     /* 侧栏 */
-    .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);transition:width .28s ease,opacity .28s ease,padding .28s ease}
+    .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);transition:width .28s ease,opacity .28s ease,padding .28s ease;z-index:30}
     /* 折叠侧栏：设置宽度为0并隐藏内边距，编辑器会自动占满剩余空间 */
     .sidebar.collapsed{width:0;padding:0;opacity:0;pointer-events:none}
         .sb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
@@ -69,7 +69,7 @@
         .output{background:var(--glass);color:#dfefff;padding:12px;border-radius:8px;white-space:pre-wrap;height:100%;overflow:auto;font-family:monospace}
 
     /* 悬浮的侧边栏切换按钮（当侧栏折叠时可恢复） */
-    #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer;transition:opacity .2s}
+    #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer;transition:opacity .2s;z-index:40}
 
         /* 小屏适配 */
         @media (max-width:900px){
@@ -127,7 +127,7 @@
     <!-- 折叠后恢复侧栏的悬浮按钮 -->
     <div id="sidebarToggle" title="打开侧栏"><i class="fas fa-chevron-left"></i></div>
     <!-- 隐藏的本地文件选择器 -->
-    <input type="file" id="fileInput" accept=".c,.txt" style="display:none" />
+    <input type="file" id="fileInput" accept=".c,.cpp,.h,.hpp,.txt" style="display:none" />
 
     <script>
         /**********************************************************************
@@ -143,13 +143,7 @@
         const DEFAULT_CODE = `#include <stdio.h>
 
 int main() {
-    int a, b;
-    // 读取两个整数并输出和
-    if (scanf("%d %d", &a, &b) == 2) {
-        printf("两数之和为：%d\n", a + b);
-    } else {
-        printf("输入格式错误\n");
-    }
+    printf("By ZJU C. He\n");
     return 0;
 }`;
 
@@ -171,12 +165,15 @@ int main() {
             window.editor = monaco.editor.create(document.getElementById('editor'), {
                 value: saved || DEFAULT_CODE,
                 language: 'c',
-                theme: 'vs-dark',
+                theme: (localStorage.getItem('editorTheme') === 'light') ? 'vs-light' : 'vs-dark',
                 automaticLayout: true,
                 minimap: { enabled: false },
                 fontSize: 13,
                 scrollBeyondLastLine: false
             });
+
+            // 应用 body 主题类（持久化）
+            try { if (localStorage.getItem('editorTheme') === 'light') document.body.classList.add('light-theme'); } catch (e) {}
 
             // 快捷键：Ctrl/Cmd+S 保存
             window.addEventListener('keydown', (e) => {
@@ -364,9 +361,24 @@ int main() {
         }
 
         // 切换主题（轻/暗），默认暗黑。我们通过 body 的 .light-theme 类切换 CSS 变量
+        // 主题持久化到 localStorage: 'editorTheme' = 'dark' | 'light'
         let isDark = true;
+        // 读取持久化主题（若存在）
+        try {
+            const stored = localStorage.getItem('editorTheme');
+            if (stored) isDark = stored === 'dark';
+        } catch (e) {}
+
+        function applyThemeImmediately() {
+            document.body.classList.toggle('light-theme', !isDark);
+            try { if (window.monaco) monaco.editor.setTheme(isDark ? 'vs-dark' : 'vs-light'); } catch (e) {}
+            themeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i> 明亮' : '<i class="fas fa-moon"></i> 暗色';
+        }
+
         function toggleTheme() {
             isDark = !isDark;
+            // 持久化
+            try { localStorage.setItem('editorTheme', isDark ? 'dark' : 'light'); } catch (e) {}
             // 添加/移除全局类以切换 CSS 变量（平滑过渡）
             document.body.classList.toggle('light-theme', !isDark);
             // 更新按钮文案并在短延迟后切换 Monaco 主题，避免强烈反差
@@ -421,7 +433,24 @@ int main() {
                         if (!ok) return;
                     }
                 } catch (e) {}
-                try { window.editor && window.editor.setValue(text); window.editor && window.editor.focus(); saveStatus.textContent = '已加载本地文件'; } catch (e) {}
+                try {
+                    // 将文件内容写入编辑器
+                    window.editor && window.editor.setValue(text);
+                    window.editor && window.editor.focus();
+                    saveStatus.textContent = '已加载本地文件';
+                    // 根据扩展设定语言模式（若 Monaco 已就绪）
+                    try {
+                        const name = f.name || '';
+                        const ext = name.split('.').pop().toLowerCase();
+                        let lang = 'plaintext';
+                        if (ext === 'c' || ext === 'h') lang = 'c';
+                        else if (ext === 'cpp' || ext === 'cxx' || ext === 'hpp' || ext === 'hxx') lang = 'cpp';
+                        else lang = 'plaintext';
+                        if (window.monaco && window.editor && window.editor.getModel) {
+                            monaco.editor.setModelLanguage(window.editor.getModel(), lang);
+                        }
+                    } catch (e) {}
+                } catch (e) {}
                 // 清空选择以便再次打开同一文件
                 fileInput.value = '';
             };
