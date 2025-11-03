@@ -1,4 +1,4 @@
-<!--Version:1.0.2-->
+<!--Version:1.0.3-->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -89,13 +89,13 @@
     <div class="app">
         <header>
             <div class="title"><i class="fas fa-code"></i><div>Online C Compiler</div></div>
-            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.0.2</span></div>
+            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.0.3</span></div>
         </header>
 
         <div class="main">
             <div class="editor-wrap">
                 <div class="editor-head">
-                    <h2><i class="fas fa-file-code"></i> main.c</h2>
+                    <h2><i class="fas fa-file-code"></i> <span id="fileTitle">main.c</span></h2>
                     <div class="status" id="saveStatus">已保存</div>
                 </div>
 
@@ -111,6 +111,7 @@
                         <input type="checkbox" id="useWasm" style="width:16px;height:16px"> 优先使用 WASM
                     </label>
                     <div style="flex:1"></div>
+                    <button class="btn ghost" id="saveAsBtn"><i class="fas fa-download"></i> 另存为</button>
                     <button class="btn ghost" id="themeBtn"><i class="fas fa-sun"></i> 主题</button>
                 </div>
             </div>
@@ -427,6 +428,9 @@ int main() {
         // 打开本地文件：触发隐藏的 file input，读取文本并替换编辑器内容
         const openFileBtn = document.getElementById('openFileBtn');
         const fileInput = document.getElementById('fileInput');
+        const fileTitle = document.getElementById('fileTitle');
+        const saveAsBtn = document.getElementById('saveAsBtn');
+        let currentFilename = 'main.c';
         openFileBtn.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', (ev) => {
             const f = ev.target.files && ev.target.files[0];
@@ -448,6 +452,8 @@ int main() {
                     window.editor && window.editor.setValue(text);
                     window.editor && window.editor.focus();
                     saveStatus.textContent = '已加载本地文件';
+                    // 更新当前文件名显示
+                    try { currentFilename = f.name || currentFilename; fileTitle.textContent = currentFilename; } catch (e) {}
                     // 根据扩展设定语言模式（若 Monaco 已就绪）
                     try {
                         const name = f.name || '';
@@ -466,6 +472,28 @@ int main() {
             };
             reader.readAsText(f);
         });
+
+        // 另存为：下载当前编辑器内容为文件
+        function saveAsFile() {
+            try {
+                const content = window.editor ? window.editor.getValue() : '';
+                const name = currentFilename || 'main.c';
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = name;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 5000);
+                saveStatus.textContent = '已下载 ' + name;
+            } catch (e) {
+                console.error('另存为失败', e);
+                alert('另存为失败：' + (e && e.message));
+            }
+        }
+        saveAsBtn.addEventListener('click', saveAsFile);
 
         // 全屏按钮
         const fsBtn = document.getElementById('fsBtn');

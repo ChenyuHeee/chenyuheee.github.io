@@ -16,3 +16,11 @@ All notable changes to this project will be documented in this file.
 
 
 [Unreleased]: https://example.com/your-repo
+
+## [1.0.3] - 2025-11-03
+### Added
+- 在编辑头部显示当前打开的文件名（当通过“打开本地文件”加载时更新）。
+- 添加“另存为”按钮，允许将当前编辑器内容下载为本地文件（文件名为当前打开的文件名或 `main.c`）。
+
+### Notes
+- 版本号 `index.html` 已更新为 `1.0.3`。

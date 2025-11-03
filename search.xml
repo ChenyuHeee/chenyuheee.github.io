@@ -80,7 +80,7 @@ grep -r &quot;ctfhub&quot; .svn/pristine/]]></content>
     <title>在线编译器设计体验</title>
     <url>/2025/11/03/%E9%A1%B9%E7%9B%AE/Compiler/</url>
     <content><![CDATA[在线编译器设计体验
-项目呈现设计思路
+项目呈现查看更新日志设计思路
 整体布局：
 主界面代码编辑器
 顶部工具栏
@@ -184,6 +184,7 @@ Serverless 容器&#x2F;函数（AWS Lambda（容器）、Google Cloud Run）
 扩展文件类型；
 主题持久化;
 
+11.4 22:02增添CHANGELOG.MD更新日志不再向博客中增添更新内容查看更新日志
 ]]></content>
       <tags>
         <tag>项目</tag>
