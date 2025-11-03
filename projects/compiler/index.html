@@ -1,4 +1,4 @@
-<!--Version:1.0.3-->
+<!--Version:1.0.4-->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -89,7 +89,7 @@
     <div class="app">
         <header>
             <div class="title"><i class="fas fa-code"></i><div>Online C Compiler</div></div>
-            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.0.3</span></div>
+            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.0.4</span></div>
         </header>
 
         <div class="main">
@@ -152,6 +152,9 @@ int main() {
     return 0;
 }`;
 
+        // 编辑器脏标记（未保存状态）
+        let isDirty = false;
+
         // DOM 引用
         const runBtn = document.getElementById('runBtn');
         const saveBtn = document.getElementById('saveBtn');
@@ -180,6 +183,13 @@ int main() {
             // 应用 body 主题类（持久化）
             try { if (localStorage.getItem('editorTheme') === 'light') document.body.classList.add('light-theme'); } catch (e) {}
 
+            // 编辑器内容改变时标记为未保存（添加 '*'）
+            try {
+                window.editor.onDidChangeModelContent(() => {
+                    if (!isDirty) setDirty(true);
+                });
+            } catch (e) {}
+
             // 快捷键：Ctrl/Cmd+S 保存
             window.addEventListener('keydown', (e) => {
                 if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
@@ -195,6 +205,8 @@ int main() {
             localStorage.setItem('deepseek_saved_c', window.editor.getValue());
             saveStatus.textContent = '已保存';
             saveStatus.style.color = '#22c55e';
+            // 保存后取消脏标记
+            setDirty(false);
             setTimeout(() => { saveStatus.style.color = ''; }, 1200);
         }
 
@@ -203,6 +215,8 @@ int main() {
             if (!window.editor) return;
             if (!confirm('确定重置代码？未保存的更改将丢失。')) return;
             window.editor.setValue(DEFAULT_CODE);
+            // 重置后视为未保存（需要用户保存以覆盖 localStorage）
+            setDirty(true);
         }
 
         // runCode: 优先尝试 Wandbox（真实编译器），若失败尝试加载本地 WASM 运行器（若你已部署）
@@ -425,12 +439,23 @@ int main() {
             setTimeout(() => { try { window.editor && window.editor.layout(); } catch (e) {} }, 180);
         });
 
-        // 打开本地文件：触发隐藏的 file input，读取文本并替换编辑器内容
-        const openFileBtn = document.getElementById('openFileBtn');
-        const fileInput = document.getElementById('fileInput');
-        const fileTitle = document.getElementById('fileTitle');
-        const saveAsBtn = document.getElementById('saveAsBtn');
-        let currentFilename = 'main.c';
+        // 更新脏标记 UI（文件名后显示 '*' 并更新保存状态）
+        function setDirty(flag) {
+            try {
+                isDirty = !!flag;
+                const title = currentFilename || 'main.c';
+                fileTitle.textContent = title + (isDirty ? ' *' : '');
+                saveStatus.textContent = isDirty ? '未保存' : '已保存';
+                saveStatus.style.color = isDirty ? '#f59e0b' : '';
+            } catch (e) {}
+        }
+
+    // 打开本地文件：触发隐藏的 file input，读取文本并替换编辑器内容
+    const openFileBtn = document.getElementById('openFileBtn');
+    const fileInput = document.getElementById('fileInput');
+    const fileTitle = document.getElementById('fileTitle');
+    const saveAsBtn = document.getElementById('saveAsBtn');
+    let currentFilename = 'main.c';
         openFileBtn.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', (ev) => {
             const f = ev.target.files && ev.target.files[0];
@@ -453,7 +478,7 @@ int main() {
                     window.editor && window.editor.focus();
                     saveStatus.textContent = '已加载本地文件';
                     // 更新当前文件名显示
-                    try { currentFilename = f.name || currentFilename; fileTitle.textContent = currentFilename; } catch (e) {}
+                    try { currentFilename = f.name || currentFilename; fileTitle.textContent = currentFilename; setDirty(false); } catch (e) {}
                     // 根据扩展设定语言模式（若 Monaco 已就绪）
                     try {
                         const name = f.name || '';
@@ -488,6 +513,7 @@ int main() {
                 a.remove();
                 setTimeout(() => URL.revokeObjectURL(url), 5000);
                 saveStatus.textContent = '已下载 ' + name;
+                // 另存为并不改变脏状态
             } catch (e) {
                 console.error('另存为失败', e);
                 alert('另存为失败：' + (e && e.message));

@@ -24,3 +24,10 @@ All notable changes to this project will be documented in this file.
 
 ### Notes
 - 版本号 `index.html` 已更新为 `1.0.3`。
+
+## [1.0.4] - 2025-11-03
+### Added
+- 编辑器“未保存”状态指示：当编辑器内容发生变化时，文件名后会显示 `*` 并且状态显示为“未保存”；保存后会移除 `*` 并恢复“已保存”。
+
+### Notes
+- 版本号 `index.html` 已更新为 `1.0.4`。
