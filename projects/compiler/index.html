@@ -47,7 +47,7 @@
         .main{flex:1;display:flex;min-height:0}
 
         /* 编辑区 */
-    .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(0,0,0,0.06);transition:background-color .4s ease,border-color .4s ease;z-index:10}
+    .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(0,0,0,0.06);transition:background-color .4s ease,border-color .4s ease;z-index:5}
     .editor-wrap.full{border-right:none}
         .editor-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
         .editor-head h2{font-size:14px;color:#dbe9ff}
@@ -60,7 +60,7 @@
     .btn.ghost{border:1px solid rgba(0,0,0,0.06)}
 
     /* 侧栏 */
-    .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);transition:width .28s ease,opacity .28s ease,padding .28s ease;z-index:30}
+    .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);transition:width .28s ease,opacity .28s ease,padding .28s ease;position:relative;z-index:60}
     /* 折叠侧栏：设置宽度为0并隐藏内边距，编辑器会自动占满剩余空间 */
     .sidebar.collapsed{width:0;padding:0;opacity:0;pointer-events:none}
         .sb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
@@ -69,7 +69,7 @@
         .output{background:var(--glass);color:#dfefff;padding:12px;border-radius:8px;white-space:pre-wrap;height:100%;overflow:auto;font-family:monospace}
 
     /* 悬浮的侧边栏切换按钮（当侧栏折叠时可恢复） */
-    #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer;transition:opacity .2s;z-index:40}
+    #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer;transition:opacity .2s;z-index:80}
 
         /* 小屏适配 */
         @media (max-width:900px){
@@ -79,6 +79,8 @@
         }
         /* 使颜色切换更顺滑：对主要面板启用背景/颜色过渡 */
         .frame, header, .sidebar, .editor-wrap, .toolbar, .output { transition: background-color .45s ease, color .45s ease }
+        /* 确保编辑器画布不挡住侧栏：编辑器区域的层级要低于侧栏 */
+        #editor{position:relative;z-index:10}
     </style>
 </head>
 <body>
@@ -408,10 +410,16 @@ int main() {
             setTimeout(() => { try { window.editor && window.editor.layout(); } catch (e) {} }, 320);
         });
         sidebarToggle.addEventListener('click', () => {
+            // 展开侧栏：先移除 collapsed，使其恢复到正常宽度
             sidebar.classList.remove('collapsed');
+            // 强制一次重排以确保浏览器应用宽度变化（防止 Monaco 的 canvas 覆盖侧栏）
+            // 读取 offsetWidth 会触发回流
+            try { void sidebar.offsetWidth; } catch (e) {}
+            // 隐藏恢复按钮
             sidebarToggle.style.display = 'none';
+            // 恢复编辑器样式（取消 full）并在短延迟后触发 Monaco 布局
             try { editorWrap && editorWrap.classList.remove('full'); } catch (e) {}
-            setTimeout(() => { try { window.editor && window.editor.layout(); } catch (e) {} }, 280);
+            setTimeout(() => { try { window.editor && window.editor.layout(); } catch (e) {} }, 180);
         });
 
         // 打开本地文件：触发隐藏的 file input，读取文本并替换编辑器内容
