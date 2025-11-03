@@ -20,15 +20,25 @@
             --shadow: 0 8px 30px rgba(0,0,0,0.6);
         }
 
+        /* 明亮主题覆盖变量（切换时将 body 添加 .light-theme） */
+        .light-theme{
+            --bg: #f3f6fb;
+            --panel: #ffffff;
+            --muted: #6b7280;
+            --accent: #2563eb;
+            --glass: rgba(0,0,0,0.03);
+            --shadow: 0 10px 30px rgba(16,24,40,0.06);
+        }
+
         *{box-sizing:border-box;margin:0;padding:0}
-        html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial}
-        body{background:var(--bg);color:#e6eef6;}
+    html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial}
+    body{background:var(--bg);color:var(--muted);transition:background-color .45s ease,color .45s ease}
 
         /* 应用容器：占满整个视口，类似本地 app 的全屏编辑器 */
         .app{height:100vh;width:100vw;display:flex;flex-direction:column;align-items:stretch;justify-content:stretch}
-        .frame{max-width:1400px;margin:12px auto;flex:1;background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+    .frame{max-width:1400px;margin:12px auto;flex:1;background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:background-color .45s ease,box-shadow .45s ease}
 
-        header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+    header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);transition:background-color .45s ease}
         header .title{display:flex;align-items:center;gap:10px;font-weight:600}
         header .title i{color:var(--accent);font-size:18px}
         header .meta{color:var(--muted);font-size:13px}
@@ -37,27 +47,29 @@
         .main{flex:1;display:flex;min-height:0}
 
         /* 编辑区 */
-        .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.03)}
+    .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(0,0,0,0.06);transition:background-color .4s ease,border-color .4s ease}
+    .editor-wrap.full{border-right:none}
         .editor-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
         .editor-head h2{font-size:14px;color:#dbe9ff}
         #editor{flex:1;min-height:200px}
 
         /* 工具栏 */
         .toolbar{display:flex;gap:8px;padding:10px 14px;align-items:center}
-        .btn{border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;background:transparent;color:#e6eef6}
-        .btn.primary{background:var(--accent);color:#071022}
-        .btn.ghost{border:1px solid rgba(255,255,255,0.04)}
+    .btn{border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--muted);transition:color .3s}
+    .btn.primary{background:var(--accent);color:#071022}
+    .btn.ghost{border:1px solid rgba(0,0,0,0.06)}
 
-        /* 侧栏 */
-        .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)}
-        .sidebar.collapsed{transform:translateX(100%);transition:transform .28s ease}
+    /* 侧栏 */
+    .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);transition:width .28s ease,opacity .28s ease,padding .28s ease}
+    /* 折叠侧栏：设置宽度为0并隐藏内边距，编辑器会自动占满剩余空间 */
+    .sidebar.collapsed{width:0;padding:0;opacity:0;pointer-events:none}
         .sb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
         .sb-section{padding:12px 14px;flex:1;overflow:auto}
         textarea,input[type=text]{width:100%;padding:10px;border:1px solid rgba(255,255,255,0.03);border-radius:8px;background:transparent;color:#e6eef6;font-family:monospace}
         .output{background:var(--glass);color:#dfefff;padding:12px;border-radius:8px;white-space:pre-wrap;height:100%;overflow:auto;font-family:monospace}
 
-        /* 悬浮的侧边栏切换按钮（当侧栏折叠时可恢复） */
-        #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer}
+    /* 悬浮的侧边栏切换按钮（当侧栏折叠时可恢复） */
+    #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer;transition:opacity .2s}
 
         /* 小屏适配 */
         @media (max-width:900px){
@@ -65,13 +77,15 @@
             .sidebar{width:100%;height:34%}
             .editor-wrap{border-right:0}
         }
+        /* 使颜色切换更顺滑：对主要面板启用背景/颜色过渡 */
+        .frame, header, .sidebar, .editor-wrap, .toolbar, .output { transition: background-color .45s ease, color .45s ease }
     </style>
 </head>
 <body>
     <div class="app">
         <header>
-            <div class="title"><i class="fas fa-code"></i><div>C 语言在线编译器</div></div>
-            <div class="meta">安全提醒：此页面仅做演示，本地运行即可</div>
+            <div class="title"><i class="fas fa-code"></i><div>Online C Compiler</div></div>
+            <div class="meta">By C. He from ZJU</div>
         </header>
 
         <div class="main">
@@ -85,6 +99,7 @@
 
                 <div class="toolbar">
                     <button class="btn primary" id="runBtn"><i class="fas fa-play"></i> 运行</button>
+                    <button class="btn ghost" id="openFileBtn"><i class="fas fa-folder-open"></i> 打开文件</button>
                     <button class="btn ghost" id="saveBtn"><i class="fas fa-save"></i> 保存</button>
                     <button class="btn ghost" id="resetBtn"><i class="fas fa-undo"></i> 重置</button>
                     <button class="btn ghost" id="fsBtn" title="全屏"><i class="fas fa-expand"></i></button>
@@ -111,6 +126,8 @@
 
     <!-- 折叠后恢复侧栏的悬浮按钮 -->
     <div id="sidebarToggle" title="打开侧栏"><i class="fas fa-chevron-left"></i></div>
+    <!-- 隐藏的本地文件选择器 -->
+    <input type="file" id="fileInput" accept=".c,.txt" style="display:none" />
 
     <script>
         /**********************************************************************
@@ -154,7 +171,7 @@ int main() {
             window.editor = monaco.editor.create(document.getElementById('editor'), {
                 value: saved || DEFAULT_CODE,
                 language: 'c',
-                theme: 'vs-light',
+                theme: 'vs-dark',
                 automaticLayout: true,
                 minimap: { enabled: false },
                 fontSize: 13,
@@ -346,12 +363,19 @@ int main() {
             }, 300);
         }
 
-        // 切换主题（轻/暗），默认暗黑
+        // 切换主题（轻/暗），默认暗黑。我们通过 body 的 .light-theme 类切换 CSS 变量
         let isDark = true;
         function toggleTheme() {
             isDark = !isDark;
-            try { monaco.editor.setTheme(isDark ? 'vs-dark' : 'vs-light'); } catch (e) {}
+            // 添加/移除全局类以切换 CSS 变量（平滑过渡）
+            document.body.classList.toggle('light-theme', !isDark);
+            // 更新按钮文案并在短延迟后切换 Monaco 主题，避免强烈反差
             themeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i> 明亮' : '<i class="fas fa-moon"></i> 暗色';
+            try {
+                setTimeout(() => {
+                    monaco.editor.setTheme(isDark ? 'vs-dark' : 'vs-light');
+                }, 180);
+            } catch (e) {}
         }
 
         // ----------------- 事件绑定 -----------------
@@ -363,13 +387,45 @@ int main() {
         // 侧栏折叠/展开逻辑：使用 class 'collapsed'，便于动画与恢复
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebarToggle');
+        const editorWrap = document.querySelector('.editor-wrap');
         closeSb.addEventListener('click', () => {
             sidebar.classList.add('collapsed');
             sidebarToggle.style.display = 'flex';
+            // 侧栏宽度变化可能导致编辑器需要重新布局
+            try { editorWrap && editorWrap.classList.add('full'); } catch (e) {}
+            setTimeout(() => { try { window.editor && window.editor.layout(); } catch (e) {} }, 320);
         });
         sidebarToggle.addEventListener('click', () => {
             sidebar.classList.remove('collapsed');
             sidebarToggle.style.display = 'none';
+            try { editorWrap && editorWrap.classList.remove('full'); } catch (e) {}
+            setTimeout(() => { try { window.editor && window.editor.layout(); } catch (e) {} }, 280);
+        });
+
+        // 打开本地文件：触发隐藏的 file input，读取文本并替换编辑器内容
+        const openFileBtn = document.getElementById('openFileBtn');
+        const fileInput = document.getElementById('fileInput');
+        openFileBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (ev) => {
+            const f = ev.target.files && ev.target.files[0];
+            if (!f) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                // 如果当前编辑器内容与已保存的不一致，提醒用户
+                try {
+                    const current = window.editor ? window.editor.getValue() : '';
+                    const saved = localStorage.getItem('deepseek_saved_c') || '';
+                    if (current !== saved) {
+                        const ok = confirm('当前编辑器中有未保存的更改，打开本地文件将覆盖它，继续吗？');
+                        if (!ok) return;
+                    }
+                } catch (e) {}
+                try { window.editor && window.editor.setValue(text); window.editor && window.editor.focus(); saveStatus.textContent = '已加载本地文件'; } catch (e) {}
+                // 清空选择以便再次打开同一文件
+                fileInput.value = '';
+            };
+            reader.readAsText(f);
         });
 
         // 全屏按钮

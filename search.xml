@@ -171,7 +171,12 @@ Serverless 容器&#x2F;函数（AWS Lambda（容器）、Google Cloud Run）
 
 现在的行为runCode() 会：    - 尝试调用 Wandbox 公共 API，带超时与错误处理；    - 若 Wandbox 不可用，则尝试动态加载并调用位于 &#x2F;wasm&#x2F;tcc_runner.js 的本地 WASM 运行器（调用约定：window.wasmRun(code, stdin) -&gt; {stdout, stderr, exitCode}）；    - 两者都不可用则回退到原先的 simulateRun（两数求和演示）。
 继续实现在Agent帮助下搭建wasm，最终push到Github的repo上其中，还利用到了之前被我抛弃的Github Actions来进行wasm的自动化调整完整代码不作展示，项目呈现点击此处
-优化调整
+优化调整11.3 21:26
+
+调整侧栏折叠的 CSS 和脚本，使编辑器在侧栏折叠后扩展填满区域并触发 Monaco 布局；
+为主题添加全局 CSS 变量切换与平滑过渡，并在脚本中平滑切换 Monaco 主题；
+在工具栏新增“打开本地文件”按钮与隐藏的 file input，并实现文件读取与确认覆盖逻辑。
+
 ]]></content>
       <tags>
         <tag>项目</tag>
