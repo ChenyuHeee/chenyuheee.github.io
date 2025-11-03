@@ -80,7 +80,7 @@ grep -r &quot;ctfhub&quot; .svn/pristine/]]></content>
     <title>在线编译器设计体验</title>
     <url>/2025/11/03/%E9%A1%B9%E7%9B%AE/Compiler/</url>
     <content><![CDATA[在线编译器设计体验
-项目呈现   |   查看更新日志设计思路
+点击此处-项目呈现   |   点击查看更新日志设计思路
 整体布局：
 主界面代码编辑器
 顶部工具栏
