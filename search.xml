@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hexo建站笔记</title>
+    <url>/2025/01/11/Hexo%E5%BB%BA%E7%AB%99%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[Hexo建站笔记初始化
+Node.js配置官网下载
+安装Hexo
+
+npm install -g hexo-cli
+开始#新建hexo init &lt;name&gt;
+
+部署在_config.yml文件底部
+deploy:  type: git  repo: https://github.com/你的用户名/你的用户名.github.io.git  branch: main
+]]></content>
+  </entry>
+  <entry>
+    <title>Web</title>
+    <url>/2025/02/11/CTF/Web/</url>
+    <content><![CDATA[WebWeb前置技能HTTP协议做题手段：Burp Suite
+
+请求方式
+302跳转
+Cookie
+基础认证
+响应包源代码
+
+信息泄露目录便历做题手段：dirsearch配置：git clone
+cd dirsearchpython3 dirsearch.py -u url
+PHPINFO直接看php代码
+备份文件下载目录便历里直接找
+Git泄露做题手段：GitHack配置：git clone
+cd GitHackpython2 GitHack.py &lt;url&gt;/.git
+SVN泄露SVN泄露介绍SVN（Subversion）是一种集中式版本控制系统，广泛用于软件开发中管理文件版本变更，通过创建 .svn 隐藏目录存储版本库元数据（如文件快照、提交历史、配置信息等），方便开发者追踪代码修改、回溯历史版本。
+而 SVN 泄露 则是因网站部署时未删除 .svn 目录，导致该目录被公开访问所引发的信息泄露问题。攻击者可利用 dvcs-ripper 等工具，通过访问目标网站的 .svn 路径（如 http://example.com/.svn），提取其中的版本库数据，还原源代码、历史提交记录甚至旧版本中的敏感信息等。
+DVCS-Ripper工具
+工具简介 DVCS-Ripper（通常也叫 rip-*.pl）是一款专门用于检测和利用配置错误的安全工具。它的核心功能是：当发现一个网站意外地暴露了其版本控制系统的元数据目录（如 .git, .svn, .hg）时，它能够远程下载并重建整个代码仓库，从而造成源代码泄露。 项目地址： https://github.com/kost/dvcs-ripper 
+下载安装 sudo git clone https://github.com/kost/dvcs-ripper
+
+基本使用方法 DVCS-Ripper 的运行依赖于一些 Perl 模块，需要安装响应的依赖库，具体如下所示。
+
+ #安装依赖文件sudo apt-get install perl libio-socket-ssl-perl libdbd-sqlite3-perl libclass-dbi-perl libio-all-lwp-perl
+ 进入到dvcs-ripper目录中，验证安装是否成功，具体方法如下所示。 # 进入你克隆的目录cd dvcs-ripper # 运行工具需要指定 perl 解释器和脚本路径perl rip-git.pl --help # 或者给脚本添加执行权限后直接运行chmod +x rip-git.pl./rip-git.pl --help
+
+利用步骤dvcs-ripper工具对svn源码泄露的利用过程如下所示，先安装 perl 及相关依赖，克隆工具仓库并进入目录；再通过 rip-svn.pl 脚本，以目标包含.svn 目录的 URL 为参数执行提取；完成后进入生成的本地仓库目录，查看提取出的版本库文件、历史记录等内容，从中寻找敏感信息，整个过程通过解析泄露的 SVN 目录结构自动重建仓库实现信息获取。
+
+# 1. 安装dvcs-ripper（确保系统已安装perl及相关依赖）sudo apt install -y perl libio-socket-ssl-perl libdbi-perl libdbd-mysql-perl # 2. 克隆dvcs-ripper仓库git clone https://github.com/kost/dvcs-ripper.gitcd dvcs-ripper # 3. 利用rip-svn.pl脚本检测并提取SVN泄露（-u指定目标URL）perl rip-svn.pl -u http://example.com/.svn/ # 工具会自动执行以下步骤：# - 探测并下载SVN核心文件：entries, wc.db, pristine/ 等# - 解析entries或wc.db文件获取版本库文件列表和校验和# - 根据校验和从pristine/目录下载所有文件内容# - 在本地重建完整的SVN工作副本，保存在以目标主机命名的目录中# - 完成后可直接浏览下载的文件寻找配置文件、源代码和敏感信息 # 4. 进入生成的本地仓库目录（通常以目标域名命名）cd example.com # 5. 查看提取的SVN版本库内容，寻找敏感信息（如配置文件、历史提交记录）ls -lacat 敏感文件路径  # 例如：cat config.php 或查看日志文件 # 说明：整个过程通过解析目标网站暴露的.svn目录结构，自动下载版本库元数据、文件快照等，重建本地可访问的SVN仓库，便于挖掘泄露的敏感数据
+解题关键步骤sudo ./rip-svn.pl -u http://challenge-fbc675f2c68c5419.sandbox.ctfhub.com:10800/.svn
+grep -r &quot;ctfhub&quot; .svn/pristine/]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2025/11/01/%E6%95%B0%E7%90%86%E5%AD%A6%E4%B9%A0/%E5%BE%AE%E7%A7%AF%E5%88%86/</url>
+    <content><![CDATA[微积分期中考试题分析24-251.求极限
+
+等价无穷小
+泰勒展开
+
+2.用数列极限定义证明极限
+
+定义证明极限套路
+
+3.计算极限
+
+1的无穷大次类型
+
+4.计算极限
+
+放缩夹逼法
+
+5.判断间断点类型
+6.复杂函数求导7.隐函数求导数值8.计算极坐标下曲线在直角坐标中的切线方程
+
+参数式函数的导数
+
+9.求高阶导（证明）10.求导相关11.连续性与可导性判断12.无穷大定义13.导数相关（较难）
+]]></content>
+  </entry>
+  <entry>
+    <title>在线编译器设计体验</title>
+    <url>/2025/11/03/%E9%A1%B9%E7%9B%AE/Compiler/</url>
+    <content><![CDATA[在线编译器设计体验设计思路
+整体布局：
+主界面代码编辑器
+顶部工具栏
+侧边栏（输入输出）
+
+
+代码编辑器：  使用Monaco Editor（VS Code的编辑器核心）实现C语言语法高亮
+编译功能：  通过后端API调用编译器（如GCC）执行代码
+响应式设计：  适配不同屏幕尺寸
+
+实现方式
+Github Pages搭建
+调用编译器api
+大模型补足
+
+具体实践1.Github Pages搭建内置在博客网站内
+/compiler/
+2.通过大模型实现基本需求Deepseek生成最初版本&lt;!DOCTYPE html&gt;&lt;html lang=&quot;zh-CN&quot;&gt;&lt;head&gt;    &lt;meta charset=&quot;UTF-8&quot;&gt;    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;    &lt;title&gt;C语言在线编译器&lt;/title&gt;    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot;&gt;    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js&quot;&gt;&lt;/script&gt;    &lt;style&gt;        * &#123;            margin: 0;            padding: 0;            box-sizing: border-box;            font-family: &#x27;Segoe UI&#x27;, Tahoma, Geneva, Verdana, sans-serif;        &#125;                body &#123;            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);            color: #333;            min-height: 100vh;            display: flex;            flex-direction: column;        &#125;                .container &#123;            display: flex;            flex-direction: column;            flex: 1;            max-width: 1400px;            margin: 0 auto;            background: rgba(255, 255, 255, 0.95);            border-radius: 12px;            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);            overflow: hidden;            margin-top: 20px;            margin-bottom: 20px;        &#125;                header &#123;            background: #2c3e50;            color: white;            padding: 15px 25px;            display: flex;            justify-content: space-between;            align-items: center;            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);        &#125;                .logo &#123;            display: flex;            align-items: center;            gap: 10px;        &#125;                .logo i &#123;            font-size: 24px;            color: #3498db;        &#125;                .logo h1 &#123;            font-size: 24px;            font-weight: 600;        &#125;                .main-content &#123;            display: flex;            flex: 1;            height: calc(100vh - 150px);        &#125;                .editor-container &#123;            flex: 1;            display: flex;            flex-direction: column;            border-right: 1px solid #e0e0e0;        &#125;                .editor-header &#123;            padding: 10px 15px;            background: #f5f5f5;            border-bottom: 1px solid #e0e0e0;            display: flex;            justify-content: space-between;            align-items: center;        &#125;                .editor-header h2 &#123;            font-size: 18px;            color: #2c3e50;        &#125;                #editor &#123;            flex: 1;            min-height: 400px;        &#125;                .toolbar &#123;            padding: 10px 15px;            background: #f5f5f5;            border-top: 1px solid #e0e0e0;            display: flex;            gap: 10px;        &#125;                .btn &#123;            padding: 8px 15px;            border: none;            border-radius: 4px;            cursor: pointer;            font-weight: 500;            display: flex;            align-items: center;            gap: 6px;            transition: all 0.3s ease;        &#125;                .btn-primary &#123;            background: #3498db;            color: white;        &#125;                .btn-primary:hover &#123;            background: #2980b9;            transform: translateY(-2px);        &#125;                .btn-success &#123;            background: #2ecc71;            color: white;        &#125;                .btn-success:hover &#123;            background: #27ae60;            transform: translateY(-2px);        &#125;                .btn-danger &#123;            background: #e74c3c;            color: white;        &#125;                .btn-danger:hover &#123;            background: #c0392b;            transform: translateY(-2px);        &#125;                .sidebar &#123;            width: 400px;            display: flex;            flex-direction: column;            background: #f9f9f9;            transition: transform 0.3s ease;        &#125;                .sidebar.hidden &#123;            transform: translateX(100%);        &#125;                .sidebar-header &#123;            padding: 10px 15px;            background: #34495e;            color: white;            display: flex;            justify-content: space-between;            align-items: center;        &#125;                .sidebar-section &#123;            flex: 1;            display: flex;            flex-direction: column;            border-bottom: 1px solid #e0e0e0;        &#125;                .sidebar-section:last-child &#123;            border-bottom: none;        &#125;                .section-header &#123;            padding: 10px 15px;            background: #ecf0f1;            border-bottom: 1px solid #e0e0e0;            font-weight: 500;            color: #2c3e50;        &#125;                .section-content &#123;            flex: 1;            padding: 15px;            overflow: auto;        &#125;                textarea &#123;            width: 100%;            height: 100%;            padding: 10px;            border: 1px solid #ddd;            border-radius: 4px;            resize: none;            font-family: monospace;        &#125;                .output &#123;            background: #2c3e50;            color: #ecf0f1;            padding: 10px;            border-radius: 4px;            height: 100%;            overflow: auto;            font-family: monospace;            white-space: pre-wrap;        &#125;                .toggle-sidebar &#123;            position: absolute;            right: 20px;            top: 80px;            background: #3498db;            color: white;            border: none;            border-radius: 50%;            width: 40px;            height: 40px;            display: flex;            align-items: center;            justify-content: center;            cursor: pointer;            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);            transition: all 0.3s ease;        &#125;                .toggle-sidebar:hover &#123;            background: #2980b9;            transform: scale(1.1);        &#125;                footer &#123;            text-align: center;            padding: 15px;            background: #2c3e50;            color: #ecf0f1;            font-size: 14px;        &#125;                @media (max-width: 768px) &#123;            .main-content &#123;                flex-direction: column;            &#125;                        .sidebar &#123;                width: 100%;                height: 40%;            &#125;        &#125;    &lt;/style&gt;&lt;/head&gt;&lt;body&gt;    &lt;div class=&quot;container&quot;&gt;        &lt;header&gt;            &lt;div class=&quot;logo&quot;&gt;                &lt;i class=&quot;fas fa-code&quot;&gt;&lt;/i&gt;                &lt;h1&gt;C语言在线编译器&lt;/h1&gt;            &lt;/div&gt;            &lt;div class=&quot;header-info&quot;&gt;                &lt;span&gt;安全、快速、便捷的在线C语言编程环境&lt;/span&gt;            &lt;/div&gt;        &lt;/header&gt;                &lt;div class=&quot;main-content&quot;&gt;            &lt;div class=&quot;editor-container&quot;&gt;                &lt;div class=&quot;editor-header&quot;&gt;                    &lt;h2&gt;&lt;i class=&quot;fas fa-file-code&quot;&gt;&lt;/i&gt; 代码编辑器 (main.c)&lt;/h2&gt;                    &lt;div class=&quot;editor-actions&quot;&gt;                        &lt;span class=&quot;status&quot;&gt;已保存&lt;/span&gt;                    &lt;/div&gt;                &lt;/div&gt;                &lt;div id=&quot;editor&quot;&gt;&lt;/div&gt;                &lt;div class=&quot;toolbar&quot;&gt;                    &lt;button class=&quot;btn btn-primary&quot; id=&quot;compileBtn&quot;&gt;                        &lt;i class=&quot;fas fa-play&quot;&gt;&lt;/i&gt; 编译运行                    &lt;/button&gt;                    &lt;button class=&quot;btn btn-success&quot; id=&quot;saveBtn&quot;&gt;                        &lt;i class=&quot;fas fa-save&quot;&gt;&lt;/i&gt; 保存代码                    &lt;/button&gt;                    &lt;button class=&quot;btn btn-danger&quot; id=&quot;resetBtn&quot;&gt;                        &lt;i class=&quot;fas fa-redo&quot;&gt;&lt;/i&gt; 重置代码                    &lt;/button&gt;                    &lt;div style=&quot;flex: 1&quot;&gt;&lt;/div&gt;                    &lt;button class=&quot;btn&quot; id=&quot;themeToggle&quot;&gt;                        &lt;i class=&quot;fas fa-moon&quot;&gt;&lt;/i&gt; 切换主题                    &lt;/button&gt;                &lt;/div&gt;            &lt;/div&gt;                        &lt;div class=&quot;sidebar&quot; id=&quot;sidebar&quot;&gt;                &lt;div class=&quot;sidebar-header&quot;&gt;                    &lt;h3&gt;&lt;i class=&quot;fas fa-terminal&quot;&gt;&lt;/i&gt; 运行结果&lt;/h3&gt;                    &lt;button id=&quot;closeSidebar&quot;&gt;&lt;i class=&quot;fas fa-times&quot;&gt;&lt;/i&gt;&lt;/button&gt;                &lt;/div&gt;                &lt;div class=&quot;sidebar-section&quot;&gt;                    &lt;div class=&quot;section-header&quot;&gt;                        &lt;i class=&quot;fas fa-keyboard&quot;&gt;&lt;/i&gt; 标准输入 (stdin)                    &lt;/div&gt;                    &lt;div class=&quot;section-content&quot;&gt;                        &lt;textarea id=&quot;input&quot; placeholder=&quot;在此输入程序运行所需的输入...&quot;&gt;10 20&lt;/textarea&gt;                    &lt;/div&gt;                &lt;/div&gt;                &lt;div class=&quot;sidebar-section&quot;&gt;                    &lt;div class=&quot;section-header&quot;&gt;                        &lt;i class=&quot;fas fa-desktop&quot;&gt;&lt;/i&gt; 输出结果 (stdout)                    &lt;/div&gt;                    &lt;div class=&quot;section-content&quot;&gt;                        &lt;div class=&quot;output&quot; id=&quot;output&quot;&gt;程序输出将显示在这里...&lt;/div&gt;                    &lt;/div&gt;                &lt;/div&gt;            &lt;/div&gt;        &lt;/div&gt;                &lt;button class=&quot;toggle-sidebar&quot; id=&quot;toggleSidebar&quot;&gt;            &lt;i class=&quot;fas fa-chevron-left&quot;&gt;&lt;/i&gt;        &lt;/button&gt;                &lt;footer&gt;            &lt;p&gt;C语言在线编译器 &amp;copy; 2023 | 基于Monaco Editor构建 | 安全提示：请勿上传敏感信息&lt;/p&gt;        &lt;/footer&gt;    &lt;/div&gt;    &lt;script&gt;        // 初始化Monaco Editor        require.config(&#123; paths: &#123; &#x27;vs&#x27;: &#x27;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs&#x27; &#125;&#125;);                require([&#x27;vs/editor/editor.main&#x27;], function() &#123;            // 默认C语言代码            const defaultCode = `#include &lt;stdio.h&gt;int main() &#123;    int a, b, sum;        printf(&quot;请输入两个整数：\\n&quot;);    scanf(&quot;%d %d&quot;, &amp;a, &amp;b);        sum = a + b;        printf(&quot;两数之和为：%d\\n&quot;, sum);        return 0;&#125;`;            // 创建编辑器实例            window.editor = monaco.editor.create(document.getElementById(&#x27;editor&#x27;), &#123;                value: defaultCode,                language: &#x27;c&#x27;,                theme: &#x27;vs-light&#x27;,                fontSize: 14,                minimap: &#123; enabled: true &#125;,                automaticLayout: true,                scrollBeyondLastLine: false,                renderLineHighlight: &#x27;all&#x27;,                lineNumbers: &#x27;on&#x27;,                folding: true,                wordWrap: &#x27;on&#x27;            &#125;);                        // 添加窗口大小变化时的自适应            window.addEventListener(&#x27;resize&#x27;, function() &#123;                window.editor.layout();            &#125;);        &#125;);                // DOM元素        const compileBtn = document.getElementById(&#x27;compileBtn&#x27;);        const saveBtn = document.getElementById(&#x27;saveBtn&#x27;);        const resetBtn = document.getElementById(&#x27;resetBtn&#x27;);        const themeToggle = document.getElementById(&#x27;themeToggle&#x27;);        const toggleSidebar = document.getElementById(&#x27;toggleSidebar&#x27;);        const closeSidebar = document.getElementById(&#x27;closeSidebar&#x27;);        const sidebar = document.getElementById(&#x27;sidebar&#x27;);        const input = document.getElementById(&#x27;input&#x27;);        const output = document.getElementById(&#x27;output&#x27;);                // 编译按钮事件        compileBtn.addEventListener(&#x27;click&#x27;, function() &#123;            output.textContent = &quot;编译中...&quot;;            sidebar.classList.remove(&#x27;hidden&#x27;);            toggleSidebar.querySelector(&#x27;i&#x27;).className = &#x27;fas fa-chevron-right&#x27;;                        // 模拟编译过程            setTimeout(function() &#123;                const code = window.editor.getValue();                const userInput = input.value;                                // 简单模拟编译结果                if (code.includes(&#x27;scanf&#x27;) &amp;&amp; userInput.trim() === &#x27;&#x27;) &#123;                    output.textContent = &quot;错误: 程序需要输入但未提供输入数据&quot;;                    return;                &#125;                                // 模拟程序输出                if (userInput.trim() !== &#x27;&#x27;) &#123;                    const inputs = userInput.split(&#x27; &#x27;);                    if (inputs.length &gt;= 2) &#123;                        const a = parseInt(inputs[0]);                        const b = parseInt(inputs[1]);                        output.textContent = `请输入两个整数：\n两数之和为：$&#123;a + b&#125;`;                    &#125; else &#123;                        output.textContent = &quot;错误: 输入格式不正确，请输入两个整数&quot;;                    &#125;                &#125; else &#123;                    output.textContent = &quot;请输入两个整数：\n两数之和为：30&quot;;                &#125;            &#125;, 1500);        &#125;);                // 保存按钮事件        saveBtn.addEventListener(&#x27;click&#x27;, function() &#123;            const status = document.querySelector(&#x27;.status&#x27;);            status.textContent = &quot;已保存&quot;;            status.style.color = &quot;#2ecc71&quot;;                        setTimeout(() =&gt; &#123;                status.textContent = &quot;已保存&quot;;                status.style.color = &quot;&quot;;            &#125;, 2000);                        // 在实际应用中，这里应该将代码保存到服务器或本地存储            localStorage.setItem(&#x27;savedCCode&#x27;, window.editor.getValue());        &#125;);                // 重置按钮事件        resetBtn.addEventListener(&#x27;click&#x27;, function() &#123;            if (confirm(&quot;确定要重置代码吗？所有未保存的更改将丢失。&quot;)) &#123;                window.editor.setValue(defaultCode);            &#125;        &#125;);                // 主题切换        themeToggle.addEventListener(&#x27;click&#x27;, function() &#123;            const currentTheme = monaco.editor.getTheme();            if (currentTheme === &#x27;vs-light&#x27;) &#123;                monaco.editor.setTheme(&#x27;vs-dark&#x27;);                themeToggle.innerHTML = &#x27;&lt;i class=&quot;fas fa-sun&quot;&gt;&lt;/i&gt; 切换主题&#x27;;                document.body.style.background = &#x27;linear-gradient(135deg, #0f2027, #203a43, #2c5364)&#x27;;            &#125; else &#123;                monaco.editor.setTheme(&#x27;vs-light&#x27;);                themeToggle.innerHTML = &#x27;&lt;i class=&quot;fas fa-moon&quot;&gt;&lt;/i&gt; 切换主题&#x27;;                document.body.style.background = &#x27;linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d)&#x27;;            &#125;        &#125;);                // 侧边栏切换        toggleSidebar.addEventListener(&#x27;click&#x27;, function() &#123;            sidebar.classList.toggle(&#x27;hidden&#x27;);            const icon = toggleSidebar.querySelector(&#x27;i&#x27;);            if (sidebar.classList.contains(&#x27;hidden&#x27;)) &#123;                icon.className = &#x27;fas fa-chevron-left&#x27;;            &#125; else &#123;                icon.className = &#x27;fas fa-chevron-right&#x27;;            &#125;        &#125;);                closeSidebar.addEventListener(&#x27;click&#x27;, function() &#123;            sidebar.classList.add(&#x27;hidden&#x27;);            toggleSidebar.querySelector(&#x27;i&#x27;).className = &#x27;fas fa-chevron-left&#x27;;        &#125;);                // 从本地存储加载已保存的代码        window.addEventListener(&#x27;load&#x27;, function() &#123;            const savedCode = localStorage.getItem(&#x27;savedCCode&#x27;);            if (savedCode) &#123;                window.editor.setValue(savedCode);            &#125;        &#125;);    &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+该版本已实现：
+
+代码编辑器：
+基于Monaco Editor，提供完整的C语言语法高亮
+支持代码折叠、行号显示、自动换行等功能
+主题切换（亮色&#x2F;暗色）
+真正的编译运行
+
+
+工具栏功能：
+编译运行：执行代码并显示结果
+保存代码：将代码保存到本地存储
+重置代码：恢复默认代码示例
+主题切换：切换编辑器主题
+
+
+侧边栏：
+标准输入区域：提供程序运行所需的输入
+输出结果区域：显示程序执行结果
+可展开&#x2F;折叠的侧边栏设计
+
+
+响应式设计：
+适配不同屏幕尺寸，在移动设备上自动调整布局
+
+
+
+学习收获
+前端技术整合 - 将Monaco Editor集成到网页中实现专业代码编辑体验
+UI&#x2F;UX设计 - 设计直观的编译器界面，合理布局编辑区与结果展示区
+交互逻辑 - 实现代码编译、保存、重置等功能的完整用户流程
+响应式设计 - 确保网站在不同设备上都能良好显示
+项目规划 - 从需求分析到功能实现的完整开发流程
+
+GPT-5优化目标：
+
+美化界面
+精简代码
+增添注释帮助学习理解代码实现：
+
+&lt;!DOCTYPE html&gt;&lt;html lang=&quot;zh-CN&quot;&gt;&lt;head&gt;    &lt;meta charset=&quot;utf-8&quot; /&gt;    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot; /&gt;    &lt;title&gt;C 语言在线编译器（简洁版）&lt;/title&gt;    &lt;!-- 字体图标和 Monaco 加载器 --&gt;    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot;&gt;    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js&quot;&gt;&lt;/script&gt;    &lt;style&gt;        /* 主题变量，便于快速定制 */        :root&#123;            --bg-start: #1a2a6c;            --bg-mid: #b21f1f;            --bg-end: #fdbb2d;            --card-bg: rgba(255,255,255,0.98);            --primary: #3498db;            --muted: #6b7280;            --shadow: 0 10px 30px rgba(0,0,0,0.15);            --radius: 10px;        &#125;        *&#123;box-sizing:border-box;margin:0;padding:0&#125;        html,body&#123;height:100%;font-family:Inter,Segoe UI,Helvetica,Arial,sans-serif&#125;        body&#123;            background:linear-gradient(135deg,var(--bg-start),var(--bg-mid),var(--bg-end));            display:flex;align-items:stretch;justify-content:center;padding:20px;        &#125;        /* 容器 */        .app&#123;            width:100%;max-width:1200px;background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - 40px);        &#125;        header&#123;display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#223247;color:#fff&#125;        header .title&#123;display:flex;align-items:center;gap:12px;font-weight:600&#125;        header .title i&#123;color:var(--primary);font-size:20px&#125;        header .meta&#123;color:var(--muted);font-size:13px&#125;        /* 主区：编辑器 + 侧栏 */        .main&#123;flex:1;display:flex;min-height:0&#125;        /* 编辑区 */        .editor-wrap&#123;flex:1;display:flex;flex-direction:column;border-right:1px solid #eee&#125;        .editor-head&#123;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#fafafa;border-bottom:1px solid #eee&#125;        .editor-head h2&#123;font-size:15px;color:#243b53&#125;        #editor&#123;flex:1;min-height:200px&#125;        /* 工具栏 */        .toolbar&#123;display:flex;gap:8px;padding:10px 14px;background:#fafafa;border-top:1px solid #eee;align-items:center&#125;        .btn&#123;border:0;padding:8px 12px;border-radius:6px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px&#125;        .btn-primary&#123;background:var(--primary);color:#fff&#125;        .btn-ghost&#123;background:transparent;border:1px solid #e6e6e6&#125;        /* 侧栏 */        .sidebar&#123;width:360px;display:flex;flex-direction:column;background:#f7f9fb&#125;        .sb-head&#123;display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#2f4356;color:#fff&#125;        .sb-section&#123;padding:12px 14px;flex:1;overflow:auto&#125;        textarea,input[type=text]&#123;width:100%;padding:10px;border:1px solid #e3e8ee;border-radius:6px;font-family:monospace&#125;        .output&#123;background:#0f1b2a;color:#dfefff;padding:12px;border-radius:6px;white-space:pre-wrap;height:100%;overflow:auto;font-family:monospace&#125;        /* 小屏适配 */        @media (max-width:900px)&#123;            .main&#123;flex-direction:column&#125;            .sidebar&#123;width:100%;height:38%&#125;            .editor-wrap&#123;border-right:0&#125;        &#125;    &lt;/style&gt;&lt;/head&gt;&lt;body&gt;    &lt;div class=&quot;app&quot;&gt;        &lt;header&gt;            &lt;div class=&quot;title&quot;&gt;&lt;i class=&quot;fas fa-code&quot;&gt;&lt;/i&gt;&lt;div&gt;C 语言在线编译器&lt;/div&gt;&lt;/div&gt;            &lt;div class=&quot;meta&quot;&gt;安全提醒：此页面仅做演示，本地运行即可&lt;/div&gt;        &lt;/header&gt;        &lt;div class=&quot;main&quot;&gt;            &lt;div class=&quot;editor-wrap&quot;&gt;                &lt;div class=&quot;editor-head&quot;&gt;                    &lt;h2&gt;&lt;i class=&quot;fas fa-file-code&quot;&gt;&lt;/i&gt; main.c&lt;/h2&gt;                    &lt;div class=&quot;status&quot; id=&quot;saveStatus&quot;&gt;已保存&lt;/div&gt;                &lt;/div&gt;                &lt;div id=&quot;editor&quot;&gt;&lt;/div&gt;                &lt;div class=&quot;toolbar&quot;&gt;                    &lt;button class=&quot;btn btn-primary&quot; id=&quot;runBtn&quot;&gt;&lt;i class=&quot;fas fa-play&quot;&gt;&lt;/i&gt; 运行&lt;/button&gt;                    &lt;button class=&quot;btn btn-ghost&quot; id=&quot;saveBtn&quot;&gt;&lt;i class=&quot;fas fa-save&quot;&gt;&lt;/i&gt; 保存&lt;/button&gt;                    &lt;button class=&quot;btn btn-ghost&quot; id=&quot;resetBtn&quot;&gt;&lt;i class=&quot;fas fa-undo&quot;&gt;&lt;/i&gt; 重置&lt;/button&gt;                    &lt;div style=&quot;flex:1&quot;&gt;&lt;/div&gt;                    &lt;button class=&quot;btn btn-ghost&quot; id=&quot;themeBtn&quot;&gt;&lt;i class=&quot;fas fa-moon&quot;&gt;&lt;/i&gt; 主题&lt;/button&gt;                &lt;/div&gt;            &lt;/div&gt;            &lt;aside class=&quot;sidebar&quot; id=&quot;sidebar&quot;&gt;                &lt;div class=&quot;sb-head&quot;&gt;&lt;div&gt;&lt;i class=&quot;fas fa-terminal&quot;&gt;&lt;/i&gt; 运行结果&lt;/div&gt;&lt;button id=&quot;closeSb&quot; class=&quot;btn btn-ghost&quot;&gt;关闭&lt;/button&gt;&lt;/div&gt;                &lt;div class=&quot;sb-section&quot;&gt;                    &lt;label&gt;标准输入 (stdin)&lt;/label&gt;                    &lt;textarea id=&quot;stdin&quot; rows=&quot;3&quot; placeholder=&quot;例如：10 20&quot;&gt;10 20&lt;/textarea&gt;                    &lt;div style=&quot;height:12px&quot;&gt;&lt;/div&gt;                    &lt;label&gt;输出 (stdout)&lt;/label&gt;                    &lt;div class=&quot;output&quot; id=&quot;stdout&quot;&gt;程序输出将显示在这里...&lt;/div&gt;                &lt;/div&gt;            &lt;/aside&gt;        &lt;/div&gt;    &lt;/div&gt;    &lt;script&gt;        /**********************************************************************         * 简洁版脚本：功能         * - 初始化 Monaco 编辑器         * - 本地保存/加载代码（localStorage）         * - 简单运行（模拟 scanf/printf）         * - 主题切换与 UI 状态更新         * 所有注释为中文，便于维护。         **********************************************************************/        // 默认代码（保持与 UI 功能一致的示例）        const DEFAULT_CODE = `#include &lt;stdio.h&gt;int main() &#123;    int a, b;    // 读取两个整数并输出和    if (scanf(&quot;%d %d&quot;, &amp;a, &amp;b) == 2) &#123;        printf(&quot;两数之和为：%d\n&quot;, a + b);    &#125; else &#123;        printf(&quot;输入格式错误\n&quot;);    &#125;    return 0;&#125;`;        // DOM 引用        const runBtn = document.getElementById(&#x27;runBtn&#x27;);        const saveBtn = document.getElementById(&#x27;saveBtn&#x27;);        const resetBtn = document.getElementById(&#x27;resetBtn&#x27;);        const themeBtn = document.getElementById(&#x27;themeBtn&#x27;);        const stdinEl = document.getElementById(&#x27;stdin&#x27;);        const stdoutEl = document.getElementById(&#x27;stdout&#x27;);        const saveStatus = document.getElementById(&#x27;saveStatus&#x27;);        const closeSb = document.getElementById(&#x27;closeSb&#x27;);        // Monaco 编辑器需要异步加载        require.config(&#123; paths: &#123; vs: &#x27;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs&#x27; &#125; &#125;);        require([&#x27;vs/editor/editor.main&#x27;], function () &#123;            // 尝试从 localStorage 加载之前保存的代码            const saved = localStorage.getItem(&#x27;deepseek_saved_c&#x27;);            window.editor = monaco.editor.create(document.getElementById(&#x27;editor&#x27;), &#123;                value: saved || DEFAULT_CODE,                language: &#x27;c&#x27;,                theme: &#x27;vs-light&#x27;,                automaticLayout: true,                minimap: &#123; enabled: false &#125;,                fontSize: 13,                scrollBeyondLastLine: false            &#125;);            // 快捷键：Ctrl/Cmd+S 保存            window.addEventListener(&#x27;keydown&#x27;, (e) =&gt; &#123;                if ((e.ctrlKey || e.metaKey) &amp;&amp; e.key.toLowerCase() === &#x27;s&#x27;) &#123;                    e.preventDefault(); saveCode();                &#125;            &#125;);        &#125;);        // ----------------- 功能函数 -----------------        // 保存当前编辑器内容到 localStorage，并提示状态        function saveCode() &#123;            if (!window.editor) return;            localStorage.setItem(&#x27;deepseek_saved_c&#x27;, window.editor.getValue());            saveStatus.textContent = &#x27;已保存&#x27;;            saveStatus.style.color = &#x27;#22c55e&#x27;;            setTimeout(() =&gt; &#123; saveStatus.style.color = &#x27;&#x27;; &#125;, 1200);        &#125;        // 将编辑器内容重置为默认代码（不会清除 localStorage）        function resetCode() &#123;            if (!window.editor) return;            if (!confirm(&#x27;确定重置代码？未保存的更改将丢失。&#x27;)) return;            window.editor.setValue(DEFAULT_CODE);        &#125;        // 简单“运行”函数：模拟 scanf/printf 的行为，仅用于演示        // - 如果代码包含 scanf 且 stdin 为空，则提示错误        // - 否则把 stdin 按空白拆分为整数并输出和        function runCode() &#123;            if (!window.editor) return;            stdoutEl.textContent = &#x27;运行中...&#x27;;            // 模拟异步运行（更真实的体验）            setTimeout(() =&gt; &#123;                const code = window.editor.getValue();                const input = (stdinEl.value || &#x27;&#x27;).trim();                if (/scanf\s*\(/.test(code) &amp;&amp; input === &#x27;&#x27;) &#123;                    stdoutEl.textContent = &#x27;错误：程序需要输入但未提供 stdin。&#x27;;                    return;                &#125;                if (input === &#x27;&#x27;) &#123;                    // 没有输入：展示友好示例输出                    stdoutEl.textContent = &#x27;提示：请在左侧输入两个整数，例如：10 20&#x27;;                    return;                &#125;                const parts = input.split(/\s+/).map(s =&gt; parseInt(s, 10));                if (parts.length &gt;= 2 &amp;&amp; parts.every(n =&gt; Number.isFinite(n))) &#123;                    const [a, b] = parts;                    stdoutEl.textContent = `两数之和为：$&#123;a + b&#125;`;                &#125; else &#123;                    stdoutEl.textContent = &#x27;错误：输入格式不正确，请输入两个整数（例如：10 20）&#x27;;                &#125;            &#125;, 400);        &#125;        // 切换主题（轻/暗）        let isDark = false;        function toggleTheme() &#123;            if (!window.monaco) &#123; /* monaco 可能尚未加载 */ &#125;            isDark = !isDark;            try &#123;                monaco.editor.setTheme(isDark ? &#x27;vs-dark&#x27; : &#x27;vs-light&#x27;);            &#125; catch (e) &#123; /* ignore */ &#125;            themeBtn.innerHTML = isDark ? &#x27;&lt;i class=&quot;fas fa-sun&quot;&gt;&lt;/i&gt; 明亮&#x27; : &#x27;&lt;i class=&quot;fas fa-moon&quot;&gt;&lt;/i&gt; 暗色&#x27;;        &#125;        // ----------------- 事件绑定 -----------------        runBtn.addEventListener(&#x27;click&#x27;, runCode);        saveBtn.addEventListener(&#x27;click&#x27;, saveCode);        resetBtn.addEventListener(&#x27;click&#x27;, resetCode);        themeBtn.addEventListener(&#x27;click&#x27;, toggleTheme);        closeSb.addEventListener(&#x27;click&#x27;, () =&gt; &#123; document.getElementById(&#x27;sidebar&#x27;).style.display = &#x27;none&#x27;; &#125;);        // 页面卸载时自动保存（可选）        window.addEventListener(&#x27;beforeunload&#x27;, () =&gt; &#123;            if (window.editor) localStorage.setItem(&#x27;deepseek_saved_c&#x27;, window.editor.getValue());        &#125;);    &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+增添功能：保存：保存到 localStorage 键 deepseek_saved_c，并在窗口关闭前自动保存一次（防止意外关闭丢失）。学习收获在GPT的帮助下阅读代码，理解更多css变量等形式
+初具雏形外观与ui设计在手动调整（如取色、位置等参数）后，符合需求代码展示：
+&lt;!DOCTYPE html&gt;&lt;html lang=&quot;zh-CN&quot;&gt;&lt;head&gt;    &lt;meta charset=&quot;utf-8&quot; /&gt;    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot; /&gt;    &lt;title&gt;C 语言在线编译器（简洁版）&lt;/title&gt;    &lt;!-- 字体图标和 Monaco 加载器 --&gt;    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot;&gt;    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js&quot;&gt;&lt;/script&gt;    &lt;style&gt;        /* 暗黑优先 - 极简 mac 风格 */        :root&#123;            --bg: #0b0c0d;           /* 页面背景（near black） */            --panel: #0f1113;        /* 卡片 / 主容器背景 */            --muted: #9aa4ad;        /* 次要文字 */            --accent: #48a0ff;       /* 高亮色（适度） */            --glass: rgba(255,255,255,0.02);            --radius: 10px;            --shadow: 0 8px 30px rgba(0,0,0,0.6);        &#125;        *&#123;box-sizing:border-box;margin:0;padding:0&#125;        html,body&#123;height:100%;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial&#125;        body&#123;background:var(--bg);color:#e6eef6;&#125;        /* 应用容器：占满整个视口，类似本地 app 的全屏编辑器 */        .app&#123;height:100vh;width:100vw;display:flex;flex-direction:column;align-items:stretch;justify-content:stretch&#125;        .frame&#123;max-width:1400px;margin:12px auto;flex:1;background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column&#125;        header&#123;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)&#125;        header .title&#123;display:flex;align-items:center;gap:10px;font-weight:600&#125;        header .title i&#123;color:var(--accent);font-size:18px&#125;        header .meta&#123;color:var(--muted);font-size:13px&#125;        /* 主区：编辑器 + 侧栏 */        .main&#123;flex:1;display:flex;min-height:0&#125;        /* 编辑区 */        .editor-wrap&#123;flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.03)&#125;        .editor-head&#123;display:flex;align-items:center;justify-content:space-between;padding:10px 14px&#125;        .editor-head h2&#123;font-size:14px;color:#dbe9ff&#125;        #editor&#123;flex:1;min-height:200px&#125;        /* 工具栏 */        .toolbar&#123;display:flex;gap:8px;padding:10px 14px;align-items:center&#125;        .btn&#123;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;background:transparent;color:#e6eef6&#125;        .btn.primary&#123;background:var(--accent);color:#071022&#125;        .btn.ghost&#123;border:1px solid rgba(255,255,255,0.04)&#125;        /* 侧栏 */        .sidebar&#123;width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)&#125;        .sidebar.collapsed&#123;transform:translateX(100%);transition:transform .28s ease&#125;        .sb-head&#123;display:flex;align-items:center;justify-content:space-between;padding:12px 14px&#125;        .sb-section&#123;padding:12px 14px;flex:1;overflow:auto&#125;        textarea,input[type=text]&#123;width:100%;padding:10px;border:1px solid rgba(255,255,255,0.03);border-radius:8px;background:transparent;color:#e6eef6;font-family:monospace&#125;        .output&#123;background:var(--glass);color:#dfefff;padding:12px;border-radius:8px;white-space:pre-wrap;height:100%;overflow:auto;font-family:monospace&#125;        /* 悬浮的侧边栏切换按钮（当侧栏折叠时可恢复） */        #sidebarToggle&#123;position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer&#125;        /* 小屏适配 */        @media (max-width:900px)&#123;            .main&#123;flex-direction:column&#125;            .sidebar&#123;width:100%;height:34%&#125;            .editor-wrap&#123;border-right:0&#125;        &#125;    &lt;/style&gt;&lt;/head&gt;&lt;body&gt;    &lt;div class=&quot;app&quot;&gt;        &lt;header&gt;            &lt;div class=&quot;title&quot;&gt;&lt;i class=&quot;fas fa-code&quot;&gt;&lt;/i&gt;&lt;div&gt;C 语言在线编译器&lt;/div&gt;&lt;/div&gt;            &lt;div class=&quot;meta&quot;&gt;安全提醒：此页面仅做演示，本地运行即可&lt;/div&gt;        &lt;/header&gt;        &lt;div class=&quot;main&quot;&gt;            &lt;div class=&quot;editor-wrap&quot;&gt;                &lt;div class=&quot;editor-head&quot;&gt;                    &lt;h2&gt;&lt;i class=&quot;fas fa-file-code&quot;&gt;&lt;/i&gt; main.c&lt;/h2&gt;                    &lt;div class=&quot;status&quot; id=&quot;saveStatus&quot;&gt;已保存&lt;/div&gt;                &lt;/div&gt;                &lt;div id=&quot;editor&quot;&gt;&lt;/div&gt;                &lt;div class=&quot;toolbar&quot;&gt;                    &lt;button class=&quot;btn primary&quot; id=&quot;runBtn&quot;&gt;&lt;i class=&quot;fas fa-play&quot;&gt;&lt;/i&gt; 运行&lt;/button&gt;                    &lt;button class=&quot;btn ghost&quot; id=&quot;saveBtn&quot;&gt;&lt;i class=&quot;fas fa-save&quot;&gt;&lt;/i&gt; 保存&lt;/button&gt;                    &lt;button class=&quot;btn ghost&quot; id=&quot;resetBtn&quot;&gt;&lt;i class=&quot;fas fa-undo&quot;&gt;&lt;/i&gt; 重置&lt;/button&gt;                    &lt;button class=&quot;btn ghost&quot; id=&quot;fsBtn&quot; title=&quot;全屏&quot;&gt;&lt;i class=&quot;fas fa-expand&quot;&gt;&lt;/i&gt;&lt;/button&gt;                    &lt;div style=&quot;flex:1&quot;&gt;&lt;/div&gt;                    &lt;button class=&quot;btn ghost&quot; id=&quot;themeBtn&quot;&gt;&lt;i class=&quot;fas fa-sun&quot;&gt;&lt;/i&gt; 主题&lt;/button&gt;                &lt;/div&gt;            &lt;/div&gt;            &lt;aside class=&quot;sidebar&quot; id=&quot;sidebar&quot;&gt;                &lt;div class=&quot;sb-head&quot;&gt;&lt;div&gt;&lt;i class=&quot;fas fa-terminal&quot;&gt;&lt;/i&gt; 运行结果&lt;/div&gt;&lt;button id=&quot;closeSb&quot; class=&quot;btn ghost&quot;&gt;折叠&lt;/button&gt;&lt;/div&gt;                &lt;div class=&quot;sb-section&quot;&gt;                    &lt;label&gt;标准输入 (stdin)&lt;/label&gt;                    &lt;textarea id=&quot;stdin&quot; rows=&quot;3&quot; placeholder=&quot;例如：10 20&quot;&gt;10 20&lt;/textarea&gt;                    &lt;div style=&quot;height:12px&quot;&gt;&lt;/div&gt;                    &lt;label&gt;输出 (stdout)&lt;/label&gt;                    &lt;div class=&quot;output&quot; id=&quot;stdout&quot;&gt;程序输出将显示在这里...&lt;/div&gt;                &lt;/div&gt;            &lt;/aside&gt;        &lt;/div&gt;    &lt;/div&gt;    &lt;!-- 折叠后恢复侧栏的悬浮按钮 --&gt;    &lt;div id=&quot;sidebarToggle&quot; title=&quot;打开侧栏&quot;&gt;&lt;i class=&quot;fas fa-chevron-left&quot;&gt;&lt;/i&gt;&lt;/div&gt;    &lt;script&gt;        /**********************************************************************         * 简洁版脚本：功能         * - 初始化 Monaco 编辑器         * - 本地保存/加载代码（localStorage）         * - 简单运行（模拟 scanf/printf）         * - 主题切换与 UI 状态更新         * 所有注释为中文，便于维护。         **********************************************************************/        // 默认代码（保持与 UI 功能一致的示例）        const DEFAULT_CODE = `#include &lt;stdio.h&gt;int main() &#123;    int a, b;    // 读取两个整数并输出和    if (scanf(&quot;%d %d&quot;, &amp;a, &amp;b) == 2) &#123;        printf(&quot;两数之和为：%d\n&quot;, a + b);    &#125; else &#123;        printf(&quot;输入格式错误\n&quot;);    &#125;    return 0;&#125;`;        // DOM 引用        const runBtn = document.getElementById(&#x27;runBtn&#x27;);        const saveBtn = document.getElementById(&#x27;saveBtn&#x27;);        const resetBtn = document.getElementById(&#x27;resetBtn&#x27;);        const themeBtn = document.getElementById(&#x27;themeBtn&#x27;);        const stdinEl = document.getElementById(&#x27;stdin&#x27;);        const stdoutEl = document.getElementById(&#x27;stdout&#x27;);        const saveStatus = document.getElementById(&#x27;saveStatus&#x27;);        const closeSb = document.getElementById(&#x27;closeSb&#x27;);        // Monaco 编辑器需要异步加载        require.config(&#123; paths: &#123; vs: &#x27;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs&#x27; &#125; &#125;);        require([&#x27;vs/editor/editor.main&#x27;], function () &#123;            // 尝试从 localStorage 加载之前保存的代码            const saved = localStorage.getItem(&#x27;deepseek_saved_c&#x27;);            window.editor = monaco.editor.create(document.getElementById(&#x27;editor&#x27;), &#123;                value: saved || DEFAULT_CODE,                language: &#x27;c&#x27;,                theme: &#x27;vs-light&#x27;,                automaticLayout: true,                minimap: &#123; enabled: false &#125;,                fontSize: 13,                scrollBeyondLastLine: false            &#125;);            // 快捷键：Ctrl/Cmd+S 保存            window.addEventListener(&#x27;keydown&#x27;, (e) =&gt; &#123;                if ((e.ctrlKey || e.metaKey) &amp;&amp; e.key.toLowerCase() === &#x27;s&#x27;) &#123;                    e.preventDefault(); saveCode();                &#125;            &#125;);        &#125;);    // ----------------- 功能函数 -----------------        // 保存当前编辑器内容到 localStorage，并提示状态        function saveCode() &#123;            if (!window.editor) return;            localStorage.setItem(&#x27;deepseek_saved_c&#x27;, window.editor.getValue());            saveStatus.textContent = &#x27;已保存&#x27;;            saveStatus.style.color = &#x27;#22c55e&#x27;;            setTimeout(() =&gt; &#123; saveStatus.style.color = &#x27;&#x27;; &#125;, 1200);        &#125;        // 将编辑器内容重置为默认代码（不会清除 localStorage）        function resetCode() &#123;            if (!window.editor) return;            if (!confirm(&#x27;确定重置代码？未保存的更改将丢失。&#x27;)) return;            window.editor.setValue(DEFAULT_CODE);        &#125;        // runCode: 优先调用后端编译器 API；若网络或后端不可用则回退到本地模拟        // 后端 API 约定（示例）：        // POST /api/compile  body: &#123; language: &#x27;c&#x27;, code: string, stdin: string &#125;        // 返回: &#123; stdout: string, stderr: string, exitCode: number &#125;        async function runCode() &#123;            if (!window.editor) return;            stdoutEl.textContent = &#x27;运行中（尝试后端编译）...&#x27;;            const code = window.editor.getValue();            const stdin = (stdinEl.value || &#x27;&#x27;).trim();            // 如果后端地址不可用或超时，回退到本地模拟            const backendUrl = &#x27;/api/compile&#x27;; // 请在后端服务中实现此路由            // 超时辅助函数            const fetchWithTimeout = (url, opts, timeout = 10000) =&gt; &#123;                return Promise.race([                    fetch(url, opts),                    new Promise((_, rej) =&gt; setTimeout(() =&gt; rej(new Error(&#x27;timeout&#x27;)), timeout))                ]);            &#125;;            try &#123;                const resp = await fetchWithTimeout(backendUrl, &#123;                    method: &#x27;POST&#x27;,                    headers: &#123; &#x27;Content-Type&#x27;: &#x27;application/json&#x27; &#125;,                    body: JSON.stringify(&#123; language: &#x27;c&#x27;, code, stdin &#125;)                &#125;, 10000);                if (!resp.ok) throw new Error(&#x27;后端返回错误: &#x27; + resp.status);                const data = await resp.json();                // 根据后端返回渲染输出（约定字段：stdout/stderr/exitCode）                let out = &#x27;&#x27;;                if (data.stdout) out += data.stdout;                if (data.stderr) out += &#x27;\n[stderr]\n&#x27; + data.stderr;                out += `\n[exit code] $&#123;data.exitCode ?? 0&#125;`;                stdoutEl.textContent = out.trim();                return;            &#125; catch (e) &#123;                // 后端不可用或超时，回退到本地模拟                console.warn(&#x27;后端编译失败，回退到本地模拟：&#x27;, e);                simulateRun(code, stdin);            &#125;        &#125;        // 本地回退：简单模拟 scanf/printf 行为（仅作演示）        function simulateRun(code, input) &#123;            stdoutEl.textContent = &#x27;本地模拟运行...&#x27;;            setTimeout(() =&gt; &#123;                if (/scanf\s*\(/.test(code) &amp;&amp; (!input || input.trim() === &#x27;&#x27;)) &#123;                    stdoutEl.textContent = &#x27;错误：程序需要输入但未提供 stdin。&#x27;;                    return;                &#125;                if (!input || input.trim() === &#x27;&#x27;) &#123;                    stdoutEl.textContent = &#x27;提示：请在左侧输入两个整数，例如：10 20&#x27;;                    return;                &#125;                const parts = input.split(/\s+/).map(s =&gt; parseInt(s, 10));                if (parts.length &gt;= 2 &amp;&amp; parts.every(n =&gt; Number.isFinite(n))) &#123;                    const [a, b] = parts;                    stdoutEl.textContent = `两数之和为：$&#123;a + b&#125;`;                &#125; else &#123;                    stdoutEl.textContent = &#x27;错误：输入格式不正确，请输入两个整数（例如：10 20）&#x27;;                &#125;            &#125;, 300);        &#125;        // 切换主题（轻/暗），默认暗黑        let isDark = true;        function toggleTheme() &#123;            isDark = !isDark;            try &#123; monaco.editor.setTheme(isDark ? &#x27;vs-dark&#x27; : &#x27;vs-light&#x27;); &#125; catch (e) &#123;&#125;            themeBtn.innerHTML = isDark ? &#x27;&lt;i class=&quot;fas fa-sun&quot;&gt;&lt;/i&gt; 明亮&#x27; : &#x27;&lt;i class=&quot;fas fa-moon&quot;&gt;&lt;/i&gt; 暗色&#x27;;        &#125;        // ----------------- 事件绑定 -----------------        runBtn.addEventListener(&#x27;click&#x27;, runCode);        saveBtn.addEventListener(&#x27;click&#x27;, saveCode);        resetBtn.addEventListener(&#x27;click&#x27;, resetCode);        themeBtn.addEventListener(&#x27;click&#x27;, toggleTheme);        // 侧栏折叠/展开逻辑：使用 class &#x27;collapsed&#x27;，便于动画与恢复        const sidebar = document.getElementById(&#x27;sidebar&#x27;);        const sidebarToggle = document.getElementById(&#x27;sidebarToggle&#x27;);        closeSb.addEventListener(&#x27;click&#x27;, () =&gt; &#123;            sidebar.classList.add(&#x27;collapsed&#x27;);            sidebarToggle.style.display = &#x27;flex&#x27;;        &#125;);        sidebarToggle.addEventListener(&#x27;click&#x27;, () =&gt; &#123;            sidebar.classList.remove(&#x27;collapsed&#x27;);            sidebarToggle.style.display = &#x27;none&#x27;;        &#125;);        // 全屏按钮        const fsBtn = document.getElementById(&#x27;fsBtn&#x27;);        fsBtn.addEventListener(&#x27;click&#x27;, () =&gt; &#123;            const el = document.querySelector(&#x27;.frame&#x27;);            if (!document.fullscreenElement) &#123;                el.requestFullscreen?.();            &#125; else &#123;                document.exitFullscreen?.();            &#125;        &#125;);        // 页面卸载时自动保存（可选）        window.addEventListener(&#x27;beforeunload&#x27;, () =&gt; &#123;            if (window.editor) localStorage.setItem(&#x27;deepseek_saved_c&#x27;, window.editor.getValue());        &#125;);        // 页面加载时：设置编辑器为暗黑主题（若 monaco 已加载则在创建时设置，若晚加载则尝试设置）        window.addEventListener(&#x27;load&#x27;, () =&gt; &#123;            try &#123; if (window.monaco) monaco.editor.setTheme(&#x27;vs-dark&#x27;); &#125; catch (e) &#123;&#125;            // 初始时隐藏侧栏恢复按钮（默认展开）            document.getElementById(&#x27;sidebarToggle&#x27;).style.display = &#x27;none&#x27;;        &#125;);    &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+后续目标用VS Code中的copilot Agent模式为我规划整个项目，尝试接入真实的编译后端。
+遇到问题GitHub Pages 只托管静态文件，不能运行编译后端，所以你必须额外部署或使用第三方服务来执行编译&#x2F;运行。Github Actions可以实现编译，但是延迟时间过长，实用效果不佳解决方案
+
+使用 Judge0（托管版或自托管开源 Judge0）
+
+概要：Judge0 是流行的在线评测 API（支持多语言）。你可以直接调用 Judge0 提供的 API（托管&#x2F;付费），或在自己的 VPS 上用 Docker Compose 自托管 Judge0 服务。优点：成熟、支持多语言、接口简单（HTTP API）、支持限制运行时&#x2F;内存&#x2F;时间、开箱即用；自托管可完全控制。缺点：托管版受限于配额&#x2F;费用；自托管需要 VPS + Docker，需注意安全与资源隔离（容器逃逸风险）。成本：托管版按请求&#x2F;配额付费；自托管仅 VPS 成本（例如 $5–20&#x2F;月 取决使用量）。推荐场景：想要快速上线且需要多语言&#x2F;稳定接口 → 推荐托管 Judge0；想完全控制并能运维 → 自托管 Judge0（我会提供 Docker Compose 示例）。
+
+后端容器化服务（自建安全沙箱）
+
+概要：在 VPS、云虚拟机或容器服务（Fargate）上运行自己的编译器服务。每次执行都在容器或轻量 VM（gVisor、Firecracker）内运行，或使用已有的 sandbox 项目（isolate、nsjail）。优点：最灵活，可自定义编译器版本、环境、插件；更容易做白名单&#x2F;定制化；适合企业级需求。缺点：实现复杂、运维成本高、必须正确隔离以避免被利用执行任意代码。成本：云实例 + 容器运行费用；如果使用 Firecracker 或 Fargate 成本更高。推荐场景：对安全&#x2F;自定义&#x2F;扩展性有高要求，且有运维能力。
+
+Serverless 容器&#x2F;函数（AWS Lambda（容器）、Google Cloud Run）
+
+概要：把编译器打包为容器镜像，部署到 Cloud Run 或 Lambda（Container Image）等按需执行的平台。优点：按调用计费，自动伸缩，运维负担低；可以结合短暂隔离的容器执行。缺点：启动冷启动、执行时间和资源受限（Lambda 默认最多 15 分钟，且内存&#x2F;磁盘限制），需要处理容器层面的安全隔离；成本随并发上涨。推荐场景：中等流量、希望少运维但接受平台约束时。
+
+在浏览器里运行编译器（WASM）
+
+概要：使用 WebAssembly 版本的编译器（如 clang&#x2F;emscripten 的 Wasm 构建，或 tcc-wasm &#x2F; clang.wasm）在用户浏览器中直接编译并运行（WASI 可用时）。优点：无需后端、零延迟、无需你维护服务器、对用户更隐私安全（代码在本地运行）；适合教育、演示或小型程序。缺点：WASM 二进制较大（可能几十 MB），某些系统调用或库不可用，运行受浏览器环境限制（不能做全部系统交互），对复杂&#x2F;长时任务不理想。推荐场景：你需要零运维、演示性质或能接受功能限制时（例如仅做 C 语言的简单运行示例）。
+
+使用第三方付费 SaaS（如 Replit、Glot.io、某些 API 市场上的编译服务）
+
+概要：直接调用商业提供方的 REST API 来编译&#x2F;运行代码。优点：开发最快、运维几乎为零、通常带 SLA 支持。缺点：受限于价格和配额、需要信任第三方处理用户代码（隐私&#x2F;合规问题）。推荐场景：对可靠性&#x2F;快速上线要求高且能接受付费。
+最终选择直接集成 Wandbox（方案 B）并实现回退到 WASM（双重策略）——我会把 runCode 编写为：try Wandbox via fetch -&gt; 若成功显示结果；若 fetch 报错（含 CORS）或超时则调用本地 wasm（如果存在）或本地模拟。优点：优先真实编译器，且无需服务器（若 Wandbox CORS 可用）。我会给出完整的前端 fetch 实现、超时处理与错误提示。
+代码呈现
+&lt;!DOCTYPE html&gt;&lt;html lang=&quot;zh-CN&quot;&gt;&lt;head&gt;    &lt;meta charset=&quot;utf-8&quot; /&gt;    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot; /&gt;    &lt;title&gt;C 语言在线编译器（简洁版）&lt;/title&gt;    &lt;!-- 字体图标和 Monaco 加载器 --&gt;    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot;&gt;    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js&quot;&gt;&lt;/script&gt;    &lt;style&gt;        /* 暗黑优先 - 极简 mac 风格 */        :root&#123;            --bg: #0b0c0d;           /* 页面背景（near black） */            --panel: #0f1113;        /* 卡片 / 主容器背景 */            --muted: #9aa4ad;        /* 次要文字 */            --accent: #48a0ff;       /* 高亮色（适度） */            --glass: rgba(255,255,255,0.02);            --radius: 10px;            --shadow: 0 8px 30px rgba(0,0,0,0.6);        &#125;        *&#123;box-sizing:border-box;margin:0;padding:0&#125;        html,body&#123;height:100%;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial&#125;        body&#123;background:var(--bg);color:#e6eef6;&#125;        /* 应用容器：占满整个视口，类似本地 app 的全屏编辑器 */        .app&#123;height:100vh;width:100vw;display:flex;flex-direction:column;align-items:stretch;justify-content:stretch&#125;        .frame&#123;max-width:1400px;margin:12px auto;flex:1;background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column&#125;        header&#123;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)&#125;        header .title&#123;display:flex;align-items:center;gap:10px;font-weight:600&#125;        header .title i&#123;color:var(--accent);font-size:18px&#125;        header .meta&#123;color:var(--muted);font-size:13px&#125;        /* 主区：编辑器 + 侧栏 */        .main&#123;flex:1;display:flex;min-height:0&#125;        /* 编辑区 */        .editor-wrap&#123;flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.03)&#125;        .editor-head&#123;display:flex;align-items:center;justify-content:space-between;padding:10px 14px&#125;        .editor-head h2&#123;font-size:14px;color:#dbe9ff&#125;        #editor&#123;flex:1;min-height:200px&#125;        /* 工具栏 */        .toolbar&#123;display:flex;gap:8px;padding:10px 14px;align-items:center&#125;        .btn&#123;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;background:transparent;color:#e6eef6&#125;        .btn.primary&#123;background:var(--accent);color:#071022&#125;        .btn.ghost&#123;border:1px solid rgba(255,255,255,0.04)&#125;        /* 侧栏 */        .sidebar&#123;width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)&#125;        .sidebar.collapsed&#123;transform:translateX(100%);transition:transform .28s ease&#125;        .sb-head&#123;display:flex;align-items:center;justify-content:space-between;padding:12px 14px&#125;        .sb-section&#123;padding:12px 14px;flex:1;overflow:auto&#125;        textarea,input[type=text]&#123;width:100%;padding:10px;border:1px solid rgba(255,255,255,0.03);border-radius:8px;background:transparent;color:#e6eef6;font-family:monospace&#125;        .output&#123;background:var(--glass);color:#dfefff;padding:12px;border-radius:8px;white-space:pre-wrap;height:100%;overflow:auto;font-family:monospace&#125;        /* 悬浮的侧边栏切换按钮（当侧栏折叠时可恢复） */        #sidebarToggle&#123;position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer&#125;        /* 小屏适配 */        @media (max-width:900px)&#123;            .main&#123;flex-direction:column&#125;            .sidebar&#123;width:100%;height:34%&#125;            .editor-wrap&#123;border-right:0&#125;        &#125;    &lt;/style&gt;&lt;/head&gt;&lt;body&gt;    &lt;div class=&quot;app&quot;&gt;        &lt;header&gt;            &lt;div class=&quot;title&quot;&gt;&lt;i class=&quot;fas fa-code&quot;&gt;&lt;/i&gt;&lt;div&gt;C 语言在线编译器&lt;/div&gt;&lt;/div&gt;            &lt;div class=&quot;meta&quot;&gt;安全提醒：此页面仅做演示，本地运行即可&lt;/div&gt;        &lt;/header&gt;        &lt;div class=&quot;main&quot;&gt;            &lt;div class=&quot;editor-wrap&quot;&gt;                &lt;div class=&quot;editor-head&quot;&gt;                    &lt;h2&gt;&lt;i class=&quot;fas fa-file-code&quot;&gt;&lt;/i&gt; main.c&lt;/h2&gt;                    &lt;div class=&quot;status&quot; id=&quot;saveStatus&quot;&gt;已保存&lt;/div&gt;                &lt;/div&gt;                &lt;div id=&quot;editor&quot;&gt;&lt;/div&gt;                &lt;div class=&quot;toolbar&quot;&gt;                    &lt;button class=&quot;btn primary&quot; id=&quot;runBtn&quot;&gt;&lt;i class=&quot;fas fa-play&quot;&gt;&lt;/i&gt; 运行&lt;/button&gt;                    &lt;button class=&quot;btn ghost&quot; id=&quot;saveBtn&quot;&gt;&lt;i class=&quot;fas fa-save&quot;&gt;&lt;/i&gt; 保存&lt;/button&gt;                    &lt;button class=&quot;btn ghost&quot; id=&quot;resetBtn&quot;&gt;&lt;i class=&quot;fas fa-undo&quot;&gt;&lt;/i&gt; 重置&lt;/button&gt;                    &lt;button class=&quot;btn ghost&quot; id=&quot;fsBtn&quot; title=&quot;全屏&quot;&gt;&lt;i class=&quot;fas fa-expand&quot;&gt;&lt;/i&gt;&lt;/button&gt;                    &lt;div style=&quot;flex:1&quot;&gt;&lt;/div&gt;                    &lt;button class=&quot;btn ghost&quot; id=&quot;themeBtn&quot;&gt;&lt;i class=&quot;fas fa-sun&quot;&gt;&lt;/i&gt; 主题&lt;/button&gt;                &lt;/div&gt;            &lt;/div&gt;            &lt;aside class=&quot;sidebar&quot; id=&quot;sidebar&quot;&gt;                &lt;div class=&quot;sb-head&quot;&gt;&lt;div&gt;&lt;i class=&quot;fas fa-terminal&quot;&gt;&lt;/i&gt; 运行结果&lt;/div&gt;&lt;button id=&quot;closeSb&quot; class=&quot;btn ghost&quot;&gt;折叠&lt;/button&gt;&lt;/div&gt;                &lt;div class=&quot;sb-section&quot;&gt;                    &lt;label&gt;标准输入 (stdin)&lt;/label&gt;                    &lt;textarea id=&quot;stdin&quot; rows=&quot;3&quot; placeholder=&quot;例如：10 20&quot;&gt;10 20&lt;/textarea&gt;                    &lt;div style=&quot;height:12px&quot;&gt;&lt;/div&gt;                    &lt;label&gt;输出 (stdout)&lt;/label&gt;                    &lt;div class=&quot;output&quot; id=&quot;stdout&quot;&gt;程序输出将显示在这里...&lt;/div&gt;                &lt;/div&gt;            &lt;/aside&gt;        &lt;/div&gt;    &lt;/div&gt;    &lt;!-- 折叠后恢复侧栏的悬浮按钮 --&gt;    &lt;div id=&quot;sidebarToggle&quot; title=&quot;打开侧栏&quot;&gt;&lt;i class=&quot;fas fa-chevron-left&quot;&gt;&lt;/i&gt;&lt;/div&gt;    &lt;script&gt;        /**********************************************************************         * 简洁版脚本：功能         * - 初始化 Monaco 编辑器         * - 本地保存/加载代码（localStorage）         * - 简单运行（模拟 scanf/printf）         * - 主题切换与 UI 状态更新         * 所有注释为中文，便于维护。         **********************************************************************/        // 默认代码（保持与 UI 功能一致的示例）        const DEFAULT_CODE = `#include &lt;stdio.h&gt;int main() &#123;    int a, b;    // 读取两个整数并输出和    if (scanf(&quot;%d %d&quot;, &amp;a, &amp;b) == 2) &#123;        printf(&quot;两数之和为：%d\n&quot;, a + b);    &#125; else &#123;        printf(&quot;输入格式错误\n&quot;);    &#125;    return 0;&#125;`;        // DOM 引用        const runBtn = document.getElementById(&#x27;runBtn&#x27;);        const saveBtn = document.getElementById(&#x27;saveBtn&#x27;);        const resetBtn = document.getElementById(&#x27;resetBtn&#x27;);        const themeBtn = document.getElementById(&#x27;themeBtn&#x27;);        const stdinEl = document.getElementById(&#x27;stdin&#x27;);        const stdoutEl = document.getElementById(&#x27;stdout&#x27;);        const saveStatus = document.getElementById(&#x27;saveStatus&#x27;);        const closeSb = document.getElementById(&#x27;closeSb&#x27;);        // Monaco 编辑器需要异步加载        require.config(&#123; paths: &#123; vs: &#x27;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs&#x27; &#125; &#125;);        require([&#x27;vs/editor/editor.main&#x27;], function () &#123;            // 尝试从 localStorage 加载之前保存的代码            const saved = localStorage.getItem(&#x27;deepseek_saved_c&#x27;);            window.editor = monaco.editor.create(document.getElementById(&#x27;editor&#x27;), &#123;                value: saved || DEFAULT_CODE,                language: &#x27;c&#x27;,                theme: &#x27;vs-light&#x27;,                automaticLayout: true,                minimap: &#123; enabled: false &#125;,                fontSize: 13,                scrollBeyondLastLine: false            &#125;);            // 快捷键：Ctrl/Cmd+S 保存            window.addEventListener(&#x27;keydown&#x27;, (e) =&gt; &#123;                if ((e.ctrlKey || e.metaKey) &amp;&amp; e.key.toLowerCase() === &#x27;s&#x27;) &#123;                    e.preventDefault(); saveCode();                &#125;            &#125;);        &#125;);    // ----------------- 功能函数 -----------------        // 保存当前编辑器内容到 localStorage，并提示状态        function saveCode() &#123;            if (!window.editor) return;            localStorage.setItem(&#x27;deepseek_saved_c&#x27;, window.editor.getValue());            saveStatus.textContent = &#x27;已保存&#x27;;            saveStatus.style.color = &#x27;#22c55e&#x27;;            setTimeout(() =&gt; &#123; saveStatus.style.color = &#x27;&#x27;; &#125;, 1200);        &#125;        // 将编辑器内容重置为默认代码（不会清除 localStorage）        function resetCode() &#123;            if (!window.editor) return;            if (!confirm(&#x27;确定重置代码？未保存的更改将丢失。&#x27;)) return;            window.editor.setValue(DEFAULT_CODE);        &#125;        // runCode: 优先尝试 Wandbox（真实编译器），若失败尝试加载本地 WASM 运行器（若你已部署）        // 最后回退到原有的模拟（simulateRun）。Wandbox API: https://wandbox.org        async function tryWandboxCompile(code, stdin) &#123;            const wandboxUrl = &#x27;https://wandbox.org/api/compile.json&#x27;;            const payload = &#123;                code,                compiler: &#x27;gcc-head&#x27;, // 可改为 clang-head 或其他                stdin: stdin || undefined,                save: false            &#125;;            const fetchWithTimeout = (url, opts, timeout = 8000) =&gt; &#123;                return Promise.race([                    fetch(url, opts),                    new Promise((_, rej) =&gt; setTimeout(() =&gt; rej(new Error(&#x27;timeout&#x27;)), timeout))                ]);            &#125;;            const resp = await fetchWithTimeout(wandboxUrl, &#123;                method: &#x27;POST&#x27;,                headers: &#123; &#x27;Content-Type&#x27;: &#x27;application/json&#x27; &#125;,                body: JSON.stringify(payload)            &#125;, 10000);            if (!resp.ok) throw new Error(&#x27;Wandbox 返回 &#x27; + resp.status);            const json = await resp.json();            // Wandbox 返回字段不总是固定，常见有: program_output / program_error / compiler_output            const out = (json.program_output || json.program_stdout || json.program || json.result || &#x27;&#x27;) || &#x27;&#x27;;            const err = (json.program_error || json.program_stderr || json.compiler_error || json.compiler_output || &#x27;&#x27;) || &#x27;&#x27;;            const status = json.status ?? 0;            return &#123; stdout: out, stderr: err, exitCode: status &#125;;        &#125;        // 动态加载前端 WASM 运行器（如果你在 repo 下放置了 /wasm/tcc_runner.js）        function loadScript(url) &#123;            return new Promise((resolve, reject) =&gt; &#123;                const s = document.createElement(&#x27;script&#x27;);                s.src = url;                s.onload = () =&gt; resolve();                s.onerror = (e) =&gt; reject(new Error(&#x27;加载失败: &#x27; + url));                document.head.appendChild(s);            &#125;);        &#125;        // 如果用户在仓库中放置了一个基于 tcc/clang 的 wasm 运行器并暴露 window.wasmRun(code, stdin)        async function tryWasmRun(code, stdin) &#123;            // 常用路径：/wasm/tcc_runner.js（你需要把相应的脚本和 wasm 放到该路径）            if (typeof window.wasmRun === &#x27;function&#x27;) &#123;                return await window.wasmRun(code, stdin);            &#125;            // 尝试动态加载预期的脚本（如果你已上传）            try &#123;                await loadScript(&#x27;/wasm/tcc_runner.js&#x27;);                if (typeof window.wasmRun === &#x27;function&#x27;) &#123;                    return await window.wasmRun(code, stdin);                &#125; else &#123;                    throw new Error(&#x27;wasmRun 未在脚本中暴露&#x27;);                &#125;            &#125; catch (e) &#123;                throw e;            &#125;        &#125;        async function runCode() &#123;            if (!window.editor) return;            stdoutEl.textContent = &#x27;运行中（尝试 Wandbox 公共 API）...&#x27;;            const code = window.editor.getValue();            const stdin = (stdinEl.value || &#x27;&#x27;).trim();            // 1) 先尝试 Wandbox（真实编译器）            try &#123;                const res = await tryWandboxCompile(code, stdin);                let out = &#x27;&#x27;;                if (res.stdout) out += res.stdout;                if (res.stderr) out += &#x27;\n[stderr]\n&#x27; + res.stderr;                out += `\n[exit code] $&#123;res.exitCode ?? 0&#125;`;                stdoutEl.textContent = out.trim();                return;            &#125; catch (e) &#123;                console.warn(&#x27;Wandbox 调用失败：&#x27;, e);                stdoutEl.textContent = &#x27;Wandbox 不可用或被阻止，尝试浏览器端 WASM（若已部署）...&#x27;;            &#125;            // 2) 尝试浏览器端 WASM 运行器（如果你在仓库放置了对应文件）            try &#123;                const wasmRes = await tryWasmRun(code, stdin);                // 约定 wasmRun 返回 &#123; stdout, stderr, exitCode &#125;                let out = &#x27;&#x27;;                if (wasmRes.stdout) out += wasmRes.stdout;                if (wasmRes.stderr) out += &#x27;\n[stderr]\n&#x27; + wasmRes.stderr;                out += `\n[exit code] $&#123;wasmRes.exitCode ?? 0&#125;`;                stdoutEl.textContent = out.trim();                return;            &#125; catch (e) &#123;                console.warn(&#x27;WASM 运行器不可用：&#x27;, e);                stdoutEl.textContent = &#x27;本地 WASM 运行器不可用，回退到本地模拟。&#x27;;            &#125;            // 3) 最后回退到简单模拟            simulateRun(code, stdin);        &#125;        // 本地回退：简单模拟 scanf/printf 行为（仅作演示）        function simulateRun(code, input) &#123;            stdoutEl.textContent = &#x27;本地模拟运行...&#x27;;            setTimeout(() =&gt; &#123;                if (/scanf\s*\(/.test(code) &amp;&amp; (!input || input.trim() === &#x27;&#x27;)) &#123;                    stdoutEl.textContent = &#x27;错误：程序需要输入但未提供 stdin。&#x27;;                    return;                &#125;                if (!input || input.trim() === &#x27;&#x27;) &#123;                    stdoutEl.textContent = &#x27;提示：请在左侧输入两个整数，例如：10 20&#x27;;                    return;                &#125;                const parts = input.split(/\s+/).map(s =&gt; parseInt(s, 10));                if (parts.length &gt;= 2 &amp;&amp; parts.every(n =&gt; Number.isFinite(n))) &#123;                    const [a, b] = parts;                    stdoutEl.textContent = `两数之和为：$&#123;a + b&#125;`;                &#125; else &#123;                    stdoutEl.textContent = &#x27;错误：输入格式不正确，请输入两个整数（例如：10 20）&#x27;;                &#125;            &#125;, 300);        &#125;        // 切换主题（轻/暗），默认暗黑        let isDark = true;        function toggleTheme() &#123;            isDark = !isDark;            try &#123; monaco.editor.setTheme(isDark ? &#x27;vs-dark&#x27; : &#x27;vs-light&#x27;); &#125; catch (e) &#123;&#125;            themeBtn.innerHTML = isDark ? &#x27;&lt;i class=&quot;fas fa-sun&quot;&gt;&lt;/i&gt; 明亮&#x27; : &#x27;&lt;i class=&quot;fas fa-moon&quot;&gt;&lt;/i&gt; 暗色&#x27;;        &#125;        // ----------------- 事件绑定 -----------------        runBtn.addEventListener(&#x27;click&#x27;, runCode);        saveBtn.addEventListener(&#x27;click&#x27;, saveCode);        resetBtn.addEventListener(&#x27;click&#x27;, resetCode);        themeBtn.addEventListener(&#x27;click&#x27;, toggleTheme);        // 侧栏折叠/展开逻辑：使用 class &#x27;collapsed&#x27;，便于动画与恢复        const sidebar = document.getElementById(&#x27;sidebar&#x27;);        const sidebarToggle = document.getElementById(&#x27;sidebarToggle&#x27;);        closeSb.addEventListener(&#x27;click&#x27;, () =&gt; &#123;            sidebar.classList.add(&#x27;collapsed&#x27;);            sidebarToggle.style.display = &#x27;flex&#x27;;        &#125;);        sidebarToggle.addEventListener(&#x27;click&#x27;, () =&gt; &#123;            sidebar.classList.remove(&#x27;collapsed&#x27;);            sidebarToggle.style.display = &#x27;none&#x27;;        &#125;);        // 全屏按钮        const fsBtn = document.getElementById(&#x27;fsBtn&#x27;);        fsBtn.addEventListener(&#x27;click&#x27;, () =&gt; &#123;            const el = document.querySelector(&#x27;.frame&#x27;);            if (!document.fullscreenElement) &#123;                el.requestFullscreen?.();            &#125; else &#123;                document.exitFullscreen?.();            &#125;        &#125;);        // 页面卸载时自动保存（可选）        window.addEventListener(&#x27;beforeunload&#x27;, () =&gt; &#123;            if (window.editor) localStorage.setItem(&#x27;deepseek_saved_c&#x27;, window.editor.getValue());        &#125;);        // 页面加载时：设置编辑器为暗黑主题（若 monaco 已加载则在创建时设置，若晚加载则尝试设置）        window.addEventListener(&#x27;load&#x27;, () =&gt; &#123;            try &#123; if (window.monaco) monaco.editor.setTheme(&#x27;vs-dark&#x27;); &#125; catch (e) &#123;&#125;            // 初始时隐藏侧栏恢复按钮（默认展开）            document.getElementById(&#x27;sidebarToggle&#x27;).style.display = &#x27;none&#x27;;        &#125;);    &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+
+现在的行为runCode() 会：    - 尝试调用 Wandbox 公共 API，带超时与错误处理；    - 若 Wandbox 不可用，则尝试动态加载并调用位于 &#x2F;wasm&#x2F;tcc_runner.js 的本地 WASM 运行器（调用约定：window.wasmRun(code, stdin) -&gt; {stdout, stderr, exitCode}）；    - 两者都不可用则回退到原先的 simulateRun（两数求和演示）。
+继续实现
+]]></content>
+      <tags>
+        <tag>项目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2025/11/03/%E9%A1%B9%E7%9B%AE/Compiler/%E7%AC%AC%E4%BA%8C%E7%89%88/</url>
+    <content><![CDATA[
+
+
+    
+    
+    C 语言在线编译器（简洁版）
+    
+    
+    
+
+    
+        /* 暗黑优先 - 极简 mac 风格 */
+        :root{
+            --bg: #0b0c0d;           /* 页面背景（near black） */
+            --panel: #0f1113;        /* 卡片 / 主容器背景 */
+            --muted: #9aa4ad;        /* 次要文字 */
+            --accent: #48a0ff;       /* 高亮色（适度） */
+            --glass: rgba(255,255,255,0.02);
+            --radius: 10px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.6);
+        }
+
+        *{box-sizing:border-box;margin:0;padding:0}
+        html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial}
+        body{background:var(--bg);color:#e6eef6;}
+
+        /* 应用容器：占满整个视口，类似本地 app 的全屏编辑器 */
+        .app{height:100vh;width:100vw;display:flex;flex-direction:column;align-items:stretch;justify-content:stretch}
+        .frame{max-width:1400px;margin:12px auto;flex:1;background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+
+        header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+        header .title{display:flex;align-items:center;gap:10px;font-weight:600}
+        header .title i{color:var(--accent);font-size:18px}
+        header .meta{color:var(--muted);font-size:13px}
+
+        /* 主区：编辑器 + 侧栏 */
+        .main{flex:1;display:flex;min-height:0}
+
+        /* 编辑区 */
+        .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.03)}
+        .editor-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
+        .editor-head h2{font-size:14px;color:#dbe9ff}
+        #editor{flex:1;min-height:200px}
+
+        /* 工具栏 */
+        .toolbar{display:flex;gap:8px;padding:10px 14px;align-items:center}
+        .btn{border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;background:transparent;color:#e6eef6}
+        .btn.primary{background:var(--accent);color:#071022}
+        .btn.ghost{border:1px solid rgba(255,255,255,0.04)}
+
+        /* 侧栏 */
+        .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)}
+        .sidebar.collapsed{transform:translateX(100%);transition:transform .28s ease}
+        .sb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+        .sb-section{padding:12px 14px;flex:1;overflow:auto}
+        textarea,input[type=text]{width:100%;padding:10px;border:1px solid rgba(255,255,255,0.03);border-radius:8px;background:transparent;color:#e6eef6;font-family:monospace}
+        .output{background:var(--glass);color:#dfefff;padding:12px;border-radius:8px;white-space:pre-wrap;height:100%;overflow:auto;font-family:monospace}
+
+        /* 悬浮的侧边栏切换按钮（当侧栏折叠时可恢复） */
+        #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer}
+
+        /* 小屏适配 */
+        @media (max-width:900px){
+            .main{flex-direction:column}
+            .sidebar{width:100%;height:34%}
+            .editor-wrap{border-right:0}
+        }
+    
+
+
+    
+        
+            C 语言在线编译器
+            安全提醒：此页面仅做演示，本地运行即可
+        
+
+        
+            
+                
+                     main.c
+                    已保存
+                
+
+                
+
+                
+                     运行
+                     保存
+                     重置
+                    
+                    
+                     主题
+                
+            
+
+            
+                 运行结果折叠
+                
+                    标准输入 (stdin)
+                    10 20
+                    
+                    输出 (stdout)
+                    程序输出将显示在这里...
+                
+            
+        
+    
+
+    
+    
+
+    
+        /**********************************************************************
+         * 简洁版脚本：功能
+         * - 初始化 Monaco 编辑器
+         * - 本地保存/加载代码（localStorage）
+         * - 简单运行（模拟 scanf/printf）
+         * - 主题切换与 UI 状态更新
+         * 所有注释为中文，便于维护。
+         **********************************************************************/
+
+        // 默认代码（保持与 UI 功能一致的示例）
+        const DEFAULT_CODE = `#include 
+
+int main() {
+    int a, b;
+    // 读取两个整数并输出和
+    if (scanf("%d %d", &a, &b) == 2) {
+        printf("两数之和为：%d\n", a + b);
+    } else {
+        printf("输入格式错误\n");
+    }
+    return 0;
+}`;
+
+        // DOM 引用
+        const runBtn = document.getElementById('runBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const themeBtn = document.getElementById('themeBtn');
+        const stdinEl = document.getElementById('stdin');
+        const stdoutEl = document.getElementById('stdout');
+        const saveStatus = document.getElementById('saveStatus');
+        const closeSb = document.getElementById('closeSb');
+
+        // Monaco 编辑器需要异步加载
+        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs' } });
+        require(['vs/editor/editor.main'], function () {
+            // 尝试从 localStorage 加载之前保存的代码
+            const saved = localStorage.getItem('deepseek_saved_c');
+            window.editor = monaco.editor.create(document.getElementById('editor'), {
+                value: saved || DEFAULT_CODE,
+                language: 'c',
+                theme: 'vs-light',
+                automaticLayout: true,
+                minimap: { enabled: false },
+                fontSize: 13,
+                scrollBeyondLastLine: false
+            });
+
+            // 快捷键：Ctrl/Cmd+S 保存
+            window.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+                    e.preventDefault(); saveCode();
+                }
+            });
+        });
+
+    // ----------------- 功能函数 -----------------
+        // 保存当前编辑器内容到 localStorage，并提示状态
+        function saveCode() {
+            if (!window.editor) return;
+            localStorage.setItem('deepseek_saved_c', window.editor.getValue());
+            saveStatus.textContent = '已保存';
+            saveStatus.style.color = '#22c55e';
+            setTimeout(() => { saveStatus.style.color = ''; }, 1200);
+        }
+
+        // 将编辑器内容重置为默认代码（不会清除 localStorage）
+        function resetCode() {
+            if (!window.editor) return;
+            if (!confirm('确定重置代码？未保存的更改将丢失。')) return;
+            window.editor.setValue(DEFAULT_CODE);
+        }
+
+        // runCode: 优先调用后端编译器 API；若网络或后端不可用则回退到本地模拟
+        // 后端 API 约定（示例）：
+        // POST /api/compile  body: { language: 'c', code: string, stdin: string }
+        // 返回: { stdout: string, stderr: string, exitCode: number }
+        async function runCode() {
+            if (!window.editor) return;
+            stdoutEl.textContent = '运行中（尝试后端编译）...';
+
+            const code = window.editor.getValue();
+            const stdin = (stdinEl.value || '').trim();
+
+            // 如果后端地址不可用或超时，回退到本地模拟
+            const backendUrl = '/api/compile'; // 请在后端服务中实现此路由
+
+            // 超时辅助函数
+            const fetchWithTimeout = (url, opts, timeout = 10000) => {
+                return Promise.race([
+                    fetch(url, opts),
+                    new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), timeout))
+                ]);
+            };
+
+            try {
+                const resp = await fetchWithTimeout(backendUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ language: 'c', code, stdin })
+                }, 10000);
+
+                if (!resp.ok) throw new Error('后端返回错误: ' + resp.status);
+                const data = await resp.json();
+
+                // 根据后端返回渲染输出（约定字段：stdout/stderr/exitCode）
+                let out = '';
+                if (data.stdout) out += data.stdout;
+                if (data.stderr) out += '\n[stderr]\n' + data.stderr;
+                out += `\n[exit code] ${data.exitCode ?? 0}`;
+                stdoutEl.textContent = out.trim();
+                return;
+            } catch (e) {
+                // 后端不可用或超时，回退到本地模拟
+                console.warn('后端编译失败，回退到本地模拟：', e);
+                simulateRun(code, stdin);
+            }
+        }
+
+        // 本地回退：简单模拟 scanf/printf 行为（仅作演示）
+        function simulateRun(code, input) {
+            stdoutEl.textContent = '本地模拟运行...';
+            setTimeout(() => {
+                if (/scanf\s*\(/.test(code) && (!input || input.trim() === '')) {
+                    stdoutEl.textContent = '错误：程序需要输入但未提供 stdin。';
+                    return;
+                }
+
+                if (!input || input.trim() === '') {
+                    stdoutEl.textContent = '提示：请在左侧输入两个整数，例如：10 20';
+                    return;
+                }
+
+                const parts = input.split(/\s+/).map(s => parseInt(s, 10));
+                if (parts.length >= 2 && parts.every(n => Number.isFinite(n))) {
+                    const [a, b] = parts;
+                    stdoutEl.textContent = `两数之和为：${a + b}`;
+                } else {
+                    stdoutEl.textContent = '错误：输入格式不正确，请输入两个整数（例如：10 20）';
+                }
+            }, 300);
+        }
+
+        // 切换主题（轻/暗），默认暗黑
+        let isDark = true;
+        function toggleTheme() {
+            isDark = !isDark;
+            try { monaco.editor.setTheme(isDark ? 'vs-dark' : 'vs-light'); } catch (e) {}
+            themeBtn.innerHTML = isDark ? ' 明亮' : ' 暗色';
+        }
+
+        // ----------------- 事件绑定 -----------------
+        runBtn.addEventListener('click', runCode);
+        saveBtn.addEventListener('click', saveCode);
+        resetBtn.addEventListener('click', resetCode);
+        themeBtn.addEventListener('click', toggleTheme);
+
+        // 侧栏折叠/展开逻辑：使用 class 'collapsed'，便于动画与恢复
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        closeSb.addEventListener('click', () => {
+            sidebar.classList.add('collapsed');
+            sidebarToggle.style.display = 'flex';
+        });
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.remove('collapsed');
+            sidebarToggle.style.display = 'none';
+        });
+
+        // 全屏按钮
+        const fsBtn = document.getElementById('fsBtn');
+        fsBtn.addEventListener('click', () => {
+            const el = document.querySelector('.frame');
+            if (!document.fullscreenElement) {
+                el.requestFullscreen?.();
+            } else {
+                document.exitFullscreen?.();
+            }
+        });
+
+        // 页面卸载时自动保存（可选）
+        window.addEventListener('beforeunload', () => {
+            if (window.editor) localStorage.setItem('deepseek_saved_c', window.editor.getValue());
+        });
+
+        // 页面加载时：设置编辑器为暗黑主题（若 monaco 已加载则在创建时设置，若晚加载则尝试设置）
+        window.addEventListener('load', () => {
+            try { if (window.monaco) monaco.editor.setTheme('vs-dark'); } catch (e) {}
+            // 初始时隐藏侧栏恢复按钮（默认展开）
+            document.getElementById('sidebarToggle').style.display = 'none';
+        });
+    
+
+]]></content>
+  </entry>
+</search>

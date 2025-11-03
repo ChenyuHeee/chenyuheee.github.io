@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>C 语言在线编译器（简洁版）</title>
+    <!-- 字体图标和 Monaco 加载器 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js"></script>
+
+    <style>
+        /* 暗黑优先 - 极简 mac 风格 */
+        :root{
+            --bg: #0b0c0d;           /* 页面背景（near black） */
+            --panel: #0f1113;        /* 卡片 / 主容器背景 */
+            --muted: #9aa4ad;        /* 次要文字 */
+            --accent: #48a0ff;       /* 高亮色（适度） */
+            --glass: rgba(255,255,255,0.02);
+            --radius: 10px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.6);
+        }
+
+        *{box-sizing:border-box;margin:0;padding:0}
+        html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial}
+        body{background:var(--bg);color:#e6eef6;}
+
+        /* 应用容器：占满整个视口，类似本地 app 的全屏编辑器 */
+        .app{height:100vh;width:100vw;display:flex;flex-direction:column;align-items:stretch;justify-content:stretch}
+        .frame{max-width:1400px;margin:12px auto;flex:1;background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+
+        header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+        header .title{display:flex;align-items:center;gap:10px;font-weight:600}
+        header .title i{color:var(--accent);font-size:18px}
+        header .meta{color:var(--muted);font-size:13px}
+
+        /* 主区：编辑器 + 侧栏 */
+        .main{flex:1;display:flex;min-height:0}
+
+        /* 编辑区 */
+        .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.03)}
+        .editor-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
+        .editor-head h2{font-size:14px;color:#dbe9ff}
+        #editor{flex:1;min-height:200px}
+
+        /* 工具栏 */
+        .toolbar{display:flex;gap:8px;padding:10px 14px;align-items:center}
+        .btn{border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;background:transparent;color:#e6eef6}
+        .btn.primary{background:var(--accent);color:#071022}
+        .btn.ghost{border:1px solid rgba(255,255,255,0.04)}
+
+        /* 侧栏 */
+        .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)}
+        .sidebar.collapsed{transform:translateX(100%);transition:transform .28s ease}
+        .sb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+        .sb-section{padding:12px 14px;flex:1;overflow:auto}
+        textarea,input[type=text]{width:100%;padding:10px;border:1px solid rgba(255,255,255,0.03);border-radius:8px;background:transparent;color:#e6eef6;font-family:monospace}
+        .output{background:var(--glass);color:#dfefff;padding:12px;border-radius:8px;white-space:pre-wrap;height:100%;overflow:auto;font-family:monospace}
+
+        /* 悬浮的侧边栏切换按钮（当侧栏折叠时可恢复） */
+        #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer}
+
+        /* 小屏适配 */
+        @media (max-width:900px){
+            .main{flex-direction:column}
+            .sidebar{width:100%;height:34%}
+            .editor-wrap{border-right:0}
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <div class="title"><i class="fas fa-code"></i><div>C 语言在线编译器</div></div>
+            <div class="meta">安全提醒：此页面仅做演示，本地运行即可</div>
+        </header>
+
+        <div class="main">
+            <div class="editor-wrap">
+                <div class="editor-head">
+                    <h2><i class="fas fa-file-code"></i> main.c</h2>
+                    <div class="status" id="saveStatus">已保存</div>
+                </div>
+
+                <div id="editor"></div>
+
+                <div class="toolbar">
+                    <button class="btn primary" id="runBtn"><i class="fas fa-play"></i> 运行</button>
+                    <button class="btn ghost" id="saveBtn"><i class="fas fa-save"></i> 保存</button>
+                    <button class="btn ghost" id="resetBtn"><i class="fas fa-undo"></i> 重置</button>
+                    <button class="btn ghost" id="fsBtn" title="全屏"><i class="fas fa-expand"></i></button>
+                    <label style="display:inline-flex;align-items:center;gap:8px;color:var(--muted)">
+                        <input type="checkbox" id="useWasm" style="width:16px;height:16px"> 优先使用 WASM
+                    </label>
+                    <div style="flex:1"></div>
+                    <button class="btn ghost" id="themeBtn"><i class="fas fa-sun"></i> 主题</button>
+                </div>
+            </div>
+
+            <aside class="sidebar" id="sidebar">
+                <div class="sb-head"><div><i class="fas fa-terminal"></i> 运行结果</div><button id="closeSb" class="btn ghost">折叠</button></div>
+                <div class="sb-section">
+                    <label>标准输入 (stdin)</label>
+                    <textarea id="stdin" rows="3" placeholder="例如：10 20">10 20</textarea>
+                    <div style="height:12px"></div>
+                    <label>输出 (stdout)</label>
+                    <div class="output" id="stdout">程序输出将显示在这里...</div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- 折叠后恢复侧栏的悬浮按钮 -->
+    <div id="sidebarToggle" title="打开侧栏"><i class="fas fa-chevron-left"></i></div>
+
+    <script>
+        /**********************************************************************
+         * 简洁版脚本：功能
+         * - 初始化 Monaco 编辑器
+         * - 本地保存/加载代码（localStorage）
+         * - 简单运行（模拟 scanf/printf）
+         * - 主题切换与 UI 状态更新
+         * 所有注释为中文，便于维护。
+         **********************************************************************/
+
+        // 默认代码（保持与 UI 功能一致的示例）
+        const DEFAULT_CODE = `#include <stdio.h>
+
+int main() {
+    int a, b;
+    // 读取两个整数并输出和
+    if (scanf("%d %d", &a, &b) == 2) {
+        printf("两数之和为：%d\n", a + b);
+    } else {
+        printf("输入格式错误\n");
+    }
+    return 0;
+}`;
+
+        // DOM 引用
+        const runBtn = document.getElementById('runBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const themeBtn = document.getElementById('themeBtn');
+        const stdinEl = document.getElementById('stdin');
+        const stdoutEl = document.getElementById('stdout');
+        const saveStatus = document.getElementById('saveStatus');
+        const closeSb = document.getElementById('closeSb');
+
+        // Monaco 编辑器需要异步加载
+        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs' } });
+        require(['vs/editor/editor.main'], function () {
+            // 尝试从 localStorage 加载之前保存的代码
+            const saved = localStorage.getItem('deepseek_saved_c');
+            window.editor = monaco.editor.create(document.getElementById('editor'), {
+                value: saved || DEFAULT_CODE,
+                language: 'c',
+                theme: 'vs-light',
+                automaticLayout: true,
+                minimap: { enabled: false },
+                fontSize: 13,
+                scrollBeyondLastLine: false
+            });
+
+            // 快捷键：Ctrl/Cmd+S 保存
+            window.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+                    e.preventDefault(); saveCode();
+                }
+            });
+        });
+
+    // ----------------- 功能函数 -----------------
+        // 保存当前编辑器内容到 localStorage，并提示状态
+        function saveCode() {
+            if (!window.editor) return;
+            localStorage.setItem('deepseek_saved_c', window.editor.getValue());
+            saveStatus.textContent = '已保存';
+            saveStatus.style.color = '#22c55e';
+            setTimeout(() => { saveStatus.style.color = ''; }, 1200);
+        }
+
+        // 将编辑器内容重置为默认代码（不会清除 localStorage）
+        function resetCode() {
+            if (!window.editor) return;
+            if (!confirm('确定重置代码？未保存的更改将丢失。')) return;
+            window.editor.setValue(DEFAULT_CODE);
+        }
+
+        // runCode: 优先尝试 Wandbox（真实编译器），若失败尝试加载本地 WASM 运行器（若你已部署）
+        // 最后回退到原有的模拟（simulateRun）。Wandbox API: https://wandbox.org
+        async function tryWandboxCompile(code, stdin) {
+            const wandboxUrl = 'https://wandbox.org/api/compile.json';
+            const payload = {
+                code,
+                compiler: 'gcc-head', // 可改为 clang-head 或其他
+                stdin: stdin || undefined,
+                save: false
+            };
+
+            const fetchWithTimeout = (url, opts, timeout = 8000) => {
+                return Promise.race([
+                    fetch(url, opts),
+                    new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), timeout))
+                ]);
+            };
+
+            const resp = await fetchWithTimeout(wandboxUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }, 10000);
+
+            if (!resp.ok) throw new Error('Wandbox 返回 ' + resp.status);
+            const json = await resp.json();
+
+            // Wandbox 返回字段不总是固定，常见有: program_output / program_error / compiler_output
+            const out = (json.program_output || json.program_stdout || json.program || json.result || '') || '';
+            const err = (json.program_error || json.program_stderr || json.compiler_error || json.compiler_output || '') || '';
+            const status = json.status ?? 0;
+            return { stdout: out, stderr: err, exitCode: status };
+        }
+
+        // 动态加载前端 WASM 运行器（如果你在 repo 下放置了 /wasm/tcc_runner.js）
+        function loadScript(url) {
+            return new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = url;
+                s.onload = () => resolve();
+                s.onerror = (e) => reject(new Error('加载失败: ' + url));
+                document.head.appendChild(s);
+            });
+        }
+
+        // 如果用户在仓库中放置了一个基于 tcc/clang 的 wasm 运行器并暴露 window.wasmRun(code, stdin)
+        async function tryWasmRun(code, stdin) {
+            // 常用路径：/wasm/tcc_runner.js（你需要把相应的脚本和 wasm 放到该路径）
+            if (typeof window.wasmRun === 'function') {
+                return await window.wasmRun(code, stdin);
+            }
+
+            // 尝试动态加载预期的脚本（如果你已上传）
+            try {
+                await loadScript('/wasm/tcc_runner.js');
+                if (typeof window.wasmRun === 'function') {
+                    return await window.wasmRun(code, stdin);
+                } else {
+                    throw new Error('wasmRun 未在脚本中暴露');
+                }
+            } catch (e) {
+                throw e;
+            }
+        }
+
+        async function runCode() {
+            if (!window.editor) return;
+            const code = window.editor.getValue();
+            const stdin = (stdinEl.value || '').trim();
+
+            const preferWasm = !!document.getElementById('useWasm') && document.getElementById('useWasm').checked;
+            if (preferWasm) stdoutEl.textContent = '运行中（优先尝试浏览器端 WASM）...';
+            else stdoutEl.textContent = '运行中（优先尝试 Wandbox）...';
+
+            // 两种优先级：WASM 优先或 Wandbox 优先
+            if (preferWasm) {
+                // 1) 尝试 WASM
+                try {
+                    const wasmRes = await tryWasmRun(code, stdin);
+                    let out = '';
+                    if (wasmRes.stdout) out += wasmRes.stdout;
+                    if (wasmRes.stderr) out += '\n[stderr]\n' + wasmRes.stderr;
+                    out += `\n[exit code] ${wasmRes.exitCode ?? 0}`;
+                    stdoutEl.textContent = out.trim();
+                    return;
+                } catch (e) {
+                    console.warn('WASM 运行器不可用：', e);
+                    stdoutEl.textContent = 'WASM 不可用，尝试 Wandbox（若可用）...';
+                }
+
+                // 2) 尝试 Wandbox
+                try {
+                    const res = await tryWandboxCompile(code, stdin);
+                    let out = '';
+                    if (res.stdout) out += res.stdout;
+                    if (res.stderr) out += '\n[stderr]\n' + res.stderr;
+                    out += `\n[exit code] ${res.exitCode ?? 0}`;
+                    stdoutEl.textContent = out.trim();
+                    return;
+                } catch (e) {
+                    console.warn('Wandbox 调用失败：', e);
+                    stdoutEl.textContent = 'Wandbox 不可用或被阻止，回退到本地模拟。';
+                }
+            } else {
+                // Wandbox 优先
+                try {
+                    const res = await tryWandboxCompile(code, stdin);
+                    let out = '';
+                    if (res.stdout) out += res.stdout;
+                    if (res.stderr) out += '\n[stderr]\n' + res.stderr;
+                    out += `\n[exit code] ${res.exitCode ?? 0}`;
+                    stdoutEl.textContent = out.trim();
+                    return;
+                } catch (e) {
+                    console.warn('Wandbox 调用失败：', e);
+                    stdoutEl.textContent = 'Wandbox 不可用或被阻止，尝试 WASM（若已部署）...';
+                }
+
+                try {
+                    const wasmRes = await tryWasmRun(code, stdin);
+                    let out = '';
+                    if (wasmRes.stdout) out += wasmRes.stdout;
+                    if (wasmRes.stderr) out += '\n[stderr]\n' + wasmRes.stderr;
+                    out += `\n[exit code] ${wasmRes.exitCode ?? 0}`;
+                    stdoutEl.textContent = out.trim();
+                    return;
+                } catch (e) {
+                    console.warn('WASM 运行器不可用：', e);
+                    stdoutEl.textContent = '本地 WASM 运行器不可用，回退到本地模拟。';
+                }
+            }
+
+            // 最后回退到模拟
+            simulateRun(code, stdin);
+        }
+
+        // 本地回退：简单模拟 scanf/printf 行为（仅作演示）
+        function simulateRun(code, input) {
+            stdoutEl.textContent = '本地模拟运行...';
+            setTimeout(() => {
+                if (/scanf\s*\(/.test(code) && (!input || input.trim() === '')) {
+                    stdoutEl.textContent = '错误：程序需要输入但未提供 stdin。';
+                    return;
+                }
+
+                if (!input || input.trim() === '') {
+                    stdoutEl.textContent = '提示：请在左侧输入两个整数，例如：10 20';
+                    return;
+                }
+
+                const parts = input.split(/\s+/).map(s => parseInt(s, 10));
+                if (parts.length >= 2 && parts.every(n => Number.isFinite(n))) {
+                    const [a, b] = parts;
+                    stdoutEl.textContent = `两数之和为：${a + b}`;
+                } else {
+                    stdoutEl.textContent = '错误：输入格式不正确，请输入两个整数（例如：10 20）';
+                }
+            }, 300);
+        }
+
+        // 切换主题（轻/暗），默认暗黑
+        let isDark = true;
+        function toggleTheme() {
+            isDark = !isDark;
+            try { monaco.editor.setTheme(isDark ? 'vs-dark' : 'vs-light'); } catch (e) {}
+            themeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i> 明亮' : '<i class="fas fa-moon"></i> 暗色';
+        }
+
+        // ----------------- 事件绑定 -----------------
+        runBtn.addEventListener('click', runCode);
+        saveBtn.addEventListener('click', saveCode);
+        resetBtn.addEventListener('click', resetCode);
+        themeBtn.addEventListener('click', toggleTheme);
+
+        // 侧栏折叠/展开逻辑：使用 class 'collapsed'，便于动画与恢复
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        closeSb.addEventListener('click', () => {
+            sidebar.classList.add('collapsed');
+            sidebarToggle.style.display = 'flex';
+        });
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.remove('collapsed');
+            sidebarToggle.style.display = 'none';
+        });
+
+        // 全屏按钮
+        const fsBtn = document.getElementById('fsBtn');
+        fsBtn.addEventListener('click', () => {
+            const el = document.querySelector('.frame');
+            if (!document.fullscreenElement) {
+                el.requestFullscreen?.();
+            } else {
+                document.exitFullscreen?.();
+            }
+        });
+
+        // 页面卸载时自动保存（可选）
+        window.addEventListener('beforeunload', () => {
+            if (window.editor) localStorage.setItem('deepseek_saved_c', window.editor.getValue());
+        });
+
+        // 页面加载时：设置编辑器为暗黑主题（若 monaco 已加载则在创建时设置，若晚加载则尝试设置）
+        window.addEventListener('load', () => {
+            try { if (window.monaco) monaco.editor.setTheme('vs-dark'); } catch (e) {}
+            // 初始时隐藏侧栏恢复按钮（默认展开）
+            document.getElementById('sidebarToggle').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
