@@ -179,7 +179,7 @@ Serverless 容器&#x2F;函数（AWS Lambda（容器）、Google Cloud Run）
 
 11.3 21:40
 
-出现bug:侧边栏收起后再弹出被遮挡；
+出现bug:侧边栏收起后再弹出被遮挡；（令人头大的css，一直在和sidebar斗智斗勇）
 以更为简单的输出”By ZJU C. He”作为样例代码（因为不需要编译调试了）；
 扩展文件类型；
 主题持久化;

@@ -1,3 +1,4 @@
+<!--Version:1.0.2-->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -43,8 +44,8 @@
         header .title i{color:var(--accent);font-size:18px}
         header .meta{color:var(--muted);font-size:13px}
 
-        /* 主区：编辑器 + 侧栏 */
-        .main{flex:1;display:flex;min-height:0}
+    /* 主区：编辑器 + 侧栏 */
+    .main{flex:1;display:flex;min-height:0;position:relative}
 
         /* 编辑区 */
     .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(0,0,0,0.06);transition:background-color .4s ease,border-color .4s ease;z-index:5}
@@ -60,7 +61,8 @@
     .btn.ghost{border:1px solid rgba(0,0,0,0.06)}
 
     /* 侧栏 */
-    .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);transition:width .28s ease,opacity .28s ease,padding .28s ease;position:relative;z-index:60}
+    /* 侧栏：使用绝对定位以覆盖编辑区，避免被 Monaco canvas 遮挡 */
+    .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);transition:width .28s ease,opacity .28s ease,padding .28s ease;position:absolute;right:0;top:0;bottom:0;z-index:1000}
     /* 折叠侧栏：设置宽度为0并隐藏内边距，编辑器会自动占满剩余空间 */
     .sidebar.collapsed{width:0;padding:0;opacity:0;pointer-events:none}
         .sb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
@@ -69,7 +71,7 @@
         .output{background:var(--glass);color:#dfefff;padding:12px;border-radius:8px;white-space:pre-wrap;height:100%;overflow:auto;font-family:monospace}
 
     /* 悬浮的侧边栏切换按钮（当侧栏折叠时可恢复） */
-    #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer;transition:opacity .2s;z-index:80}
+    #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer;transition:opacity .2s;z-index:2000}
 
         /* 小屏适配 */
         @media (max-width:900px){
@@ -87,7 +89,7 @@
     <div class="app">
         <header>
             <div class="title"><i class="fas fa-code"></i><div>Online C Compiler</div></div>
-            <div class="meta">By C. He from ZJU</div>
+            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.0.2</span></div>
         </header>
 
         <div class="main">
