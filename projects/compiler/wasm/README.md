@@ -75,3 +75,43 @@ emcc wrapper.c -s EXPORTED_FUNCTIONS="['_compile_and_run']" -s EXTRA_EXPORTED_RU
 如果你希望，我可以：
 - 生成一个更详细的 `wrapper.c` 示例（包含如何捕获 stdout/stderr 的思路），
 - 或者尝试寻找一个可直接使用的 prebuilt tcc/clang wasm 的发布链接并把其放到仓库（需你确认许可后我再下载/引用）。
+
+GitHub Actions 自动构建（已添加）
+---------------------------------
+
+已为本仓库添加一个示例 workflow，用于在 push 到 `main` 时自动构建 WASM 并把静态文件部署到 GitHub Pages（或你仓库的 Pages 发布分支）。
+
+- workflow 文件: `.github/workflows/build_and_deploy_wasm.yml`
+- 触发条件: push 到 `main`（当 `public/projects/compiler/wasm/**` 或 workflows 改动时），以及手动触发（workflow_dispatch）。
+- 流程概要:
+  1. Checkout 仓库
+  2. 在 `ubuntu-latest` 上使用 `emscripten/emsdk-action` 安装 emsdk
+  3. 运行 `public/projects/compiler/wasm/build_wasm.sh` 生成 `tcc.js`/`tcc.wasm`
+  4. 使用 `peaceiris/actions-gh-pages` 将 `public` 目录发布到 GitHub Pages
+
+注意事项与调优建议:
+
+- 构建延迟: Emscripten 编译通常需要几十秒到几分钟（取决于源码规模与优化等级）。这是一次性或按你 push 触发的动作；网页用户不会在每次访问时等待 Actions。
+- 缓存建议: 若你频繁修改或需要缩短 CI 时间，可以在 workflow 中增加 `actions/cache` 对 emsdk、ccache 或中间产物进行缓存。
+- 自定义分支/路径: 如果你的主分支不是 `main` 或想在 release/tag 时构建，请修改 workflow 的 `on:` 配置。
+
+本地快速测试构建（在你已安装 emsdk 的机器上）:
+
+```bash
+# (只在你尚未安装 emsdk 时需要)：
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk
+./emsdk install latest
+./emsdk activate latest
+source ./emsdk_env.sh
+
+# 在仓库根目录运行构建脚本：
+chmod +x public/projects/compiler/wasm/build_wasm.sh
+./public/projects/compiler/wasm/build_wasm.sh
+```
+
+我可以继续为你做：
+
+- 把 workflow 调整为只发布 `public/projects/compiler/wasm` 子目录（而非整个 `public`），
+- 或把 workflow 优化加入 `actions/cache`，并演示如何缩短后续 run 时间。
+
