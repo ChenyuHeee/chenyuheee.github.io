@@ -39,17 +39,6 @@ All notable changes to this project will be documented in this file.
 ### Notes
 - 版本号 `index.html` 已更新为 `1.1.4`。
 
-## [1.1.11+0.0.0.1] - 2025-11-04
-### Added
-- 在 `public/projects/compiler/wasm/` 下添加了可构建的 WASM 示例与 loader：
-	- `wrapper.c`：一个最小可编译的 C 示例，导出 `run_code` 与 `free_buffer`，用于演示 Emscripten 构建和 JS 互操作。
-	- `build_wasm.sh`：构建脚本（依赖 emscripten），输出到 `public/projects/compiler/wasm/dist/`。
-	- `tcc_runner.js`：运行时 loader，尝试加载 `dist/tcc_runner.js`（emcc 输出，MODULARIZE=1）并通过 `Module.cwrap` 包装 C API，最终暴露 `window.wasmRun(code, stdin)`。
-	- README：说明如何构建、部署与注意事项。
-
-### Notes
-- 这是一个占位/示例实现：它能帮助在本地或 CI 中构建并测试浏览器加载流程，但并未包含完整的 C 编译器 wasm（tcc/clang），真实编译器需自行编译并替换构建产物。
-- `index.html` 中的可见版本号已更新为 `1.1.11+0.0.0.1`。
 
 ## [1.1.5] - 2025-11-04
 ### Fixed
@@ -88,3 +77,33 @@ All notable changes to this project will be documented in this file.
 - 版本号 `index.html` 已更新为 `1.1.9`。
 
 ## ！！！错误删除导致更新数据丢失，仅恢复到1.1.9版本记录
+
+
+## [1.1.11+0.0.0.1] - 2025-11-04
+### Added
+- 在 `public/projects/compiler/wasm/` 下添加了可构建的 WASM 示例与 loader：
+	- `wrapper.c`：一个最小可编译的 C 示例，导出 `run_code` 与 `free_buffer`，用于演示 Emscripten 构建和 JS 互操作。
+	- `build_wasm.sh`：构建脚本（依赖 emscripten），输出到 `public/projects/compiler/wasm/dist/`。
+	- `tcc_runner.js`：运行时 loader，尝试加载 `dist/tcc_runner.js`（emcc 输出，MODULARIZE=1）并通过 `Module.cwrap` 包装 C API，最终暴露 `window.wasmRun(code, stdin)`。
+	- README：说明如何构建、部署与注意事项。
+
+### Notes
+- 这是一个占位/示例实现：它能帮助在本地或 CI 中构建并测试浏览器加载流程，但并未包含完整的 C 编译器 wasm（tcc/clang），真实编译器需自行编译并替换构建产物。
+- `index.html` 中的可见版本号已更新为 `1.1.11+0.0.0.1`。
+
+## [1.1.12] - 2025-11-04
+### Changed
+- 提升页面的可见版本号为 `1.1.12`（`index.html` 中显示），用于标识小版本迭代。
+
+### Notes
+- 该更新仅为版本号展示的更新，不影响功能；如需记录功能级变更请在后续提交中补充详细条目。
+
+## [1.1.12+0.0.1] - 2025-11-04
+### Added
+- 添加 GitHub Actions workflow：`.github/workflows/build_and_deploy_wasm.yml`，在 push 到 `main` 或手动触发时：
+	- 安装并激活 Emscripten（通过 `emscripten-core/emsdk` action）；
+	- 运行 `public/projects/compiler/wasm/build_wasm.sh` 构建示例 wasm（产物输出到 `public/projects/compiler/wasm/dist/`）；
+	- 使用 `peaceiris/actions-gh-pages` 将 `public/` 目录发布到 `gh-pages` 分支，自动部署到 GitHub Pages。
+
+### Notes
+- 版本号展示已更新为 `1.1.12+0.0.1`（`index.html`）；该 workflow 为示例级构建流程，实际将 tcc/clang 编译为 wasm 可能需要更长的 CI 运行时间与额外配置（可根据需要调整）。
