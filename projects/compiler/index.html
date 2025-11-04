@@ -43,7 +43,9 @@
     header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);transition:background-color .45s ease}
         header .title{display:flex;align-items:center;gap:10px;font-weight:600}
         header .title i{color:var(--accent);font-size:18px}
-        header .meta{color:var(--muted);font-size:13px}
+    header .meta{color:var(--muted);font-size:13px}
+    header .meta a{color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    header .meta a:hover{color:var(--accent);text-decoration:underline}
 
     /* 主区：编辑器 + 侧栏 */
     .main{flex:1;display:flex;min-height:0;position:relative}
@@ -93,7 +95,7 @@
         <div class="frame">
         <header>
             <div class="title"><i class="fas fa-code"></i><div>Online C Compiler</div></div>
-            <div class="meta">By C. He from ZJU · <span id="versionTag" url="/projects/compiler/CHANGELOG.md">Version 1.1.9</span></div>
+            <div class="meta">By C. He from ZJU · <a href="/projects/compiler/CHANGELOG.md" target="_blank" rel="noopener" id="versionLink"><span id="versionTag">Version 1.1.9</span></a></div>
         </header>
 
         <div class="main">
