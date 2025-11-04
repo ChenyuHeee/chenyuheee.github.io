@@ -46,3 +46,10 @@ All notable changes to this project will be documented in this file.
 
 ### Notes
 - 版本号 `index.html` 已更新为 `1.1.5`。
+
+## [1.1.6] - 2025-11-04
+### Fixed
+- 侧栏展开时遮挡编辑区右上角保存状态与右下角按钮的问题：当侧栏展开（覆盖式定位）时，编辑器右侧会自动向左平移（使用 `.editor-wrap.with-sidebar` 添加 `margin-right`），折叠时恢复填充全宽。此修复避免了侧栏遮挡头部与工具栏控件。
+
+### Notes
+- 版本号 `index.html` 已更新为 `1.1.6`。

@@ -15,7 +15,7 @@
 <meta property="og:description" content="在线编译器设计体验 点击此处-项目呈现   |   点击查看更新日志设计思路 整体布局： 主界面代码编辑器 顶部工具栏 侧边栏（输入输出）   代码编辑器：  使用Monaco Editor（VS Code的编辑器核心）实现C语言语法高亮 编译功能：  通过后端API调用编译器（如GCC）执行代码 响应式设计：  适配不同屏幕尺寸  实现方式 Github Pages搭建 调用编译器api 大模型">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-11-03T11:28:22.000Z">
-<meta property="article:modified_time" content="2025-11-04T02:02:40.517Z">
+<meta property="article:modified_time" content="2025-11-04T02:03:34.940Z">
 <meta property="article:author" content="Chenyu He">
 <meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary">
@@ -60,7 +60,7 @@
 
 <!-- Variable -->
 <script>window.ASYNC_CONFIG = {"hostname":"danielhe666.github.io","author":"Chenyu He","root":"/","typed_text":[" Nice to meet you!"],"theme_version":"2.2.6","theme":{"switch":true,"default":"auto"},"favicon":{"logo":"favicon.ico#-32x32.png","icon16":"favicon.ico#-16x16.png","icon32":"favicon.ico#-32x32.png","apple_touch_icon":"apple-touch-icon.png","webmanifest":"/site.webmanifest","visibilitychange":true,"hidden":"failure.ico","show_text":"(/≧▽≦/)咦！又遇到你了！","hide_text":"(●—●)喔哟，不见啦！"},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}.","hits":"${hits} results found","hits_time":"${hits} results found in ${time} ms","author":"Post author: ","copyright_link":"Post link: ","copyright_license_title":"Copyright Notice: ","copyright_license_content":"All articles in this blog are licensed under undefined unless otherwise stated.","copy_success":"Copied","copy_failure":"Copy failed","open_read_mode":"Enter reading mode","exit_read_mode":"Exit reading mode","notice_outdate_message":"It has been undefined days since the last update, the content of the article may be outdated.","sticky":"TOP","just":"Just","min":"minutes ago","hour":"hours ago","day":"days ago","month":"months ago"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy","user_tag":"fas fa-user-alt"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":true,"title":"default","height_limit":200},"toc":{"post_title":false},"live_time":{"start_time":"01/11/2025 19:00:00","prefix":"The blog has been lovely to run undefined day"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh-hans"}};</script>
-<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2025-11-04 10:02:40"};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2025-11-04 10:03:34"};</script>
 
 <!-- Theme mode css -->
 <link data-swup-theme rel="stylesheet" href="/css/index.css?v=2.2.6" id="trm-switch-style">
@@ -368,7 +368,7 @@
 <div class="trm-card ">
     <article id="article-container" class="trm-publication">
     <h1 id="在线编译器设计体验"><a href="#在线编译器设计体验" class="headerlink" title="在线编译器设计体验"></a>在线编译器设计体验</h1><hr>
-<h2 id="点击此处-项目呈现-点击查看更新日志"><a href="#点击此处-项目呈现-点击查看更新日志" class="headerlink" title="点击此处-项目呈现   |   点击查看更新日志"></a><a href="/projects/compiler/">点击此处-项目呈现</a>   |   <a href="https://danielhe666.github.io/projects/compiler/CHANGELOG.md">点击查看更新日志</a></h2><h2 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h2><ul>
+<h2 id="点击此处-项目呈现-点击查看更新日志"><a href="#点击此处-项目呈现-点击查看更新日志" class="headerlink" title="点击此处-项目呈现   |   点击查看更新日志"></a><a href="/projects/compiler/">点击此处-项目呈现</a>   |   <a href="/projects/compiler/CHANGELOG.md">点击查看更新日志</a></h2><h2 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h2><ul>
 <li>整体布局：<ul>
 <li>主界面代码编辑器</li>
 <li>顶部工具栏</li>
