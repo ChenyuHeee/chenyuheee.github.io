@@ -1,4 +1,4 @@
-<!--Version:1.1.4-->
+<!--Version:1.1.7-->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -12,6 +12,7 @@
     <style>
         /* 暗黑优先 - 极简 mac 风格 */
         :root{
+            --sidebar-width: 380px;
             --bg: #0b0c0d;           /* 页面背景（near black） */
             --panel: #0f1113;        /* 卡片 / 主容器背景 */
             --muted: #9aa4ad;        /* 次要文字 */
@@ -62,7 +63,7 @@
 
     /* 侧栏 */
     /* 侧栏：使用绝对定位以覆盖编辑区，避免被 Monaco canvas 遮挡 */
-    .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);transition:width .28s ease,opacity .28s ease,padding .28s ease;position:absolute;right:0;top:0;bottom:0;z-index:1000}
+    .sidebar{width:var(--sidebar-width);display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);transition:width .28s ease,opacity .28s ease,padding .28s ease;position:absolute;right:0;top:0;bottom:0;z-index:1000}
     /* 折叠侧栏：设置宽度为0并隐藏内边距，编辑器会自动占满剩余空间 */
     .sidebar.collapsed{width:0;padding:0;opacity:0;pointer-events:none}
         .sb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
@@ -74,7 +75,7 @@
     #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer;transition:opacity .2s;z-index:2000}
 
     /* 当侧栏展开时，为编辑器添加右侧内边距使工具栏不被覆盖 */
-    .editor-wrap.with-sidebar{margin-right:380px;transition:margin .28s ease}
+    .editor-wrap.with-sidebar{margin-right:var(--sidebar-width);transition:margin .28s ease}
 
         /* 小屏适配 */
         @media (max-width:900px){
@@ -93,7 +94,7 @@
         <div class="frame">
         <header>
             <div class="title"><i class="fas fa-code"></i><div>Online C Compiler</div></div>
-            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.1.6</span></div>
+            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.1.7</span></div>
         </header>
 
         <div class="main">
@@ -442,8 +443,20 @@ int main() {
             sidebarToggle.style.display = 'none';
             // 恢复编辑器样式（取消 full）并在短延迟后触发 Monaco 布局
             try { editorWrap && editorWrap.classList.remove('full'); editorWrap && editorWrap.classList.add('with-sidebar'); } catch (e) {}
+            // 立即触发一次布局以快速响应，稍后 transitionend 会触发最终布局
+            try { window.editor && window.editor.layout(); } catch (e) {}
             setTimeout(() => { try { window.editor && window.editor.layout(); } catch (e) {} }, 180);
         });
+
+        // 当侧栏过渡结束时，确保编辑器做最终布局（避免动画中 canvas 与侧栏出现错位）
+        try {
+            sidebar.addEventListener('transitionend', (ev) => {
+                const prop = (ev && ev.propertyName) || '';
+                if (prop.includes('width') || prop.includes('margin') || prop.includes('right')) {
+                    try { window.editor && window.editor.layout(); } catch (e) {}
+                }
+            });
+        } catch (e) {}
 
         // 更新脏标记 UI（文件名后显示 '*' 并更新保存状态）
         function setDirty(flag) {

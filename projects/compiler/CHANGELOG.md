@@ -53,3 +53,10 @@ All notable changes to this project will be documented in this file.
 
 ### Notes
 - 版本号 `index.html` 已更新为 `1.1.6`。
+
+## [1.1.7] - 2025-11-04
+### Fixed
+- 将侧栏宽度抽象为 CSS 变量 `--sidebar-width`，并替换所有硬编码宽度；当侧栏折叠/展开时，立即触发 `editor.layout()` 并在过渡结束时再次触发，保证 Monaco 编辑器在每次切换都正确响应并填充可见区域。
+
+### Notes
+- 版本号 `index.html` 已更新为 `1.1.7`。
