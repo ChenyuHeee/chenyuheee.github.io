@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js"></script>
 
+    <!-- Highlight.js themes (prefetch links; actual enable/disable handled by script) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css" id="hljs-theme-dark" disabled>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css" id="hljs-theme-light" disabled>
+
     <style>
         /* 暗黑优先 - 极简 mac 风格 */
         :root{
@@ -140,6 +144,14 @@
     <div id="sidebarToggle" title="打开侧栏"><i class="fas fa-chevron-left"></i></div>
     <!-- 隐藏的本地文件选择器 -->
     <input type="file" id="fileInput" accept=".c,.cpp,.h,.hpp,.txt" style="display:none" />
+
+    <!-- Changelog modal (hidden by default) -->
+    <div id="changelogModal" aria-hidden="true" style="display:none">
+        <div class="changelog-sheet" role="dialog" aria-modal="true" aria-labelledby="changelogTitle">
+            <button class="changelog-close" aria-label="关闭更新日志">✕</button>
+            <div id="changelogContent"></div>
+        </div>
+    </div>
 
     <script>
         /**********************************************************************
@@ -621,5 +633,87 @@ int main() {
         // 当窗口尺寸变化时，重新布局编辑器以适配容器大小
         window.addEventListener('resize', () => { try { window.editor && window.editor.layout(); } catch (e) {} });
     </script>
+
+        <script>
+        // Changelog modal: 懒加载 markdown-it + DOMPurify + highlight.js，并在 modal 中渲染
+        (function(){
+            const mdPath = '/projects/compiler/CHANGELOG.md';
+            const modal = document.getElementById('changelogModal');
+            const content = document.getElementById('changelogContent');
+            const versionLink = document.getElementById('versionLink');
+
+            function loadScriptOnce(url){
+                return new Promise((resolve,reject)=>{
+                    if (document.querySelector('script[src="'+url+'"]')) return resolve();
+                    const s = document.createElement('script'); s.src = url; s.async = true;
+                    s.onload = () => resolve(); s.onerror = () => reject(new Error('加载脚本失败: '+url));
+                    document.head.appendChild(s);
+                });
+            }
+
+            function enableHljsTheme(isLight){
+                try{
+                    const light = document.getElementById('hljs-theme-light');
+                    const dark = document.getElementById('hljs-theme-dark');
+                    if (light && dark){
+                        light.disabled = !isLight;
+                        dark.disabled = isLight;
+                    }
+                }catch(e){}
+            }
+
+            async function ensureLibs(){
+                if (!window.markdownit) await loadScriptOnce('https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js');
+                if (!window.DOMPurify) await loadScriptOnce('https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js');
+                if (!window.hljs) await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js');
+            }
+
+            async function renderChangelog(){
+                try{
+                    await ensureLibs();
+                    const res = await fetch(mdPath, {cache:'no-cache'});
+                    if (!res.ok) throw new Error('HTTP '+res.status);
+                    const mdText = await res.text();
+                    const md = window.markdownit({html:true,linkify:true,typographer:true});
+                    const raw = md.render(mdText);
+                    const safe = DOMPurify.sanitize(raw, {ADD_ATTR:['target']});
+                    content.innerHTML = safe;
+                    // highlight
+                    content.querySelectorAll('pre code').forEach((b)=>{ try{ window.hljs.highlightElement(b); }catch(e){} });
+                    // theme sync
+                    const isLight = document.body.classList.contains('light-theme') || localStorage.getItem('editorTheme') === 'light';
+                    enableHljsTheme(isLight);
+                    modal.style.display = 'flex';
+                    modal.setAttribute('aria-hidden','false');
+                }catch(e){
+                    content.innerHTML = '<p>无法加载更新日志：'+(e && e.message)+'</p>';
+                    modal.style.display = 'flex';
+                    modal.setAttribute('aria-hidden','false');
+                }
+            }
+
+            // open on version link click (prevent default navigation)
+            if (versionLink){
+                versionLink.addEventListener('click', (ev)=>{
+                    ev.preventDefault(); renderChangelog();
+                });
+            }
+
+            // close handlers
+            try{
+                modal.querySelector('.changelog-close').addEventListener('click', ()=>{ modal.style.display='none'; modal.setAttribute('aria-hidden','true'); });
+                modal.addEventListener('click', (e)=>{ if (e.target === modal) { modal.style.display='none'; modal.setAttribute('aria-hidden','true'); } });
+            }catch(e){}
+
+            // observe theme changes to update highlight theme
+            try{
+                const obs = new MutationObserver(()=>{
+                    const isLight = document.body.classList.contains('light-theme') || localStorage.getItem('editorTheme') === 'light';
+                    enableHljsTheme(isLight);
+                });
+                obs.observe(document.body, { attributes:true, attributeFilter:['class'] });
+            }catch(e){}
+        })();
+        </script>
 </body>
 </html>
