@@ -37,7 +37,7 @@
 
         /* 应用容器：占满整个视口，类似本地 app 的全屏编辑器 */
         .app{height:100vh;width:100vw;display:flex;flex-direction:column;align-items:stretch;justify-content:stretch}
-    .frame{max-width:1400px;margin:12px auto;flex:1;background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:background-color .45s ease,box-shadow .45s ease}
+    .frame{max-width:1400px;margin:12px auto;flex:1;background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:background-color .45s ease,box-shadow .45s ease;min-height:0;width:100%}
 
     header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);transition:background-color .45s ease}
         header .title{display:flex;align-items:center;gap:10px;font-weight:600}
@@ -48,11 +48,11 @@
     .main{flex:1;display:flex;min-height:0;position:relative}
 
         /* 编辑区 */
-    .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(0,0,0,0.06);transition:background-color .4s ease,border-color .4s ease;z-index:5}
+    .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(0,0,0,0.06);transition:background-color .4s ease,border-color .4s ease;z-index:5;min-height:0}
     .editor-wrap.full{border-right:none}
-        .editor-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
-        .editor-head h2{font-size:14px;color:#dbe9ff}
-        #editor{flex:1;min-height:200px}
+    .editor-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
+    .editor-head h2{font-size:14px;color:#dbe9ff}
+    #editor{flex:1;min-height:0;height:100%}
 
         /* 工具栏 */
         .toolbar{display:flex;gap:8px;padding:10px 14px;align-items:center}
@@ -90,7 +90,7 @@
         <div class="frame">
         <header>
             <div class="title"><i class="fas fa-code"></i><div>Online C Compiler</div></div>
-            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.1.4</span></div>
+            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.1.5</span></div>
         </header>
 
         <div class="main">
@@ -411,11 +411,12 @@ int main() {
             } catch (e) {}
         }
 
-        // ----------------- 事件绑定 -----------------
-        runBtn.addEventListener('click', runCode);
-        saveBtn.addEventListener('click', saveCode);
-        resetBtn.addEventListener('click', resetCode);
-        themeBtn.addEventListener('click', toggleTheme);
+    // ----------------- 事件绑定 -----------------
+    // 常规绑定（若此时元素存在）
+    try { runBtn && runBtn.addEventListener('click', runCode); } catch (e) {}
+    try { saveBtn && saveBtn.addEventListener('click', saveCode); } catch (e) {}
+    try { resetBtn && resetBtn.addEventListener('click', resetCode); } catch (e) {}
+    try { themeBtn && themeBtn.addEventListener('click', toggleTheme); } catch (e) {}
 
         // 侧栏折叠/展开逻辑：使用 class 'collapsed'，便于动画与恢复
         const sidebar = document.getElementById('sidebar');
@@ -545,7 +546,32 @@ int main() {
             try { if (window.monaco) monaco.editor.setTheme('vs-dark'); } catch (e) {}
             // 初始时隐藏侧栏恢复按钮（默认展开）
             document.getElementById('sidebarToggle').style.display = 'none';
+
+            // 确保 Monaco 布局正确——在某些浏览器/布局中首次渲染时需要手动触发 layout
+            try { window.editor && window.editor.layout(); } catch (e) {}
+
+            // 绑定全屏按钮（容错）：如果之前绑定失败，这里再绑定一次
+            try {
+                const fs = document.getElementById('fsBtn');
+                if (fs && !fs.dataset._fsBound) {
+                    fs.addEventListener('click', () => {
+                        const el = document.querySelector('.frame') || document.querySelector('.app') || document.documentElement;
+                        if (!document.fullscreenElement) {
+                            el.requestFullscreen?.();
+                        } else {
+                            document.exitFullscreen?.();
+                        }
+                    });
+                    fs.dataset._fsBound = '1';
+                }
+            } catch (e) {}
+
+            // 确保复选框与其他交互元素可以响应（有时被早期脚本或覆盖元素阻塞）
+            try { const useWasmEl = document.getElementById('useWasm'); if (useWasmEl) useWasmEl.style.pointerEvents = 'auto'; } catch(e) {}
         });
+
+        // 当窗口尺寸变化时，重新布局编辑器以适配容器大小
+        window.addEventListener('resize', () => { try { window.editor && window.editor.layout(); } catch (e) {} });
     </script>
 </body>
 </html>

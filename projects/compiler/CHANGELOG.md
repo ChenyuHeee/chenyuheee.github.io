@@ -38,3 +38,11 @@ All notable changes to this project will be documented in this file.
 
 ### Notes
 - 版本号 `index.html` 已更新为 `1.1.4`。
+
+## [1.1.5] - 2025-11-04
+### Fixed
+- 修复因插入 `.frame` 后导致的首次布局问题：确保 `.frame` 与 `.editor-wrap` 拥有 `min-height:0` 与 `#editor` 的高度规则，使 Monaco 编辑器能够正确填充容器。
+- 修复全屏按钮与工具栏交互可能失效的问题：为全屏按钮添加容错绑定（若初次绑定失败会在 `load` 时重绑定），并在页面 `load` / `resize` 时强制触发 `editor.layout()`，保证交互与渲染稳定。
+
+### Notes
+- 版本号 `index.html` 已更新为 `1.1.5`。
