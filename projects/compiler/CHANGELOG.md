@@ -60,3 +60,17 @@ All notable changes to this project will be documented in this file.
 
 ### Notes
 - 版本号 `index.html` 已更新为 `1.1.7`。
+
+## [1.1.8] - 2025-11-04
+### Fixed
+- 保证编辑器在任何时刻都与侧栏状态同步：新增 `.editor-wrap.with-sidebar` 的宽度计算规则（使用 `calc(100% - var(--sidebar-width))`），并添加 `MutationObserver` 以监听侧栏的 class 变化（例如 `collapsed`），在变化发生时立即和在 transitionend 后触发 `editor.layout()`。这修复了刷新后编辑器未判断侧栏状态、以及折叠/展开时编辑器未正确收缩的问题。
+
+### Notes
+- 版本号 `index.html` 已更新为 `1.1.8`。
+
+## [1.1.9] - 2025-11-04
+### Changed
+- 侧栏不再通过缩窄编辑器宽度来避免遮挡（编辑器保持始终填满宽度）；改为缩短侧栏的上下边界以避免遮挡头部（已保存）和底部工具（另存为/主题）。侧栏的上下边界由脚本动态计算（基于 `header` 与 `.toolbar` 的位置），并在窗口调整、折叠/展开以及过渡结束时重新计算并触发布局。
+
+### Notes
+- 版本号 `index.html` 已更新为 `1.1.9`。

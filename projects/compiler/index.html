@@ -1,4 +1,4 @@
-<!--Version:1.1.7-->
+<!--Version:1.1.9-->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -50,7 +50,6 @@
 
         /* 编辑区 */
     .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(0,0,0,0.06);transition:background-color .4s ease,border-color .4s ease;z-index:5;min-height:0}
-    .editor-wrap.full{border-right:none}
     .editor-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
     .editor-head h2{font-size:14px;color:#dbe9ff}
     #editor{flex:1;min-height:0;height:100%}
@@ -63,7 +62,8 @@
 
     /* 侧栏 */
     /* 侧栏：使用绝对定位以覆盖编辑区，避免被 Monaco canvas 遮挡 */
-    .sidebar{width:var(--sidebar-width);display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);transition:width .28s ease,opacity .28s ease,padding .28s ease;position:absolute;right:0;top:0;bottom:0;z-index:1000}
+    /* 侧栏：覆盖式定位，但保留顶部与底部间隔，避免遮挡 header 与 底部工具栏；JS 会在运行时计算精确的 top/bottom */
+    .sidebar{width:var(--sidebar-width);display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);transition:width .28s ease,opacity .28s ease,padding .28s ease;position:absolute;right:0;top:56px;bottom:72px;z-index:1000}
     /* 折叠侧栏：设置宽度为0并隐藏内边距，编辑器会自动占满剩余空间 */
     .sidebar.collapsed{width:0;padding:0;opacity:0;pointer-events:none}
         .sb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
@@ -74,8 +74,7 @@
     /* 悬浮的侧边栏切换按钮（当侧栏折叠时可恢复） */
     #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer;transition:opacity .2s;z-index:2000}
 
-    /* 当侧栏展开时，为编辑器添加右侧内边距使工具栏不被覆盖 */
-    .editor-wrap.with-sidebar{margin-right:var(--sidebar-width);transition:margin .28s ease}
+    /* 注意：编辑器保持始终填满宽度，侧栏是覆盖式的但上下有留白以避免遮挡头部与底部控件 */
 
         /* 小屏适配 */
         @media (max-width:900px){
@@ -94,7 +93,7 @@
         <div class="frame">
         <header>
             <div class="title"><i class="fas fa-code"></i><div>Online C Compiler</div></div>
-            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.1.7</span></div>
+            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.1.9</span></div>
         </header>
 
         <div class="main">
@@ -429,8 +428,8 @@ int main() {
         closeSb.addEventListener('click', () => {
             sidebar.classList.add('collapsed');
             sidebarToggle.style.display = 'flex';
-            // 折叠侧栏时，编辑区应填充全部可用宽度
-            try { editorWrap && editorWrap.classList.add('full'); editorWrap && editorWrap.classList.remove('with-sidebar'); } catch (e) {}
+            // 折叠侧栏时不改变编辑器宽度（编辑器始终填满宽度），仅触发布局
+            try { editorWrap && editorWrap.classList.add('full'); } catch (e) {}
             setTimeout(() => { try { window.editor && window.editor.layout(); } catch (e) {} }, 320);
         });
         sidebarToggle.addEventListener('click', () => {
@@ -441,8 +440,8 @@ int main() {
             try { void sidebar.offsetWidth; } catch (e) {}
             // 隐藏恢复按钮
             sidebarToggle.style.display = 'none';
-            // 恢复编辑器样式（取消 full）并在短延迟后触发 Monaco 布局
-            try { editorWrap && editorWrap.classList.remove('full'); editorWrap && editorWrap.classList.add('with-sidebar'); } catch (e) {}
+            // 恢复侧栏显示后只需触发布局，编辑器仍保持填满宽度
+            try { editorWrap && editorWrap.classList.remove('full'); } catch (e) {}
             // 立即触发一次布局以快速响应，稍后 transitionend 会触发最终布局
             try { window.editor && window.editor.layout(); } catch (e) {}
             setTimeout(() => { try { window.editor && window.editor.layout(); } catch (e) {} }, 180);
@@ -452,10 +451,38 @@ int main() {
         try {
             sidebar.addEventListener('transitionend', (ev) => {
                 const prop = (ev && ev.propertyName) || '';
-                if (prop.includes('width') || prop.includes('margin') || prop.includes('right')) {
+                if (prop.includes('width') || prop.includes('margin') || prop.includes('right') || prop.includes('opacity')) {
                     try { window.editor && window.editor.layout(); } catch (e) {}
                 }
             });
+        } catch (e) {}
+
+        // 监听侧栏的折叠/展开和窗口尺寸以动态调整侧栏的上下边界，保证不遮挡头部与底部控件
+        try {
+            function adjustSidebarVertical() {
+                try {
+                    const headerEl = document.querySelector('header');
+                    const toolbarEl = document.querySelector('.toolbar');
+                    if (!headerEl || !toolbarEl) return;
+                    const headerRect = headerEl.getBoundingClientRect();
+                    const toolbarRect = toolbarEl.getBoundingClientRect();
+                    // 计算顶部距离：将侧栏顶边放在 header 底部 + 8px 间隔
+                    const topPx = Math.max(8, Math.round(headerRect.bottom + 8));
+                    // 计算底部距离：将侧栏底边放在 toolbar 顶部 - 8px 间隔
+                    const bottomPx = Math.max(8, Math.round(window.innerHeight - toolbarRect.top + 8));
+                    sidebar.style.top = topPx + 'px';
+                    sidebar.style.bottom = bottomPx + 'px';
+                } catch (e) {}
+            }
+            // 初始调整
+            adjustSidebarVertical();
+            // 在窗口调整时重新计算
+            window.addEventListener('resize', adjustSidebarVertical);
+            // 在侧栏折叠/展开后也调整（transitionend 也会触发 editor.layout）
+            sidebar.addEventListener('transitionend', adjustSidebarVertical);
+            // 当用户点击折叠/展开按钮后立即调整并触发布局
+            closeSb.addEventListener('click', () => { try { adjustSidebarVertical(); window.editor && window.editor.layout(); } catch (e) {} });
+            sidebarToggle.addEventListener('click', () => { try { adjustSidebarVertical(); window.editor && window.editor.layout(); } catch (e) {} });
         } catch (e) {}
 
         // 更新脏标记 UI（文件名后显示 '*' 并更新保存状态）
@@ -563,14 +590,8 @@ int main() {
             // 初始时隐藏侧栏恢复按钮（默认展开）
             document.getElementById('sidebarToggle').style.display = 'none';
 
-            // 根据侧栏当前状态设置编辑器右侧间距，避免被覆盖
-            try {
-                if (!sidebar.classList.contains('collapsed')) {
-                    editorWrap && editorWrap.classList.add('with-sidebar');
-                } else {
-                    editorWrap && editorWrap.classList.remove('with-sidebar');
-                }
-            } catch (e) {}
+            // 调整侧栏上下边界以避免遮挡头部和底部工具条
+            try { /* 调整将在下面的调整函数中完成 */ } catch (e) {}
 
             // 确保 Monaco 布局正确——在某些浏览器/布局中首次渲染时需要手动触发 layout
             try { window.editor && window.editor.layout(); } catch (e) {}
