@@ -1,4 +1,4 @@
-<!--Version:1.0.4-->
+<!--Version:1.1.4-->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -87,9 +87,10 @@
 </head>
 <body>
     <div class="app">
+        <div class="frame">
         <header>
             <div class="title"><i class="fas fa-code"></i><div>Online C Compiler</div></div>
-            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.0.4</span></div>
+            <div class="meta">By C. He from ZJU · <span id="versionTag">Version 1.1.4</span></div>
         </header>
 
         <div class="main">
@@ -126,6 +127,7 @@
                     <div class="output" id="stdout">程序输出将显示在这里...</div>
                 </div>
             </aside>
+        </div>
         </div>
     </div>
 
@@ -521,10 +523,11 @@ int main() {
         }
         saveAsBtn.addEventListener('click', saveAsFile);
 
-        // 全屏按钮
+        // 全屏按钮（修复：提供回退以防 .frame 未定义）
         const fsBtn = document.getElementById('fsBtn');
         fsBtn.addEventListener('click', () => {
-            const el = document.querySelector('.frame');
+            // 首选 .frame，其次回退到 .app，再回退到 documentElement
+            const el = document.querySelector('.frame') || document.querySelector('.app') || document.documentElement;
             if (!document.fullscreenElement) {
                 el.requestFullscreen?.();
             } else {

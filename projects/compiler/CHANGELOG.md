@@ -31,3 +31,10 @@ All notable changes to this project will be documented in this file.
 
 ### Notes
 - 版本号 `index.html` 已更新为 `1.0.4`。
+
+## [1.1.4] - 2025-11-04
+### Fixed
+- 修复全屏按钮无效的问题：页面结构中缺失 `.frame` 容器导致脚本无法找到目标元素；已在 `index.html` 中加入 `.frame` 包裹并在脚本中加入安全回退（优先 `.frame`，其次 `.app`，最后 `document.documentElement`）。
+
+### Notes
+- 版本号 `index.html` 已更新为 `1.1.4`。
