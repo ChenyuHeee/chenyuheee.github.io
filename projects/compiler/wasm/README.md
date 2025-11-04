@@ -17,15 +17,24 @@
 
 ---
 
-构建示例
 
-本仓库同时提供一个最小示例，可以在有 Emscripten 的机器上构建：
+构建示例（快速指南）
+
+本仓库包含一个最小示例，可在已安装并激活 Emscripten 的机器上构建：
 
 1. 安装并激活 Emscripten（emsdk）。
-2. 进入 `public/projects/compiler/wasm/` 并运行 `./build_wasm.sh`。
-3. 构建结果会输出到 `public/projects/compiler/wasm/dist/`，包括 `tcc_runner.js` 和 `tcc_runner.wasm`。
+2. 进入 `public/projects/compiler/wasm/`：
 
-说明：当前示例 `wrapper.c` 仅是占位的 C API（返回接收到的源码前几百字），用于演示如何在浏览器端通过 `Module.cwrap` 调用 C 函数。要实现真正的编译器，需要把 tcc/clang 的源码或移植版本编译为 wasm，并提供标准输入/输出捕获接口。
+	```bash
+	cd public/projects/compiler/wasm/
+	./build_wasm.sh
+	```
+
+3. 构建结果会输出到 `public/projects/compiler/wasm/dist/`，包含 `tcc_runner.js` 与 `tcc_runner.wasm`。
+
+注意：构建脚本已修复换行问题，确保 `emcc` 命令各项参数在同一命令行或使用正确的续行符（`\`）。
+
+说明：当前 `wrapper.c` 是占位示例（返回接收到源码的一段文本），用于演示如何通过 `Module.cwrap` 暴露 API。要实现真正的在线编译器，需要将 tcc/clang 或其他编译器移植并编译为 wasm，并实现更完整的 stdin/stdout 捕获与错误处理。
 
 安全与性能提示
 

@@ -13,7 +13,7 @@ echo "Building WASM module (placeholder wrapper)..."
 # 生成一个模块：tcc_runner.js + tcc_runner.wasm
 # 使用 MODULARIZE=1 和 EXPORT_NAME 以便通过 createModule() 创建实例
 emcc wrapper.c -O2 -s WASM=1 -s MODULARIZE=1 -s "EXPORT_NAME='createTccModule'" \
-    -s EXPORTED_FUNCTIONS='["_run_code","_free_buffer"]' 
+    -s EXPORTED_FUNCTIONS='["_run_code","_free_buffer"]' \
     -o "$OUT_DIR/tcc_runner.js"
 
 echo "Build finished. Artifacts in $OUT_DIR"

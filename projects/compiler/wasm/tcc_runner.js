@@ -11,17 +11,7 @@
     function notReady(code, stdin){
         return Promise.reject(new Error('WASM 运行器尚未部署（请运行 build_wasm.sh 并将构建产物放到 /projects/compiler/wasm/dist/）'));
     }
-
-    // 将默认行为先暴露，以保证不会抛错
-    try{ window.wasmRun = notReady; } catch(e){}
-
-    // 尝试自动加载构建产物（dist/tcc_runner.js）——该脚本是 emcc 的输出（MODULARIZE=1）
-    async function tryLoadDist(){
-        const base = '/projects/compiler/wasm/dist';
-        const entry = base + '/tcc_runner.js';
-        try{
-            // 动态插入 script
-            await new Promise((resolve,reject)=>{
+    })();
                 const s = document.createElement('script'); s.src = entry;
                 s.onload = () => resolve(); s.onerror = () => reject(new Error('加载失败: '+entry));
                 document.head.appendChild(s);
