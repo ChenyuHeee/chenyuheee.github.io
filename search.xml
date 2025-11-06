@@ -303,4 +303,124 @@ raw.githubusercontent.com
 
 ]]></content>
   </entry>
+  <entry>
+    <title>排序算法学习</title>
+    <url>/2025/11/06/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[在C语言中，对数组进行排序有多种方式，主要可以分为以下几类：
+1. 内置库函数qsort() 函数#include &lt;stdlib.h&gt;int compare(const void *a, const void *b) &#123;    return (*(int*)a - *(int*)b);&#125;int arr[] = &#123;5, 2, 8, 1, 9&#125;;int n = sizeof(arr)/sizeof(arr[0]);qsort(arr, n, sizeof(int), compare);
+
+时间复杂度：平均 O(n log n)，最坏 O(n²)
+特点：C标准库提供的快速排序实现
+
+2. 简单排序算法冒泡排序 (Bubble Sort)void bubbleSort(int arr[], int n) &#123;    for(int i = 0; i &lt; n-1; i++) &#123;        for(int j = 0; j &lt; n-i-1; j++) &#123;            if(arr[j] &gt; arr[j+1]) &#123;                int temp = arr[j];                arr[j] = arr[j+1];                arr[j+1] = temp;            &#125;        &#125;    &#125;&#125;
+
+时间复杂度：O(n²)
+空间复杂度：O(1)
+
+选择排序 (Selection Sort)void selectionSort(int arr[], int n) &#123;    for(int i = 0; i &lt; n-1; i++) &#123;        int min_idx = i;        for(int j = i+1; j &lt; n; j++) &#123;            if(arr[j] &lt; arr[min_idx])                min_idx = j;        &#125;        int temp = arr[min_idx];        arr[min_idx] = arr[i];        arr[i] = temp;    &#125;&#125;
+
+时间复杂度：O(n²)
+空间复杂度：O(1)
+
+插入排序 (Insertion Sort)void insertionSort(int arr[], int n) &#123;    for(int i = 1; i &lt; n; i++) &#123;        int key = arr[i];        int j = i-1;        while(j &gt;= 0 &amp;&amp; arr[j] &gt; key) &#123;            arr[j+1] = arr[j];            j--;        &#125;        arr[j+1] = key;    &#125;&#125;
+
+时间复杂度：O(n²)（最坏），O(n)（最好，已排序）
+空间复杂度：O(1)
+
+3. 高效排序算法快速排序 (Quick Sort)void quickSort(int arr[], int low, int high) &#123;    if(low &lt; high) &#123;        int pi = partition(arr, low, high);        quickSort(arr, low, pi-1);        quickSort(arr, pi+1, high);    &#125;&#125;int partition(int arr[], int low, int high) &#123;    int pivot = arr[high];    int i = (low - 1);    for(int j = low; j &lt;= high-1; j++) &#123;        if(arr[j] &lt; pivot) &#123;            i++;            int temp = arr[i];            arr[i] = arr[j];            arr[j] = temp;        &#125;    &#125;    int temp = arr[i+1];    arr[i+1] = arr[high];    arr[high] = temp;    return (i+1);&#125;
+
+时间复杂度：平均 O(n log n)，最坏 O(n²)
+空间复杂度：O(log n)
+
+归并排序 (Merge Sort)void mergeSort(int arr[], int l, int r) &#123;    if(l &lt; r) &#123;        int m = l + (r-l)/2;        mergeSort(arr, l, m);        mergeSort(arr, m+1, r);        merge(arr, l, m, r);    &#125;&#125;void merge(int arr[], int l, int m, int r) &#123;    // 合并两个有序子数组&#125;
+
+时间复杂度：O(n log n)
+空间复杂度：O(n)
+
+堆排序 (Heap Sort)void heapSort(int arr[], int n) &#123;    for(int i = n/2-1; i &gt;= 0; i--)        heapify(arr, n, i);        for(int i = n-1; i &gt; 0; i--) &#123;        int temp = arr[0];        arr[0] = arr[i];        arr[i] = temp;        heapify(arr, i, 0);    &#125;&#125;void heapify(int arr[], int n, int i) &#123;    // 构建最大堆&#125;
+
+时间复杂度：O(n log n)
+空间复杂度：O(1)
+
+4. 线性时间排序（特定条件下）计数排序 (Counting Sort)
+时间复杂度：O(n + k)，k是数据范围
+适用条件：整数排序，数据范围较小
+
+基数排序 (Radix Sort)
+时间复杂度：O(d(n + k))，d是数字位数
+适用条件：整数排序
+
+总结对比
+
+
+排序算法
+平均时间复杂度
+最坏时间复杂度
+空间复杂度
+稳定性
+
+
+
+冒泡排序
+O(n²)
+O(n²)
+O(1)
+稳定
+
+
+选择排序
+O(n²)
+O(n²)
+O(1)
+不稳定
+
+
+插入排序
+O(n²)
+O(n²)
+O(1)
+稳定
+
+
+快速排序
+O(n log n)
+O(n²)
+O(log n)
+不稳定
+
+
+归并排序
+O(n log n)
+O(n log n)
+O(n)
+稳定
+
+
+堆排序
+O(n log n)
+O(n log n)
+O(1)
+不稳定
+
+
+qsort()
+O(n log n)
+O(n²)
+O(log n)
+依赖实现
+
+
+建议：
+
+小数据量：插入排序
+通用场景：qsort() 或快速排序
+需要稳定性：归并排序
+内存敏感：堆排序
+特定条件：计数排序或基数排序
+
+]]></content>
+      <tags>
+        <tag>c语言 ; 算法</tag>
+      </tags>
+  </entry>
 </search>
