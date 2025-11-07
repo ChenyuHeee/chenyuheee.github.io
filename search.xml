@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>Hexo建站笔记</title>
-    <url>/2025/01/11/Hexo%E5%BB%BA%E7%AB%99%E7%AC%94%E8%AE%B0/</url>
+    <url>/hexo/2025/01/11/Hexo%E5%BB%BA%E7%AB%99%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[Hexo建站笔记初始化
 Node.js配置官网下载
 安装Hexo
@@ -24,7 +24,7 @@ hexo s
   </entry>
   <entry>
     <title>Web</title>
-    <url>/2025/02/11/CTF/Web/</url>
+    <url>/hexo/2025/02/11/CTF/Web/</url>
     <content><![CDATA[WebWeb前置技能HTTP协议做题手段：Burp Suite
 
 请求方式
@@ -58,7 +58,7 @@ grep -r &quot;ctfhub&quot; .svn/pristine/]]></content>
   </entry>
   <entry>
     <title></title>
-    <url>/2025/11/01/%E6%95%B0%E7%90%86%E5%AD%A6%E4%B9%A0/%E5%BE%AE%E7%A7%AF%E5%88%86/</url>
+    <url>/hexo/2025/11/01/%E6%95%B0%E7%90%86%E5%AD%A6%E4%B9%A0/%E5%BE%AE%E7%A7%AF%E5%88%86/</url>
     <content><![CDATA[微积分期中考试题分析24-251.求极限
 
 等价无穷小
@@ -86,7 +86,7 @@ grep -r &quot;ctfhub&quot; .svn/pristine/]]></content>
   </entry>
   <entry>
     <title>在线编译器设计体验</title>
-    <url>/2025/11/03/%E9%A1%B9%E7%9B%AE/Compiler/</url>
+    <url>/hexo/2025/11/03/%E9%A1%B9%E7%9B%AE/Compiler/</url>
     <content><![CDATA[在线编译器设计体验
 点击此处-项目呈现   |   点击查看更新日志设计思路
 整体布局：
@@ -208,7 +208,7 @@ Serverless 容器&#x2F;函数（AWS Lambda（容器）、Google Cloud Run）
   </entry>
   <entry>
     <title>针对访问Github出现问题的MacOS解决方案</title>
-    <url>/2025/11/04/GithubVisitingProblems/</url>
+    <url>/hexo/2025/11/04/GithubVisitingProblems/</url>
     <content><![CDATA[在 Mac 上访问 GitHub 时断时续确实很让人头疼。这通常和网络连接、DNS解析、系统或浏览器设置有关。别担心，我们可以按照下表的步骤来排查和解决。
 
 
@@ -305,7 +305,7 @@ raw.githubusercontent.com
   </entry>
   <entry>
     <title>排序算法学习</title>
-    <url>/2025/11/06/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/</url>
+    <url>/hexo/2025/11/06/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[在C语言中，对数组进行排序有多种方式，主要可以分为以下几类：
 1. 内置库函数qsort() 函数#include &lt;stdlib.h&gt;int compare(const void *a, const void *b) &#123;    return (*(int*)a - *(int*)b);&#125;int arr[] = &#123;5, 2, 8, 1, 9&#125;;int n = sizeof(arr)/sizeof(arr[0]);qsort(arr, n, sizeof(int), compare);
 
@@ -422,5 +422,43 @@ O(log n)
       <tags>
         <tag>c语言 ; 算法</tag>
       </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/hexo/2025/11/07/MkDocs/</url>
+    <content><![CDATA[MkDocs安装MkDocspip install mkdocs
+入门mkdocs new my-projectcd my-project
+有一个名为mkdocs.yml的配置文件，以及一个名为docs的文件夹，它将包含你的文档源文件。现在docs文件夹只包含一个名为index.md的文档页面。
+MkDocs附带一个内置的开发服务器，可以让你在处理文档时预览文档。 确保与mkdocs.yml配置文件位于同一目录中，然后通过运行mkdocs serve命令启动服务器：
+$ mkdocs serveINFO    -  Building documentation...INFO    -  Cleaning site directory[I 160402 15:50:43 server:271] Serving on http://127.0.0.1:8000[I 160402 15:50:43 handlers:58] Start watching changes[I 160402 15:50:43 handlers:60] Start detecting changes
+在浏览器中打开http://127.0.0.1:8000，你将看到你的默认主页
+开发服务器还支持自动重新加载，并且只要配置文件、文档目录或主题目录中的任何内容发生更改，都将重新生成文档。
+使用你的文本编辑器打开docs/index.md文档，将初始标题更改为“MkLorum”，然后保存更改。浏览器将自动重新加载，你将立即看到更新过的文档。
+现在尝试编辑配置文件：mkdocs.yml。 将site_name设置更改为“MkLorum”并保存文件。
+你的浏览器应立即重新加载，你将看到新设置的站点名称已经生效。
+
+添加页面现在在文档中添加第二个页面：
+curl &#x27;https://jaspervdj.be/lorem-markdownum/markdown.txt&#x27; &gt; docs/about.md
+由于我们的文档站点将包含一些导航，你可以编辑配置文件，并通过添加nav设置来管理每个页面导航的顺序、标题和嵌套情况：
+site_name: MkLorumnav:    - Home: index.md    - About: about.md
+保存更改，你将看到左侧有“Home”和“About”导航栏，同时右侧还有“Search”，“Previous”和“Next”。尝试菜单项并在页面之间来回导航。 然后单击Search。 将出现一个搜索对话框，允许你搜索任何页面上的任何文本。 请注意，搜索结果包括网站上每次出现的搜索字词，并直接链接到搜索字词所在页面的部分。你无需付出任何努力或配置即可获得所有这些！
+主题化我们的文档现在，更改配置文件以通过更改主题来更改文档的显示方式。 编辑mkdocs.yml文件并添加theme设置：
+site_name: MkLorumnav:    - Home: index.md    - About: about.mdtheme: readthedocs
+保存更改，你将看到改为使用了ReadTheDocs主题。
+更改Favicon图标默认情况下，MkDocs使用MkDocs favicon图标。 要使用不同的图标，请在docs_dir中创建一个img子目录，并将自定义的favicon.ico文件复制到该目录。 MkDocs将自动检测并使用该文件作为你的favicon图标。
+生成网站那看起来不错。 你已准备好部署MkLorum文档。 首先生成文档：
+mkdocs build
+这将创建一个名为site的新目录。 看一下该目录的情况：
+$ ls site
+about  fonts  index.html  license  search.htmlcss    img    js          mkdocs   sitemap.xml
+请注意，你的源文档已输出为两个名为index.html和about/index.html的HTML文件。同时各种其他媒体文件也已被复制到site目录中作为文档主题的一部分。另外还有一个sitemap.xml文件和mkdocs/search_index.json。如果你正在使用版本控制软件，例如git，你可能不希望将生成的文件包含到存储库中。只需要在.gitignore文件中添加一行site/即可。
+echo &quot;site/&quot; &gt;&gt; .gitignore
+如果你正在使用其他版本控制工具，请你自行查阅相关文档，了解如何忽略特定目录。
+一段时间后，文件可能会从文档中删除，但它们仍将驻留在site目录中。 要删除那些陈旧的文件，只需在运行mkdocs命令时带上--clean参数即可。
+mkdocs build --clean
+其他命令和选项还有其他各种命令和选项。有关命令的完整列表，请使用--help标志：
+mkdocs --help
+要查看给定命令上可用的选项列表，请使用带有该命令的--help标志。 例如，要获取build命令可用的所有选项的列表，请运行以下命令：
+mkdocs build --help]]></content>
   </entry>
 </search>

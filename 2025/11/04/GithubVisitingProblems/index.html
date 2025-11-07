@@ -10,7 +10,7 @@
 <meta name="description" content="在 Mac 上访问 GitHub 时断时续确实很让人头疼。这通常和网络连接、DNS解析、系统或浏览器设置有关。别担心，我们可以按照下表的步骤来排查和解决。    可能原因 排查思路 解决方法    DNS 解析问题 🎯 最常见的原因之一，导致域名无法正确转换为IP地址。 1. 清除DNS缓存。2. 更换公共DNS。3. 修改Hosts文件。   网络连接与代理设置 🌐 网络本身不稳定，或代理设">
 <meta property="og:type" content="article">
 <meta property="og:title" content="针对访问Github出现问题的MacOS解决方案">
-<meta property="og:url" content="http://danielhe666.github.io/2025/11/04/GithubVisitingProblems/index.html">
+<meta property="og:url" content="http://danielhe666.github.io/hexo/2025/11/04/GithubVisitingProblems/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="在 Mac 上访问 GitHub 时断时续确实很让人头疼。这通常和网络连接、DNS解析、系统或浏览器设置有关。别担心，我们可以按照下表的步骤来排查和解决。    可能原因 排查思路 解决方法    DNS 解析问题 🎯 最常见的原因之一，导致域名无法正确转换为IP地址。 1. 清除DNS缓存。2. 更换公共DNS。3. 修改Hosts文件。   网络连接与代理设置 🌐 网络本身不稳定，或代理设">
 <meta property="og:locale" content="en_US">
@@ -24,16 +24,16 @@
 
 <!-- Favicon -->
 
-    <link href='/favicon.ico#-16x16.png?v=2.2.6' rel='icon' type='image/png' sizes='16x16' ></link>
+    <link href='/hexo/favicon.ico#-16x16.png?v=2.2.6' rel='icon' type='image/png' sizes='16x16' ></link>
 
 
-    <link href='/favicon.ico#-32x32.png?v=2.2.6' rel='icon' type='image/png' sizes='32x32' ></link>
+    <link href='/hexo/favicon.ico#-32x32.png?v=2.2.6' rel='icon' type='image/png' sizes='32x32' ></link>
 
 
-    <link href='/apple-touch-icon.png?v=2.2.6' rel='apple-touch-icon' sizes='180x180' ></link>
+    <link href='/hexo/apple-touch-icon.png?v=2.2.6' rel='apple-touch-icon' sizes='180x180' ></link>
 
 
-    <link href='/site.webmanifest' rel='manifest' ></link>
+    <link href='/hexo/site.webmanifest' rel='manifest' ></link>
 
 
 <!-- Plugin -->
@@ -42,7 +42,7 @@
 
 
     
-<link rel="stylesheet" href="/css/plugins/bootstrap.row.css">
+<link rel="stylesheet" href="/hexo/css/plugins/bootstrap.row.css">
 
     
 <link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
@@ -58,11 +58,11 @@
 
 
 <!-- Variable -->
-<script>window.ASYNC_CONFIG = {"hostname":"danielhe666.github.io","author":"Chenyu He","root":"/","typed_text":[" Nice to meet you!"],"theme_version":"2.2.6","theme":{"switch":true,"default":"auto"},"favicon":{"logo":"favicon.ico#-32x32.png","icon16":"favicon.ico#-16x16.png","icon32":"favicon.ico#-32x32.png","apple_touch_icon":"apple-touch-icon.png","webmanifest":"/site.webmanifest","visibilitychange":true,"hidden":"failure.ico","show_text":"(/≧▽≦/)咦！又遇到你了！","hide_text":"(●—●)喔哟，不见啦！"},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}.","hits":"${hits} results found","hits_time":"${hits} results found in ${time} ms","author":"Post author: ","copyright_link":"Post link: ","copyright_license_title":"Copyright Notice: ","copyright_license_content":"All articles in this blog are licensed under undefined unless otherwise stated.","copy_success":"Copied","copy_failure":"Copy failed","open_read_mode":"Enter reading mode","exit_read_mode":"Exit reading mode","notice_outdate_message":"It has been undefined days since the last update, the content of the article may be outdated.","sticky":"TOP","just":"Just","min":"minutes ago","hour":"hours ago","day":"days ago","month":"months ago"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy","user_tag":"fas fa-user-alt"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":true,"title":"default","height_limit":200},"toc":{"post_title":false},"live_time":{"start_time":"01/11/2025 19:00:00","prefix":"The blog has been lovely to run undefined day"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh-hans"}};</script>
+<script>window.ASYNC_CONFIG = {"hostname":"danielhe666.github.io","author":"Chenyu He","root":"/hexo/","typed_text":[" Nice to meet you!"],"theme_version":"2.2.6","theme":{"switch":true,"default":"auto"},"favicon":{"logo":"favicon.ico#-32x32.png","icon16":"favicon.ico#-16x16.png","icon32":"favicon.ico#-32x32.png","apple_touch_icon":"apple-touch-icon.png","webmanifest":"/site.webmanifest","visibilitychange":true,"hidden":"failure.ico","show_text":"(/≧▽≦/)咦！又遇到你了！","hide_text":"(●—●)喔哟，不见啦！"},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}.","hits":"${hits} results found","hits_time":"${hits} results found in ${time} ms","author":"Post author: ","copyright_link":"Post link: ","copyright_license_title":"Copyright Notice: ","copyright_license_content":"All articles in this blog are licensed under undefined unless otherwise stated.","copy_success":"Copied","copy_failure":"Copy failed","open_read_mode":"Enter reading mode","exit_read_mode":"Exit reading mode","notice_outdate_message":"It has been undefined days since the last update, the content of the article may be outdated.","sticky":"TOP","just":"Just","min":"minutes ago","hour":"hours ago","day":"days ago","month":"months ago"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy","user_tag":"fas fa-user-alt"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":true,"title":"default","height_limit":200},"toc":{"post_title":false},"live_time":{"start_time":"01/11/2025 19:00:00","prefix":"The blog has been lovely to run undefined day"},"danmu":{"enable":false,"el":".trm-banner"},"creative_commons":{"license":"by-nc-sa","language":"deed.zh-hans"}};</script>
 <script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2025-11-04 18:04:07"};</script>
 
 <!-- Theme mode css -->
-<link data-swup-theme rel="stylesheet" href="/css/index.css?v=2.2.6" id="trm-switch-style">
+<link data-swup-theme rel="stylesheet" href="/hexo/css/index.css?v=2.2.6" id="trm-switch-style">
 <script>
     let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
     let catchMode = localStorage.getItem('theme-mode') || defaultMode;
@@ -125,9 +125,9 @@
 	<div class="container">
 		<div class="trm-left-side">
 			<!-- logo -->
-<a href="/" class="trm-logo-frame trm-anima-link">
+<a href="/hexo/" class="trm-logo-frame trm-anima-link">
     
-        <img alt="logo" src="/favicon.ico#-32x32.png">
+        <img alt="logo" src="/hexo/favicon.ico#-32x32.png">
     
     
         <div class="trm-logo-text">
@@ -144,35 +144,35 @@
         <ul>
             
             <li class="menu-item-has-children ">
-                <a  href="/" target="">
+                <a  href="/hexo/" target="">
                     home
                 </a>
                 
             </li>
             
             <li class="menu-item-has-children ">
-                <a data-no-swup href="/archives/" target="">
+                <a data-no-swup href="/hexo/archives/" target="">
                     archives
                 </a>
                 
             </li>
             
             <li class="menu-item-has-children ">
-                <a data-no-swup href="/tags/" target="">
+                <a data-no-swup href="/hexo/tags/" target="">
                     tags
                 </a>
                 
             </li>
             
             <li class="menu-item-has-children ">
-                <a data-no-swup href="/personal/" target="">
+                <a data-no-swup href="/hexo/personal/" target="">
                     about
                 </a>
                 
             </li>
             
             <li class="menu-item-has-children ">
-                <a data-no-swup href="/projects/" target="">
+                <a data-no-swup href="/hexo/projects/" target="">
                     project
                 </a>
                 
@@ -210,7 +210,7 @@
     <div class="trm-banner">
     
     <!-- banner cover -->
-    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/img/banner.png">
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" src="/hexo/img/banner.png">
     <!-- banner cover end -->
     
 
@@ -235,7 +235,7 @@
                         
                             <ul class="trm-breadcrumbs trm-label">
                                 <li>
-                                    <a href="/" class="trm-anima-link">Home</a>
+                                    <a href="/hexo/" class="trm-anima-link">Home</a>
                                 </li>
                                 <li>
                                     <span>
@@ -271,7 +271,7 @@
         <!-- card header -->
 <div class="trm-mc-header">
     <div class="trm-avatar-frame trm-mb-20">
-        <img alt="Avatar" class="trm-avatar" src="/img/avatar.jpg">
+        <img alt="Avatar" class="trm-avatar" src="/hexo/img/avatar.jpg">
     </div>
     <h5 class="trm-name trm-mb-15">
         He Chenyu
@@ -487,7 +487,7 @@
             
                 <div style="display:inline-block">
                     <a rel="noopener noreferrer" href='/img/WeChat.jpeg' target='_blank' >
-                       <img src="/img/WeChat.jpeg" alt="微信" loading="lazy">
+                       <img src="/hexo/img/WeChat.jpeg" alt="微信" loading="lazy">
                     </a>
                     <p>微信</p>
                 </div>
@@ -511,9 +511,9 @@
     <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
         <div class="trm-older-publication">
             
-            <a class="trm-op-top trm-anima-link" href="/2025/11/06/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/">
+            <a class="trm-op-top trm-anima-link" href="/hexo/2025/11/06/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/">
                 <span class="trm-op-cover">
-                    <img alt="cover" class="no-fancybox" src="/img/block.jpg">
+                    <img alt="cover" class="no-fancybox" src="/hexo/img/block.jpg">
                 </span>
                 <h6 class="trm-op-title">排序算法学习</h6>
             </a>
@@ -532,9 +532,9 @@
     <div class="trm-older-publications-card trm-scroll-animation trm-active-el">
         <div class="trm-older-publication">
             
-            <a class="trm-op-top trm-anima-link" href="/2025/11/03/%E9%A1%B9%E7%9B%AE/Compiler/">
+            <a class="trm-op-top trm-anima-link" href="/hexo/2025/11/03/%E9%A1%B9%E7%9B%AE/Compiler/">
                 <span class="trm-op-cover">
-                    <img alt="cover" class="no-fancybox" src="/img/block.jpg">
+                    <img alt="cover" class="no-fancybox" src="/hexo/img/block.jpg">
                 </span>
                 <h6 class="trm-op-title">在线编译器设计体验</h6>
             </a>
@@ -646,7 +646,7 @@
     
 
     
-        <script src="/js/plugins/typing.js?v=2.2.6"></script>
+        <script src="/hexo/js/plugins/typing.js?v=2.2.6"></script>
     
 
     
@@ -687,7 +687,7 @@
 
 
 
-<script id="async-script" src="/js/main.js?v=2.2.6"></script>
+<script id="async-script" src="/hexo/js/main.js?v=2.2.6"></script>
 
 <!-- CDN -->
 
