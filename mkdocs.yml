@@ -35,9 +35,6 @@ plugins:
         - en
         - zh
       separator: '[\s\-]+'
-  - mermaid2:
-      arguments:
-        startOnLoad: false
   # sitemap plugin removed to avoid extra dependency; MkDocs outputs sitemap.xml by default
   - git-revision-date-localized:
       type: timeago
@@ -61,7 +58,11 @@ markdown_extensions:
       permalink: true
   - admonition
   - codehilite
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.inlinehilite
   - pymdownx.arithmatex
   - pymdownx.betterem
@@ -74,6 +75,8 @@ extra_css:
 extra_javascript:
   # MathJax for math rendering (pymdownx.arithmatex 配合)
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  # Mermaid (native support via superfences; load UMD and init lazily)
+  - js/mermaid-init.js
   # 可添加自定义脚本
   - js/custom.js
   - js/ux.js
