@@ -4,7 +4,9 @@ title: 首页
 
 <div class="hero">
   <div class="hero-inner">
-  <img class="hero-logo" src="/images/logo.svg" alt="logo" />
+    <div class="hero-logo" role="img" aria-label="Chenyu He logo">
+      <img src="/images/logo.svg" alt="Chenyu He logo" />
+    </div>
     <h1>Chenyu He 的笔记</h1>
     <p class="subtitle">简洁、清晰、优雅 —— 收藏我对编程、数学与笔记的一点思考。</p>
     <p class="hero-ctas">
@@ -66,7 +68,9 @@ title: 首页
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-left">
-        <img src="/images/logo.svg" alt="logo" class="footer-logo" />
+        <div class="footer-logo" aria-hidden="true">
+          <img src="/images/logo.svg" alt="Chenyu He logo" />
+        </div>
       <div class="copyright">© 2019 - 2025 Chenyu He</div>
     </div>
     <div class="footer-right">
