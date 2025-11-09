@@ -1,0 +1,1390 @@
+<!doctype html><html lang=zh class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="blog of Chenyu He"><link href=https://chenyuheee.github.io/%E9%A1%B9%E7%9B%AE/Compiler/ rel=canonical><link href=../../%E6%95%B0%E7%90%86%E5%AD%A6%E4%B9%A0/%E5%BE%AE%E7%A7%AF%E5%88%86/ rel=prev><link rel=icon href=../../assets/images/favicon.png><meta name=generator content="mkdocs-1.6.1, mkdocs-material-9.6.23"><title>在线编译器设计体验 - Blog of Chenyu He</title><link rel=stylesheet href=../../assets/stylesheets/main.84d31ad4.min.css><link rel=stylesheet href=../../assets/stylesheets/palette.06af60db.min.css><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback"><style>:root{--md-text-font:"Inter";--md-code-font:"Fira Code"}</style><link rel=stylesheet href=../../css/timeago.css><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;700&display=swap"><link rel=stylesheet href=../../styles/overrides.css><script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script></head> <body dir=ltr data-md-color-scheme=slate data-md-color-primary=indigo data-md-color-accent=indigo> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#_1 class=md-skip> 跳转至 </a> </div> <div data-md-component=announce> </div> <div data-md-color-scheme=default data-md-component=outdated hidden> </div> <header class="md-header md-header--shadow" data-md-component=header> <nav class="md-header__inner md-grid" aria-label=页眉> <a href=../.. title="Blog of Chenyu He" class="md-header__button md-logo" aria-label="Blog of Chenyu He" data-md-component=logo> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> Blog of Chenyu He </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> 在线编译器设计体验 </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=搜索 placeholder=搜索 autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg> </label> <nav class=md-search__options aria-label=查找> <a href=javascript:void(0) class="md-search__icon md-icon" title=分享 aria-label=分享 data-clipboard data-clipboard-text data-md-component=search-share tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg> </a> <button type=reset class="md-search__icon md-icon" title=清空当前内容 aria-label=清空当前内容 tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> </button> </nav> </form> <div class=md-search__output> <div class=md-search__scrollwrap tabindex=0 data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> 正在初始化搜索引擎 </div> <ol class=md-search-result__list role=presentation></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/ChenyuHeee/chenyuheee.github.io.git title=前往仓库 class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg> </div> <div class=md-source__repository> GitHub </div> </a> </div> </nav> </header> <div class=md-container data-md-component=container> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--integrated" aria-label=导航栏 data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../.. title="Blog of Chenyu He" class="md-nav__button md-logo" aria-label="Blog of Chenyu He" data-md-component=logo> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg> </a> Blog of Chenyu He </label> <div class=md-nav__source> <a href=https://github.com/ChenyuHeee/chenyuheee.github.io.git title=前往仓库 class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg> </div> <div class=md-source__repository> GitHub </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../.. class=md-nav__link> <span class=md-ellipsis> 首页 </span> </a> </li> <li class=md-nav__item> <a href=../../GithubVisitingProblems/ class=md-nav__link> <span class=md-ellipsis> 针对访问Github出现问题的MacOS解决方案 </span> </a> </li> <li class=md-nav__item> <a href=../../Hexo%E5%BB%BA%E7%AB%99%E7%AC%94%E8%AE%B0/ class=md-nav__link> <span class=md-ellipsis> Hexo建站笔记 </span> </a> </li> <li class=md-nav__item> <a href=../../MkDocs/ class=md-nav__link> <span class=md-ellipsis> MkDocs </span> </a> </li> <li class=md-nav__item> <a href=../../git%20merge%20solution/ class=md-nav__link> <span class=md-ellipsis> git merge solution </span> </a> </li> <li class=md-nav__item> <a href=../../%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/ class=md-nav__link> <span class=md-ellipsis> 排序算法学习 </span> </a> </li> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_7> <label class=md-nav__link for=__nav_7 id=__nav_7_label tabindex> <span class=md-ellipsis> CTF </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_7_label aria-expanded=false> <label class=md-nav__title for=__nav_7> <span class="md-nav__icon md-icon"></span> CTF </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../CTF/Web/ class=md-nav__link> <span class=md-ellipsis> Web </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_8> <label class=md-nav__link for=__nav_8 id=__nav_8_label tabindex> <span class=md-ellipsis> 数理学习 </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_8_label aria-expanded=false> <label class=md-nav__title for=__nav_8> <span class="md-nav__icon md-icon"></span> 数理学习 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../%E6%95%B0%E7%90%86%E5%AD%A6%E4%B9%A0/%E5%BE%AE%E7%A7%AF%E5%88%86/ class=md-nav__link> <span class=md-ellipsis> 微积分 </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_9 checked> <label class=md-nav__link for=__nav_9 id=__nav_9_label tabindex> <span class=md-ellipsis> 项目 </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_9_label aria-expanded=true> <label class=md-nav__title for=__nav_9> <span class="md-nav__icon md-icon"></span> 项目 </label> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--active"> <input class="md-nav__toggle md-toggle" type=checkbox id=__toc> <label class="md-nav__link md-nav__link--active" for=__toc> <span class=md-ellipsis> 在线编译器设计体验 </span> <span class="md-nav__icon md-icon"></span> </label> <a href=./ class="md-nav__link md-nav__link--active"> <span class=md-ellipsis> 在线编译器设计体验 </span> </a> <nav class="md-nav md-nav--secondary" aria-label=目录> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> 目录 </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#- class=md-nav__link> <span class=md-ellipsis> 点击此处-项目呈现 | 点击查看更新日志 </span> </a> </li> <li class=md-nav__item> <a href=#_2 class=md-nav__link> <span class=md-ellipsis> 设计思路 </span> </a> </li> <li class=md-nav__item> <a href=#_3 class=md-nav__link> <span class=md-ellipsis> 实现方式 </span> </a> </li> <li class=md-nav__item> <a href=#_4 class=md-nav__link> <span class=md-ellipsis> 具体实践 </span> </a> <nav class=md-nav aria-label=具体实践> <ul class=md-nav__list> <li class=md-nav__item> <a href=#1github-pages class=md-nav__link> <span class=md-ellipsis> 1.Github Pages搭建 </span> </a> </li> <li class=md-nav__item> <a href=#2 class=md-nav__link> <span class=md-ellipsis> 2.通过大模型实现基本需求 </span> </a> <nav class=md-nav aria-label=2.通过大模型实现基本需求> <ul class=md-nav__list> <li class=md-nav__item> <a href=#deepseek class=md-nav__link> <span class=md-ellipsis> Deepseek生成最初版本 </span> </a> <nav class=md-nav aria-label=Deepseek生成最初版本> <ul class=md-nav__list> <li class=md-nav__item> <a href=#_5 class=md-nav__link> <span class=md-ellipsis> 学习收获 </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#gpt-5 class=md-nav__link> <span class=md-ellipsis> GPT-5优化 </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#_6 class=md-nav__link> <span class=md-ellipsis> 初具雏形 </span> </a> </li> <li class=md-nav__item> <a href=#_7 class=md-nav__link> <span class=md-ellipsis> 遇到问题 </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#_8 class=md-nav__link> <span class=md-ellipsis> 小结 </span> </a> </li> </ul> </nav> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <h1 id=_1>在线编译器设计体验<a class=headerlink href=#_1 title="Permanent link">&para;</a></h1> <hr> <h2 id=-><a href=/c>点击此处-项目呈现</a> | <a href=/c/CHANGELOG.md>点击查看更新日志</a><a class=headerlink href=#- title="Permanent link">&para;</a></h2> <h2 id=_2>设计思路<a class=headerlink href=#_2 title="Permanent link">&para;</a></h2> <ul> <li>整体布局：<ul> <li>主界面代码编辑器</li> <li>顶部工具栏</li> <li>侧边栏（输入输出）</li> </ul> </li> <li>代码编辑器： 使用Monaco Editor（VS Code的编辑器核心）实现C语言语法高亮</li> <li>编译功能： 通过后端API调用编译器（如GCC）执行代码</li> <li>响应式设计： 适配不同屏幕尺寸</li> </ul> <h2 id=_3>实现方式<a class=headerlink href=#_3 title="Permanent link">&para;</a></h2> <ul> <li>Github Pages搭建</li> <li>调用编译器api</li> <li>大模型补足</li> </ul> <h2 id=_4>具体实践<a class=headerlink href=#_4 title="Permanent link">&para;</a></h2> <h3 id=1github-pages>1.Github Pages搭建<a class=headerlink href=#1github-pages title="Permanent link">&para;</a></h3> <p>内置在博客网站内 <div class=highlight><pre><span></span><code>/compiler/
+</code></pre></div></p> <h3 id=2>2.通过大模型实现基本需求<a class=headerlink href=#2 title="Permanent link">&para;</a></h3> <h4 id=deepseek>Deepseek生成最初版本<a class=headerlink href=#deepseek title="Permanent link">&para;</a></h4> <p><div class=highlight><pre><span></span><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh-CN&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;C语言在线编译器&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot;&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js&quot;&gt;&lt;/script&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: &#39;Segoe UI&#39;, Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 24px;
+            color: #3498db;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 150px);
+        }
+
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .editor-header {
+            padding: 10px 15px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-header h2 {
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        #editor {
+            flex: 1;
+            min-height: 400px;
+        }
+
+        .toolbar {
+            padding: 10px 15px;
+            background: #f5f5f5;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .sidebar {
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            background: #f9f9f9;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(100%);
+        }
+
+        .sidebar-header {
+            padding: 10px 15px;
+            background: #34495e;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .sidebar-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            padding: 10px 15px;
+            background: #ecf0f1;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .section-content {
+            flex: 1;
+            padding: 15px;
+            overflow: auto;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: none;
+            font-family: monospace;
+        }
+
+        .output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px;
+            border-radius: 4px;
+            height: 100%;
+            overflow: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        .toggle-sidebar {
+            position: absolute;
+            right: 20px;
+            top: 80px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .toggle-sidebar:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: 40%;
+            }
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;header&gt;
+            &lt;div class=&quot;logo&quot;&gt;
+                &lt;i class=&quot;fas fa-code&quot;&gt;&lt;/i&gt;
+                &lt;h1&gt;C语言在线编译器&lt;/h1&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;header-info&quot;&gt;
+                &lt;span&gt;安全、快速、便捷的在线C语言编程环境&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/header&gt;
+
+        &lt;div class=&quot;main-content&quot;&gt;
+            &lt;div class=&quot;editor-container&quot;&gt;
+                &lt;div class=&quot;editor-header&quot;&gt;
+                    &lt;h2&gt;&lt;i class=&quot;fas fa-file-code&quot;&gt;&lt;/i&gt; 代码编辑器 (main.c)&lt;/h2&gt;
+                    &lt;div class=&quot;editor-actions&quot;&gt;
+                        &lt;span class=&quot;status&quot;&gt;已保存&lt;/span&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div id=&quot;editor&quot;&gt;&lt;/div&gt;
+                &lt;div class=&quot;toolbar&quot;&gt;
+                    &lt;button class=&quot;btn btn-primary&quot; id=&quot;compileBtn&quot;&gt;
+                        &lt;i class=&quot;fas fa-play&quot;&gt;&lt;/i&gt; 编译运行
+                    &lt;/button&gt;
+                    &lt;button class=&quot;btn btn-success&quot; id=&quot;saveBtn&quot;&gt;
+                        &lt;i class=&quot;fas fa-save&quot;&gt;&lt;/i&gt; 保存代码
+                    &lt;/button&gt;
+                    &lt;button class=&quot;btn btn-danger&quot; id=&quot;resetBtn&quot;&gt;
+                        &lt;i class=&quot;fas fa-redo&quot;&gt;&lt;/i&gt; 重置代码
+                    &lt;/button&gt;
+                    &lt;div style=&quot;flex: 1&quot;&gt;&lt;/div&gt;
+                    &lt;button class=&quot;btn&quot; id=&quot;themeToggle&quot;&gt;
+                        &lt;i class=&quot;fas fa-moon&quot;&gt;&lt;/i&gt; 切换主题
+                    &lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div class=&quot;sidebar&quot; id=&quot;sidebar&quot;&gt;
+                &lt;div class=&quot;sidebar-header&quot;&gt;
+                    &lt;h3&gt;&lt;i class=&quot;fas fa-terminal&quot;&gt;&lt;/i&gt; 运行结果&lt;/h3&gt;
+                    &lt;button id=&quot;closeSidebar&quot;&gt;&lt;i class=&quot;fas fa-times&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;sidebar-section&quot;&gt;
+                    &lt;div class=&quot;section-header&quot;&gt;
+                        &lt;i class=&quot;fas fa-keyboard&quot;&gt;&lt;/i&gt; 标准输入 (stdin)
+                    &lt;/div&gt;
+                    &lt;div class=&quot;section-content&quot;&gt;
+                        &lt;textarea id=&quot;input&quot; placeholder=&quot;在此输入程序运行所需的输入...&quot;&gt;10 20&lt;/textarea&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;sidebar-section&quot;&gt;
+                    &lt;div class=&quot;section-header&quot;&gt;
+                        &lt;i class=&quot;fas fa-desktop&quot;&gt;&lt;/i&gt; 输出结果 (stdout)
+                    &lt;/div&gt;
+                    &lt;div class=&quot;section-content&quot;&gt;
+                        &lt;div class=&quot;output&quot; id=&quot;output&quot;&gt;程序输出将显示在这里...&lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;button class=&quot;toggle-sidebar&quot; id=&quot;toggleSidebar&quot;&gt;
+            &lt;i class=&quot;fas fa-chevron-left&quot;&gt;&lt;/i&gt;
+        &lt;/button&gt;
+
+        &lt;footer&gt;
+            &lt;p&gt;C语言在线编译器 &amp;copy; 2023 | 基于Monaco Editor构建 | 安全提示：请勿上传敏感信息&lt;/p&gt;
+        &lt;/footer&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        // 初始化Monaco Editor
+        require.config({ paths: { &#39;vs&#39;: &#39;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs&#39; }});
+
+        require([&#39;vs/editor/editor.main&#39;], function() {
+            // 默认C语言代码
+            const defaultCode = `#include &lt;stdio.h&gt;
+
+int main() {
+    int a, b, sum;
+
+    printf(&quot;请输入两个整数：\\n&quot;);
+    scanf(&quot;%d %d&quot;, &amp;a, &amp;b);
+
+    sum = a + b;
+
+    printf(&quot;两数之和为：%d\\n&quot;, sum);
+
+    return 0;
+}`;
+
+            // 创建编辑器实例
+            window.editor = monaco.editor.create(document.getElementById(&#39;editor&#39;), {
+                value: defaultCode,
+                language: &#39;c&#39;,
+                theme: &#39;vs-light&#39;,
+                fontSize: 14,
+                minimap: { enabled: true },
+                automaticLayout: true,
+                scrollBeyondLastLine: false,
+                renderLineHighlight: &#39;all&#39;,
+                lineNumbers: &#39;on&#39;,
+                folding: true,
+                wordWrap: &#39;on&#39;
+            });
+
+            // 添加窗口大小变化时的自适应
+            window.addEventListener(&#39;resize&#39;, function() {
+                window.editor.layout();
+            });
+        });
+
+        // DOM元素
+        const compileBtn = document.getElementById(&#39;compileBtn&#39;);
+        const saveBtn = document.getElementById(&#39;saveBtn&#39;);
+        const resetBtn = document.getElementById(&#39;resetBtn&#39;);
+        const themeToggle = document.getElementById(&#39;themeToggle&#39;);
+        const toggleSidebar = document.getElementById(&#39;toggleSidebar&#39;);
+        const closeSidebar = document.getElementById(&#39;closeSidebar&#39;);
+        const sidebar = document.getElementById(&#39;sidebar&#39;);
+        const input = document.getElementById(&#39;input&#39;);
+        const output = document.getElementById(&#39;output&#39;);
+
+        // 编译按钮事件
+        compileBtn.addEventListener(&#39;click&#39;, function() {
+            output.textContent = &quot;编译中...&quot;;
+            sidebar.classList.remove(&#39;hidden&#39;);
+            toggleSidebar.querySelector(&#39;i&#39;).className = &#39;fas fa-chevron-right&#39;;
+
+            // 模拟编译过程
+            setTimeout(function() {
+                const code = window.editor.getValue();
+                const userInput = input.value;
+
+                // 简单模拟编译结果
+                if (code.includes(&#39;scanf&#39;) &amp;&amp; userInput.trim() === &#39;&#39;) {
+                    output.textContent = &quot;错误: 程序需要输入但未提供输入数据&quot;;
+                    return;
+                }
+
+                // 模拟程序输出
+                if (userInput.trim() !== &#39;&#39;) {
+                    const inputs = userInput.split(&#39; &#39;);
+                    if (inputs.length &gt;= 2) {
+                        const a = parseInt(inputs[0]);
+                        const b = parseInt(inputs[1]);
+                        output.textContent = `请输入两个整数：\n两数之和为：${a + b}`;
+                    } else {
+                        output.textContent = &quot;错误: 输入格式不正确，请输入两个整数&quot;;
+                    }
+                } else {
+                    output.textContent = &quot;请输入两个整数：\n两数之和为：30&quot;;
+                }
+            }, 1500);
+        });
+
+        // 保存按钮事件
+        saveBtn.addEventListener(&#39;click&#39;, function() {
+            const status = document.querySelector(&#39;.status&#39;);
+            status.textContent = &quot;已保存&quot;;
+            status.style.color = &quot;#2ecc71&quot;;
+
+            setTimeout(() =&gt; {
+                status.textContent = &quot;已保存&quot;;
+                status.style.color = &quot;&quot;;
+            }, 2000);
+
+            // 在实际应用中，这里应该将代码保存到服务器或本地存储
+            localStorage.setItem(&#39;savedCCode&#39;, window.editor.getValue());
+        });
+
+        // 重置按钮事件
+        resetBtn.addEventListener(&#39;click&#39;, function() {
+            if (confirm(&quot;确定要重置代码吗？所有未保存的更改将丢失。&quot;)) {
+                window.editor.setValue(defaultCode);
+            }
+        });
+
+        // 主题切换
+        themeToggle.addEventListener(&#39;click&#39;, function() {
+            const currentTheme = monaco.editor.getTheme();
+            if (currentTheme === &#39;vs-light&#39;) {
+                monaco.editor.setTheme(&#39;vs-dark&#39;);
+                themeToggle.innerHTML = &#39;&lt;i class=&quot;fas fa-sun&quot;&gt;&lt;/i&gt; 切换主题&#39;;
+                document.body.style.background = &#39;linear-gradient(135deg, #0f2027, #203a43, #2c5364)&#39;;
+            } else {
+                monaco.editor.setTheme(&#39;vs-light&#39;);
+                themeToggle.innerHTML = &#39;&lt;i class=&quot;fas fa-moon&quot;&gt;&lt;/i&gt; 切换主题&#39;;
+                document.body.style.background = &#39;linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d)&#39;;
+            }
+        });
+
+        // 侧边栏切换
+        toggleSidebar.addEventListener(&#39;click&#39;, function() {
+            sidebar.classList.toggle(&#39;hidden&#39;);
+            const icon = toggleSidebar.querySelector(&#39;i&#39;);
+            if (sidebar.classList.contains(&#39;hidden&#39;)) {
+                icon.className = &#39;fas fa-chevron-left&#39;;
+            } else {
+                icon.className = &#39;fas fa-chevron-right&#39;;
+            }
+        });
+
+        closeSidebar.addEventListener(&#39;click&#39;, function() {
+            sidebar.classList.add(&#39;hidden&#39;);
+            toggleSidebar.querySelector(&#39;i&#39;).className = &#39;fas fa-chevron-left&#39;;
+        });
+
+        // 从本地存储加载已保存的代码
+        window.addEventListener(&#39;load&#39;, function() {
+            const savedCode = localStorage.getItem(&#39;savedCCode&#39;);
+            if (savedCode) {
+                window.editor.setValue(savedCode);
+            }
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div> 该版本已实现： - 代码编辑器： - 基于Monaco Editor，提供完整的C语言语法高亮 - 支持代码折叠、行号显示、自动换行等功能 - 主题切换（亮色/暗色） - ~~真正的编译运行~~ - 工具栏功能： - 编译运行：执行代码并显示结果 - 保存代码：将代码保存到本地存储 - 重置代码：恢复默认代码示例 - 主题切换：切换编辑器主题 - 侧边栏： - 标准输入区域：提供程序运行所需的输入 - 输出结果区域：显示程序执行结果 - 可展开/折叠的侧边栏设计 - 响应式设计： - 适配不同屏幕尺寸，在移动设备上自动调整布局</p> <h5 id=_5>学习收获<a class=headerlink href=#_5 title="Permanent link">&para;</a></h5> <ol> <li><strong>前端技术整合</strong> - 将Monaco Editor集成到网页中实现专业代码编辑体验</li> <li><strong>UI/UX设计</strong> - 设计直观的编译器界面，合理布局编辑区与结果展示区</li> <li><strong>交互逻辑</strong> - 实现代码编译、保存、重置等功能的完整用户流程</li> <li><strong>响应式设计</strong> - 确保网站在不同设备上都能良好显示</li> <li><strong>项目规划</strong> - 从需求分析到功能实现的完整开发流程</li> </ol> <h4 id=gpt-5>GPT-5优化<a class=headerlink href=#gpt-5 title="Permanent link">&para;</a></h4> <p>目标： - 美化界面 - 精简代码 - 增添注释帮助学习理解 代码实现： <div class=highlight><pre><span></span><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh-CN&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot; /&gt;
+    &lt;title&gt;C 语言在线编译器（简洁版）&lt;/title&gt;
+    &lt;!-- 字体图标和 Monaco 加载器 --&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot;&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js&quot;&gt;&lt;/script&gt;
+
+    &lt;style&gt;
+        /* 主题变量，便于快速定制 */
+        :root{
+            --bg-start: #1a2a6c;
+            --bg-mid: #b21f1f;
+            --bg-end: #fdbb2d;
+            --card-bg: rgba(255,255,255,0.98);
+            --primary: #3498db;
+            --muted: #6b7280;
+            --shadow: 0 10px 30px rgba(0,0,0,0.15);
+            --radius: 10px;
+        }
+
+        *{box-sizing:border-box;margin:0;padding:0}
+        html,body{height:100%;font-family:Inter,Segoe UI,Helvetica,Arial,sans-serif}
+
+        body{
+            background:linear-gradient(135deg,var(--bg-start),var(--bg-mid),var(--bg-end));
+            display:flex;align-items:stretch;justify-content:center;padding:20px;
+        }
+
+        /* 容器 */
+        .app{
+            width:100%;max-width:1200px;background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - 40px);
+        }
+
+        header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#223247;color:#fff}
+        header .title{display:flex;align-items:center;gap:12px;font-weight:600}
+        header .title i{color:var(--primary);font-size:20px}
+        header .meta{color:var(--muted);font-size:13px}
+
+        /* 主区：编辑器 + 侧栏 */
+        .main{flex:1;display:flex;min-height:0}
+
+        /* 编辑区 */
+        .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid #eee}
+        .editor-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#fafafa;border-bottom:1px solid #eee}
+        .editor-head h2{font-size:15px;color:#243b53}
+        #editor{flex:1;min-height:200px}
+
+        /* 工具栏 */
+        .toolbar{display:flex;gap:8px;padding:10px 14px;background:#fafafa;border-top:1px solid #eee;align-items:center}
+        .btn{border:0;padding:8px 12px;border-radius:6px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+        .btn-primary{background:var(--primary);color:#fff}
+        .btn-ghost{background:transparent;border:1px solid #e6e6e6}
+
+        /* 侧栏 */
+        .sidebar{width:360px;display:flex;flex-direction:column;background:#f7f9fb}
+        .sb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#2f4356;color:#fff}
+        .sb-section{padding:12px 14px;flex:1;overflow:auto}
+        textarea,input[type=text]{width:100%;padding:10px;border:1px solid #e3e8ee;border-radius:6px;font-family:monospace}
+        .output{background:#0f1b2a;color:#dfefff;padding:12px;border-radius:6px;white-space:pre-wrap;height:100%;overflow:auto;font-family:monospace}
+
+        /* 小屏适配 */
+        @media (max-width:900px){
+            .main{flex-direction:column}
+            .sidebar{width:100%;height:38%}
+            .editor-wrap{border-right:0}
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;app&quot;&gt;
+        &lt;header&gt;
+            &lt;div class=&quot;title&quot;&gt;&lt;i class=&quot;fas fa-code&quot;&gt;&lt;/i&gt;&lt;div&gt;C 语言在线编译器&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;meta&quot;&gt;安全提醒：此页面仅做演示，本地运行即可&lt;/div&gt;
+        &lt;/header&gt;
+
+        &lt;div class=&quot;main&quot;&gt;
+            &lt;div class=&quot;editor-wrap&quot;&gt;
+                &lt;div class=&quot;editor-head&quot;&gt;
+                    &lt;h2&gt;&lt;i class=&quot;fas fa-file-code&quot;&gt;&lt;/i&gt; main.c&lt;/h2&gt;
+                    &lt;div class=&quot;status&quot; id=&quot;saveStatus&quot;&gt;已保存&lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;div id=&quot;editor&quot;&gt;&lt;/div&gt;
+
+                &lt;div class=&quot;toolbar&quot;&gt;
+                    &lt;button class=&quot;btn btn-primary&quot; id=&quot;runBtn&quot;&gt;&lt;i class=&quot;fas fa-play&quot;&gt;&lt;/i&gt; 运行&lt;/button&gt;
+                    &lt;button class=&quot;btn btn-ghost&quot; id=&quot;saveBtn&quot;&gt;&lt;i class=&quot;fas fa-save&quot;&gt;&lt;/i&gt; 保存&lt;/button&gt;
+                    &lt;button class=&quot;btn btn-ghost&quot; id=&quot;resetBtn&quot;&gt;&lt;i class=&quot;fas fa-undo&quot;&gt;&lt;/i&gt; 重置&lt;/button&gt;
+                    &lt;div style=&quot;flex:1&quot;&gt;&lt;/div&gt;
+                    &lt;button class=&quot;btn btn-ghost&quot; id=&quot;themeBtn&quot;&gt;&lt;i class=&quot;fas fa-moon&quot;&gt;&lt;/i&gt; 主题&lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;aside class=&quot;sidebar&quot; id=&quot;sidebar&quot;&gt;
+                &lt;div class=&quot;sb-head&quot;&gt;&lt;div&gt;&lt;i class=&quot;fas fa-terminal&quot;&gt;&lt;/i&gt; 运行结果&lt;/div&gt;&lt;button id=&quot;closeSb&quot; class=&quot;btn btn-ghost&quot;&gt;关闭&lt;/button&gt;&lt;/div&gt;
+                &lt;div class=&quot;sb-section&quot;&gt;
+                    &lt;label&gt;标准输入 (stdin)&lt;/label&gt;
+                    &lt;textarea id=&quot;stdin&quot; rows=&quot;3&quot; placeholder=&quot;例如：10 20&quot;&gt;10 20&lt;/textarea&gt;
+                    &lt;div style=&quot;height:12px&quot;&gt;&lt;/div&gt;
+                    &lt;label&gt;输出 (stdout)&lt;/label&gt;
+                    &lt;div class=&quot;output&quot; id=&quot;stdout&quot;&gt;程序输出将显示在这里...&lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/aside&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        /**********************************************************************
+         * 简洁版脚本：功能
+         * - 初始化 Monaco 编辑器
+         * - 本地保存/加载代码（localStorage）
+         * - 简单运行（模拟 scanf/printf）
+         * - 主题切换与 UI 状态更新
+         * 所有注释为中文，便于维护。
+         **********************************************************************/
+
+        // 默认代码（保持与 UI 功能一致的示例）
+        const DEFAULT_CODE = `#include &lt;stdio.h&gt;
+
+int main() {
+    int a, b;
+    // 读取两个整数并输出和
+    if (scanf(&quot;%d %d&quot;, &amp;a, &amp;b) == 2) {
+        printf(&quot;两数之和为：%d\n&quot;, a + b);
+    } else {
+        printf(&quot;输入格式错误\n&quot;);
+    }
+    return 0;
+}`;
+
+        // DOM 引用
+        const runBtn = document.getElementById(&#39;runBtn&#39;);
+        const saveBtn = document.getElementById(&#39;saveBtn&#39;);
+        const resetBtn = document.getElementById(&#39;resetBtn&#39;);
+        const themeBtn = document.getElementById(&#39;themeBtn&#39;);
+        const stdinEl = document.getElementById(&#39;stdin&#39;);
+        const stdoutEl = document.getElementById(&#39;stdout&#39;);
+        const saveStatus = document.getElementById(&#39;saveStatus&#39;);
+        const closeSb = document.getElementById(&#39;closeSb&#39;);
+
+        // Monaco 编辑器需要异步加载
+        require.config({ paths: { vs: &#39;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs&#39; } });
+        require([&#39;vs/editor/editor.main&#39;], function () {
+            // 尝试从 localStorage 加载之前保存的代码
+            const saved = localStorage.getItem(&#39;deepseek_saved_c&#39;);
+            window.editor = monaco.editor.create(document.getElementById(&#39;editor&#39;), {
+                value: saved || DEFAULT_CODE,
+                language: &#39;c&#39;,
+                theme: &#39;vs-light&#39;,
+                automaticLayout: true,
+                minimap: { enabled: false },
+                fontSize: 13,
+                scrollBeyondLastLine: false
+            });
+
+            // 快捷键：Ctrl/Cmd+S 保存
+            window.addEventListener(&#39;keydown&#39;, (e) =&gt; {
+                if ((e.ctrlKey || e.metaKey) &amp;&amp; e.key.toLowerCase() === &#39;s&#39;) {
+                    e.preventDefault(); saveCode();
+                }
+            });
+        });
+
+        // ----------------- 功能函数 -----------------
+        // 保存当前编辑器内容到 localStorage，并提示状态
+        function saveCode() {
+            if (!window.editor) return;
+            localStorage.setItem(&#39;deepseek_saved_c&#39;, window.editor.getValue());
+            saveStatus.textContent = &#39;已保存&#39;;
+            saveStatus.style.color = &#39;#22c55e&#39;;
+            setTimeout(() =&gt; { saveStatus.style.color = &#39;&#39;; }, 1200);
+        }
+
+        // 将编辑器内容重置为默认代码（不会清除 localStorage）
+        function resetCode() {
+            if (!window.editor) return;
+            if (!confirm(&#39;确定重置代码？未保存的更改将丢失。&#39;)) return;
+            window.editor.setValue(DEFAULT_CODE);
+        }
+
+        // 简单“运行”函数：模拟 scanf/printf 的行为，仅用于演示
+        // - 如果代码包含 scanf 且 stdin 为空，则提示错误
+        // - 否则把 stdin 按空白拆分为整数并输出和
+        function runCode() {
+            if (!window.editor) return;
+            stdoutEl.textContent = &#39;运行中...&#39;;
+
+            // 模拟异步运行（更真实的体验）
+            setTimeout(() =&gt; {
+                const code = window.editor.getValue();
+                const input = (stdinEl.value || &#39;&#39;).trim();
+
+                if (/scanf\s*\(/.test(code) &amp;&amp; input === &#39;&#39;) {
+                    stdoutEl.textContent = &#39;错误：程序需要输入但未提供 stdin。&#39;;
+                    return;
+                }
+
+                if (input === &#39;&#39;) {
+                    // 没有输入：展示友好示例输出
+                    stdoutEl.textContent = &#39;提示：请在左侧输入两个整数，例如：10 20&#39;;
+                    return;
+                }
+
+                const parts = input.split(/\s+/).map(s =&gt; parseInt(s, 10));
+                if (parts.length &gt;= 2 &amp;&amp; parts.every(n =&gt; Number.isFinite(n))) {
+                    const [a, b] = parts;
+                    stdoutEl.textContent = `两数之和为：${a + b}`;
+                } else {
+                    stdoutEl.textContent = &#39;错误：输入格式不正确，请输入两个整数（例如：10 20）&#39;;
+                }
+            }, 400);
+        }
+
+        // 切换主题（轻/暗）
+        let isDark = false;
+        function toggleTheme() {
+            if (!window.monaco) { /* monaco 可能尚未加载 */ }
+            isDark = !isDark;
+            try {
+                monaco.editor.setTheme(isDark ? &#39;vs-dark&#39; : &#39;vs-light&#39;);
+            } catch (e) { /* ignore */ }
+            themeBtn.innerHTML = isDark ? &#39;&lt;i class=&quot;fas fa-sun&quot;&gt;&lt;/i&gt; 明亮&#39; : &#39;&lt;i class=&quot;fas fa-moon&quot;&gt;&lt;/i&gt; 暗色&#39;;
+        }
+
+        // ----------------- 事件绑定 -----------------
+        runBtn.addEventListener(&#39;click&#39;, runCode);
+        saveBtn.addEventListener(&#39;click&#39;, saveCode);
+        resetBtn.addEventListener(&#39;click&#39;, resetCode);
+        themeBtn.addEventListener(&#39;click&#39;, toggleTheme);
+        closeSb.addEventListener(&#39;click&#39;, () =&gt; { document.getElementById(&#39;sidebar&#39;).style.display = &#39;none&#39;; });
+
+        // 页面卸载时自动保存（可选）
+        window.addEventListener(&#39;beforeunload&#39;, () =&gt; {
+            if (window.editor) localStorage.setItem(&#39;deepseek_saved_c&#39;, window.editor.getValue());
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div> 增添功能： 保存：保存到 <code>localStorage</code>键 <code>deepseek_saved_c</code>，并在窗口关闭前自动保存一次（防止意外关闭丢失）。 <strong>学习收获</strong> 在GPT的帮助下阅读代码，理解更多css变量等形式</p> <h3 id=_6>初具雏形<a class=headerlink href=#_6 title="Permanent link">&para;</a></h3> <p>外观与ui设计在手动调整（如取色、位置等参数）后，符合需求 代码展示： <div class=highlight><pre><span></span><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh-CN&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot; /&gt;
+    &lt;title&gt;C 语言在线编译器（简洁版）&lt;/title&gt;
+    &lt;!-- 字体图标和 Monaco 加载器 --&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot;&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js&quot;&gt;&lt;/script&gt;
+
+    &lt;style&gt;
+        /* 暗黑优先 - 极简 mac 风格 */
+        :root{
+            --bg: #0b0c0d;           /* 页面背景（near black） */
+            --panel: #0f1113;        /* 卡片 / 主容器背景 */
+            --muted: #9aa4ad;        /* 次要文字 */
+            --accent: #48a0ff;       /* 高亮色（适度） */
+            --glass: rgba(255,255,255,0.02);
+            --radius: 10px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.6);
+        }
+
+        *{box-sizing:border-box;margin:0;padding:0}
+        html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial}
+        body{background:var(--bg);color:#e6eef6;}
+
+        /* 应用容器：占满整个视口，类似本地 app 的全屏编辑器 */
+        .app{height:100vh;width:100vw;display:flex;flex-direction:column;align-items:stretch;justify-content:stretch}
+        .frame{max-width:1400px;margin:12px auto;flex:1;background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+
+        header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+        header .title{display:flex;align-items:center;gap:10px;font-weight:600}
+        header .title i{color:var(--accent);font-size:18px}
+        header .meta{color:var(--muted);font-size:13px}
+
+        /* 主区：编辑器 + 侧栏 */
+        .main{flex:1;display:flex;min-height:0}
+
+        /* 编辑区 */
+        .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.03)}
+        .editor-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
+        .editor-head h2{font-size:14px;color:#dbe9ff}
+        #editor{flex:1;min-height:200px}
+
+        /* 工具栏 */
+        .toolbar{display:flex;gap:8px;padding:10px 14px;align-items:center}
+        .btn{border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;background:transparent;color:#e6eef6}
+        .btn.primary{background:var(--accent);color:#071022}
+        .btn.ghost{border:1px solid rgba(255,255,255,0.04)}
+
+        /* 侧栏 */
+        .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)}
+        .sidebar.collapsed{transform:translateX(100%);transition:transform .28s ease}
+        .sb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+        .sb-section{padding:12px 14px;flex:1;overflow:auto}
+        textarea,input[type=text]{width:100%;padding:10px;border:1px solid rgba(255,255,255,0.03);border-radius:8px;background:transparent;color:#e6eef6;font-family:monospace}
+        .output{background:var(--glass);color:#dfefff;padding:12px;border-radius:8px;white-space:pre-wrap;height:100%;overflow:auto;font-family:monospace}
+
+        /* 悬浮的侧边栏切换按钮（当侧栏折叠时可恢复） */
+        #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer}
+
+        /* 小屏适配 */
+        @media (max-width:900px){
+            .main{flex-direction:column}
+            .sidebar{width:100%;height:34%}
+            .editor-wrap{border-right:0}
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;app&quot;&gt;
+        &lt;header&gt;
+            &lt;div class=&quot;title&quot;&gt;&lt;i class=&quot;fas fa-code&quot;&gt;&lt;/i&gt;&lt;div&gt;C 语言在线编译器&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;meta&quot;&gt;安全提醒：此页面仅做演示，本地运行即可&lt;/div&gt;
+        &lt;/header&gt;
+
+        &lt;div class=&quot;main&quot;&gt;
+            &lt;div class=&quot;editor-wrap&quot;&gt;
+                &lt;div class=&quot;editor-head&quot;&gt;
+                    &lt;h2&gt;&lt;i class=&quot;fas fa-file-code&quot;&gt;&lt;/i&gt; main.c&lt;/h2&gt;
+                    &lt;div class=&quot;status&quot; id=&quot;saveStatus&quot;&gt;已保存&lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;div id=&quot;editor&quot;&gt;&lt;/div&gt;
+
+                &lt;div class=&quot;toolbar&quot;&gt;
+                    &lt;button class=&quot;btn primary&quot; id=&quot;runBtn&quot;&gt;&lt;i class=&quot;fas fa-play&quot;&gt;&lt;/i&gt; 运行&lt;/button&gt;
+                    &lt;button class=&quot;btn ghost&quot; id=&quot;saveBtn&quot;&gt;&lt;i class=&quot;fas fa-save&quot;&gt;&lt;/i&gt; 保存&lt;/button&gt;
+                    &lt;button class=&quot;btn ghost&quot; id=&quot;resetBtn&quot;&gt;&lt;i class=&quot;fas fa-undo&quot;&gt;&lt;/i&gt; 重置&lt;/button&gt;
+                    &lt;button class=&quot;btn ghost&quot; id=&quot;fsBtn&quot; title=&quot;全屏&quot;&gt;&lt;i class=&quot;fas fa-expand&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+                    &lt;div style=&quot;flex:1&quot;&gt;&lt;/div&gt;
+                    &lt;button class=&quot;btn ghost&quot; id=&quot;themeBtn&quot;&gt;&lt;i class=&quot;fas fa-sun&quot;&gt;&lt;/i&gt; 主题&lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;aside class=&quot;sidebar&quot; id=&quot;sidebar&quot;&gt;
+                &lt;div class=&quot;sb-head&quot;&gt;&lt;div&gt;&lt;i class=&quot;fas fa-terminal&quot;&gt;&lt;/i&gt; 运行结果&lt;/div&gt;&lt;button id=&quot;closeSb&quot; class=&quot;btn ghost&quot;&gt;折叠&lt;/button&gt;&lt;/div&gt;
+                &lt;div class=&quot;sb-section&quot;&gt;
+                    &lt;label&gt;标准输入 (stdin)&lt;/label&gt;
+                    &lt;textarea id=&quot;stdin&quot; rows=&quot;3&quot; placeholder=&quot;例如：10 20&quot;&gt;10 20&lt;/textarea&gt;
+                    &lt;div style=&quot;height:12px&quot;&gt;&lt;/div&gt;
+                    &lt;label&gt;输出 (stdout)&lt;/label&gt;
+                    &lt;div class=&quot;output&quot; id=&quot;stdout&quot;&gt;程序输出将显示在这里...&lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/aside&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- 折叠后恢复侧栏的悬浮按钮 --&gt;
+    &lt;div id=&quot;sidebarToggle&quot; title=&quot;打开侧栏&quot;&gt;&lt;i class=&quot;fas fa-chevron-left&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        /**********************************************************************
+         * 简洁版脚本：功能
+         * - 初始化 Monaco 编辑器
+         * - 本地保存/加载代码（localStorage）
+         * - 简单运行（模拟 scanf/printf）
+         * - 主题切换与 UI 状态更新
+         * 所有注释为中文，便于维护。
+         **********************************************************************/
+
+        // 默认代码（保持与 UI 功能一致的示例）
+        const DEFAULT_CODE = `#include &lt;stdio.h&gt;
+
+int main() {
+    int a, b;
+    // 读取两个整数并输出和
+    if (scanf(&quot;%d %d&quot;, &amp;a, &amp;b) == 2) {
+        printf(&quot;两数之和为：%d\n&quot;, a + b);
+    } else {
+        printf(&quot;输入格式错误\n&quot;);
+    }
+    return 0;
+}`;
+
+        // DOM 引用
+        const runBtn = document.getElementById(&#39;runBtn&#39;);
+        const saveBtn = document.getElementById(&#39;saveBtn&#39;);
+        const resetBtn = document.getElementById(&#39;resetBtn&#39;);
+        const themeBtn = document.getElementById(&#39;themeBtn&#39;);
+        const stdinEl = document.getElementById(&#39;stdin&#39;);
+        const stdoutEl = document.getElementById(&#39;stdout&#39;);
+        const saveStatus = document.getElementById(&#39;saveStatus&#39;);
+        const closeSb = document.getElementById(&#39;closeSb&#39;);
+
+        // Monaco 编辑器需要异步加载
+        require.config({ paths: { vs: &#39;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs&#39; } });
+        require([&#39;vs/editor/editor.main&#39;], function () {
+            // 尝试从 localStorage 加载之前保存的代码
+            const saved = localStorage.getItem(&#39;deepseek_saved_c&#39;);
+            window.editor = monaco.editor.create(document.getElementById(&#39;editor&#39;), {
+                value: saved || DEFAULT_CODE,
+                language: &#39;c&#39;,
+                theme: &#39;vs-light&#39;,
+                automaticLayout: true,
+                minimap: { enabled: false },
+                fontSize: 13,
+                scrollBeyondLastLine: false
+            });
+
+            // 快捷键：Ctrl/Cmd+S 保存
+            window.addEventListener(&#39;keydown&#39;, (e) =&gt; {
+                if ((e.ctrlKey || e.metaKey) &amp;&amp; e.key.toLowerCase() === &#39;s&#39;) {
+                    e.preventDefault(); saveCode();
+                }
+            });
+        });
+
+    // ----------------- 功能函数 -----------------
+        // 保存当前编辑器内容到 localStorage，并提示状态
+        function saveCode() {
+            if (!window.editor) return;
+            localStorage.setItem(&#39;deepseek_saved_c&#39;, window.editor.getValue());
+            saveStatus.textContent = &#39;已保存&#39;;
+            saveStatus.style.color = &#39;#22c55e&#39;;
+            setTimeout(() =&gt; { saveStatus.style.color = &#39;&#39;; }, 1200);
+        }
+
+        // 将编辑器内容重置为默认代码（不会清除 localStorage）
+        function resetCode() {
+            if (!window.editor) return;
+            if (!confirm(&#39;确定重置代码？未保存的更改将丢失。&#39;)) return;
+            window.editor.setValue(DEFAULT_CODE);
+        }
+
+        // runCode: 优先调用后端编译器 API；若网络或后端不可用则回退到本地模拟
+        // 后端 API 约定（示例）：
+        // POST /api/compile  body: { language: &#39;c&#39;, code: string, stdin: string }
+        // 返回: { stdout: string, stderr: string, exitCode: number }
+        async function runCode() {
+            if (!window.editor) return;
+            stdoutEl.textContent = &#39;运行中（尝试后端编译）...&#39;;
+
+            const code = window.editor.getValue();
+            const stdin = (stdinEl.value || &#39;&#39;).trim();
+
+            // 如果后端地址不可用或超时，回退到本地模拟
+            const backendUrl = &#39;/api/compile&#39;; // 请在后端服务中实现此路由
+
+            // 超时辅助函数
+            const fetchWithTimeout = (url, opts, timeout = 10000) =&gt; {
+                return Promise.race([
+                    fetch(url, opts),
+                    new Promise((_, rej) =&gt; setTimeout(() =&gt; rej(new Error(&#39;timeout&#39;)), timeout))
+                ]);
+            };
+
+            try {
+                const resp = await fetchWithTimeout(backendUrl, {
+                    method: &#39;POST&#39;,
+                    headers: { &#39;Content-Type&#39;: &#39;application/json&#39; },
+                    body: JSON.stringify({ language: &#39;c&#39;, code, stdin })
+                }, 10000);
+
+                if (!resp.ok) throw new Error(&#39;后端返回错误: &#39; + resp.status);
+                const data = await resp.json();
+
+                // 根据后端返回渲染输出（约定字段：stdout/stderr/exitCode）
+                let out = &#39;&#39;;
+                if (data.stdout) out += data.stdout;
+                if (data.stderr) out += &#39;\n[stderr]\n&#39; + data.stderr;
+                out += `\n[exit code] ${data.exitCode ?? 0}`;
+                stdoutEl.textContent = out.trim();
+                return;
+            } catch (e) {
+                // 后端不可用或超时，回退到本地模拟
+                console.warn(&#39;后端编译失败，回退到本地模拟：&#39;, e);
+                simulateRun(code, stdin);
+            }
+        }
+
+        // 本地回退：简单模拟 scanf/printf 行为（仅作演示）
+        function simulateRun(code, input) {
+            stdoutEl.textContent = &#39;本地模拟运行...&#39;;
+            setTimeout(() =&gt; {
+                if (/scanf\s*\(/.test(code) &amp;&amp; (!input || input.trim() === &#39;&#39;)) {
+                    stdoutEl.textContent = &#39;错误：程序需要输入但未提供 stdin。&#39;;
+                    return;
+                }
+
+                if (!input || input.trim() === &#39;&#39;) {
+                    stdoutEl.textContent = &#39;提示：请在左侧输入两个整数，例如：10 20&#39;;
+                    return;
+                }
+
+                const parts = input.split(/\s+/).map(s =&gt; parseInt(s, 10));
+                if (parts.length &gt;= 2 &amp;&amp; parts.every(n =&gt; Number.isFinite(n))) {
+                    const [a, b] = parts;
+                    stdoutEl.textContent = `两数之和为：${a + b}`;
+                } else {
+                    stdoutEl.textContent = &#39;错误：输入格式不正确，请输入两个整数（例如：10 20）&#39;;
+                }
+            }, 300);
+        }
+
+        // 切换主题（轻/暗），默认暗黑
+        let isDark = true;
+        function toggleTheme() {
+            isDark = !isDark;
+            try { monaco.editor.setTheme(isDark ? &#39;vs-dark&#39; : &#39;vs-light&#39;); } catch (e) {}
+            themeBtn.innerHTML = isDark ? &#39;&lt;i class=&quot;fas fa-sun&quot;&gt;&lt;/i&gt; 明亮&#39; : &#39;&lt;i class=&quot;fas fa-moon&quot;&gt;&lt;/i&gt; 暗色&#39;;
+        }
+
+        // ----------------- 事件绑定 -----------------
+        runBtn.addEventListener(&#39;click&#39;, runCode);
+        saveBtn.addEventListener(&#39;click&#39;, saveCode);
+        resetBtn.addEventListener(&#39;click&#39;, resetCode);
+        themeBtn.addEventListener(&#39;click&#39;, toggleTheme);
+
+        // 侧栏折叠/展开逻辑：使用 class &#39;collapsed&#39;，便于动画与恢复
+        const sidebar = document.getElementById(&#39;sidebar&#39;);
+        const sidebarToggle = document.getElementById(&#39;sidebarToggle&#39;);
+        closeSb.addEventListener(&#39;click&#39;, () =&gt; {
+            sidebar.classList.add(&#39;collapsed&#39;);
+            sidebarToggle.style.display = &#39;flex&#39;;
+        });
+        sidebarToggle.addEventListener(&#39;click&#39;, () =&gt; {
+            sidebar.classList.remove(&#39;collapsed&#39;);
+            sidebarToggle.style.display = &#39;none&#39;;
+        });
+
+        // 全屏按钮
+        const fsBtn = document.getElementById(&#39;fsBtn&#39;);
+        fsBtn.addEventListener(&#39;click&#39;, () =&gt; {
+            const el = document.querySelector(&#39;.frame&#39;);
+            if (!document.fullscreenElement) {
+                el.requestFullscreen?.();
+            } else {
+                document.exitFullscreen?.();
+            }
+        });
+
+        // 页面卸载时自动保存（可选）
+        window.addEventListener(&#39;beforeunload&#39;, () =&gt; {
+            if (window.editor) localStorage.setItem(&#39;deepseek_saved_c&#39;, window.editor.getValue());
+        });
+
+        // 页面加载时：设置编辑器为暗黑主题（若 monaco 已加载则在创建时设置，若晚加载则尝试设置）
+        window.addEventListener(&#39;load&#39;, () =&gt; {
+            try { if (window.monaco) monaco.editor.setTheme(&#39;vs-dark&#39;); } catch (e) {}
+            // 初始时隐藏侧栏恢复按钮（默认展开）
+            document.getElementById(&#39;sidebarToggle&#39;).style.display = &#39;none&#39;;
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div> <strong>后续目标</strong> 用VS Code中的copilot Agent模式为我规划整个项目，尝试接入真实的编译后端。</p> <h3 id=_7>遇到问题<a class=headerlink href=#_7 title="Permanent link">&para;</a></h3> <p><em>GitHub Pages 只托管静态文件，不能运行编译后端，所以你必须额外部署或使用第三方服务来执行编译/运行。</em> Github Actions可以实现编译，但是延迟时间过长，实用效果不佳 <strong>解决方案</strong> 1. 使用 Judge0（托管版或自托管开源 Judge0）</p> <p>概要：Judge0 是流行的在线评测 API（支持多语言）。你可以直接调用 Judge0 提供的 API（托管/付费），或在自己的 VPS 上用 Docker Compose 自托管 Judge0 服务。 优点：成熟、支持多语言、接口简单（HTTP API）、支持限制运行时/内存/时间、开箱即用；自托管可完全控制。 缺点：托管版受限于配额/费用；自托管需要 VPS + Docker，需注意安全与资源隔离（容器逃逸风险）。 成本：托管版按请求/配额付费；自托管仅 VPS 成本（例如 $5–20/月 取决使用量）。 推荐场景：想要快速上线且需要多语言/稳定接口 → 推荐托管 Judge0；想完全控制并能运维 → 自托管 Judge0（我会提供 Docker Compose 示例）。</p> <ol> <li>后端容器化服务（自建安全沙箱）</li> </ol> <p>概要：在 VPS、云虚拟机或容器服务（Fargate）上运行自己的编译器服务。每次执行都在容器或轻量 VM（gVisor、Firecracker）内运行，或使用已有的 sandbox 项目（isolate、nsjail）。 优点：最灵活，可自定义编译器版本、环境、插件；更容易做白名单/定制化；适合企业级需求。 缺点：实现复杂、运维成本高、必须正确隔离以避免被利用执行任意代码。 成本：云实例 + 容器运行费用；如果使用 Firecracker 或 Fargate 成本更高。 推荐场景：对安全/自定义/扩展性有高要求，且有运维能力。</p> <ol> <li>Serverless 容器/函数（AWS Lambda（容器）、Google Cloud Run）</li> </ol> <p>概要：把编译器打包为容器镜像，部署到 Cloud Run 或 Lambda（Container Image）等按需执行的平台。 优点：按调用计费，自动伸缩，运维负担低；可以结合短暂隔离的容器执行。 缺点：启动冷启动、执行时间和资源受限（Lambda 默认最多 15 分钟，且内存/磁盘限制），需要处理容器层面的安全隔离；成本随并发上涨。 推荐场景：中等流量、希望少运维但接受平台约束时。</p> <ol> <li>在浏览器里运行编译器（WASM）</li> </ol> <p>概要：使用 WebAssembly 版本的编译器（如 clang/emscripten 的 Wasm 构建，或 tcc-wasm / clang.wasm）在用户浏览器中直接编译并运行（WASI 可用时）。 优点：无需后端、零延迟、无需你维护服务器、对用户更隐私安全（代码在本地运行）；适合教育、演示或小型程序。 缺点：WASM 二进制较大（可能几十 MB），某些系统调用或库不可用，运行受浏览器环境限制（不能做全部系统交互），对复杂/长时任务不理想。 推荐场景：你需要零运维、演示性质或能接受功能限制时（例如仅做 C 语言的简单运行示例）。</p> <ol> <li>使用第三方付费 SaaS（如 Replit、Glot.io、某些 API 市场上的编译服务）</li> </ol> <p>概要：直接调用商业提供方的 REST API 来编译/运行代码。 优点：开发最快、运维几乎为零、通常带 SLA 支持。 缺点：受限于价格和配额、需要信任第三方处理用户代码（隐私/合规问题）。 推荐场景：对可靠性/快速上线要求高且能接受付费。</p> <p><strong>最终选择</strong> 直接集成 Wandbox（方案 B）并实现回退到 WASM（双重策略）——我会把 runCode 编写为：try Wandbox via fetch -&gt; 若成功显示结果；若 fetch 报错（含 CORS）或超时则调用本地 wasm（如果存在）或本地模拟。优点：优先真实编译器，且无需服务器（若 Wandbox CORS 可用）。我会给出完整的前端 fetch 实现、超时处理与错误提示。</p> <p>代码呈现 <div class=highlight><pre><span></span><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh-CN&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot; /&gt;
+    &lt;title&gt;C 语言在线编译器（简洁版）&lt;/title&gt;
+    &lt;!-- 字体图标和 Monaco 加载器 --&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot;&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js&quot;&gt;&lt;/script&gt;
+
+    &lt;style&gt;
+        /* 暗黑优先 - 极简 mac 风格 */
+        :root{
+            --bg: #0b0c0d;           /* 页面背景（near black） */
+            --panel: #0f1113;        /* 卡片 / 主容器背景 */
+            --muted: #9aa4ad;        /* 次要文字 */
+            --accent: #48a0ff;       /* 高亮色（适度） */
+            --glass: rgba(255,255,255,0.02);
+            --radius: 10px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.6);
+        }
+
+        *{box-sizing:border-box;margin:0;padding:0}
+        html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial}
+        body{background:var(--bg);color:#e6eef6;}
+
+        /* 应用容器：占满整个视口，类似本地 app 的全屏编辑器 */
+        .app{height:100vh;width:100vw;display:flex;flex-direction:column;align-items:stretch;justify-content:stretch}
+        .frame{max-width:1400px;margin:12px auto;flex:1;background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+
+        header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+        header .title{display:flex;align-items:center;gap:10px;font-weight:600}
+        header .title i{color:var(--accent);font-size:18px}
+        header .meta{color:var(--muted);font-size:13px}
+
+        /* 主区：编辑器 + 侧栏 */
+        .main{flex:1;display:flex;min-height:0}
+
+        /* 编辑区 */
+        .editor-wrap{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.03)}
+        .editor-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
+        .editor-head h2{font-size:14px;color:#dbe9ff}
+        #editor{flex:1;min-height:200px}
+
+        /* 工具栏 */
+        .toolbar{display:flex;gap:8px;padding:10px 14px;align-items:center}
+        .btn{border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;background:transparent;color:#e6eef6}
+        .btn.primary{background:var(--accent);color:#071022}
+        .btn.ghost{border:1px solid rgba(255,255,255,0.04)}
+
+        /* 侧栏 */
+        .sidebar{width:380px;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)}
+        .sidebar.collapsed{transform:translateX(100%);transition:transform .28s ease}
+        .sb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+        .sb-section{padding:12px 14px;flex:1;overflow:auto}
+        textarea,input[type=text]{width:100%;padding:10px;border:1px solid rgba(255,255,255,0.03);border-radius:8px;background:transparent;color:#e6eef6;font-family:monospace}
+        .output{background:var(--glass);color:#dfefff;padding:12px;border-radius:8px;white-space:pre-wrap;height:100%;overflow:auto;font-family:monospace}
+
+        /* 悬浮的侧边栏切换按钮（当侧栏折叠时可恢复） */
+        #sidebarToggle{position:fixed;right:18px;bottom:24px;width:44px;height:44px;border-radius:10px;background:var(--panel);border:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:var(--shadow);cursor:pointer}
+
+        /* 小屏适配 */
+        @media (max-width:900px){
+            .main{flex-direction:column}
+            .sidebar{width:100%;height:34%}
+            .editor-wrap{border-right:0}
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;app&quot;&gt;
+        &lt;header&gt;
+            &lt;div class=&quot;title&quot;&gt;&lt;i class=&quot;fas fa-code&quot;&gt;&lt;/i&gt;&lt;div&gt;C 语言在线编译器&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;meta&quot;&gt;安全提醒：此页面仅做演示，本地运行即可&lt;/div&gt;
+        &lt;/header&gt;
+
+        &lt;div class=&quot;main&quot;&gt;
+            &lt;div class=&quot;editor-wrap&quot;&gt;
+                &lt;div class=&quot;editor-head&quot;&gt;
+                    &lt;h2&gt;&lt;i class=&quot;fas fa-file-code&quot;&gt;&lt;/i&gt; main.c&lt;/h2&gt;
+                    &lt;div class=&quot;status&quot; id=&quot;saveStatus&quot;&gt;已保存&lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;div id=&quot;editor&quot;&gt;&lt;/div&gt;
+
+                &lt;div class=&quot;toolbar&quot;&gt;
+                    &lt;button class=&quot;btn primary&quot; id=&quot;runBtn&quot;&gt;&lt;i class=&quot;fas fa-play&quot;&gt;&lt;/i&gt; 运行&lt;/button&gt;
+                    &lt;button class=&quot;btn ghost&quot; id=&quot;saveBtn&quot;&gt;&lt;i class=&quot;fas fa-save&quot;&gt;&lt;/i&gt; 保存&lt;/button&gt;
+                    &lt;button class=&quot;btn ghost&quot; id=&quot;resetBtn&quot;&gt;&lt;i class=&quot;fas fa-undo&quot;&gt;&lt;/i&gt; 重置&lt;/button&gt;
+                    &lt;button class=&quot;btn ghost&quot; id=&quot;fsBtn&quot; title=&quot;全屏&quot;&gt;&lt;i class=&quot;fas fa-expand&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+                    &lt;div style=&quot;flex:1&quot;&gt;&lt;/div&gt;
+                    &lt;button class=&quot;btn ghost&quot; id=&quot;themeBtn&quot;&gt;&lt;i class=&quot;fas fa-sun&quot;&gt;&lt;/i&gt; 主题&lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;aside class=&quot;sidebar&quot; id=&quot;sidebar&quot;&gt;
+                &lt;div class=&quot;sb-head&quot;&gt;&lt;div&gt;&lt;i class=&quot;fas fa-terminal&quot;&gt;&lt;/i&gt; 运行结果&lt;/div&gt;&lt;button id=&quot;closeSb&quot; class=&quot;btn ghost&quot;&gt;折叠&lt;/button&gt;&lt;/div&gt;
+                &lt;div class=&quot;sb-section&quot;&gt;
+                    &lt;label&gt;标准输入 (stdin)&lt;/label&gt;
+                    &lt;textarea id=&quot;stdin&quot; rows=&quot;3&quot; placeholder=&quot;例如：10 20&quot;&gt;10 20&lt;/textarea&gt;
+                    &lt;div style=&quot;height:12px&quot;&gt;&lt;/div&gt;
+                    &lt;label&gt;输出 (stdout)&lt;/label&gt;
+                    &lt;div class=&quot;output&quot; id=&quot;stdout&quot;&gt;程序输出将显示在这里...&lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/aside&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- 折叠后恢复侧栏的悬浮按钮 --&gt;
+    &lt;div id=&quot;sidebarToggle&quot; title=&quot;打开侧栏&quot;&gt;&lt;i class=&quot;fas fa-chevron-left&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        /**********************************************************************
+         * 简洁版脚本：功能
+         * - 初始化 Monaco 编辑器
+         * - 本地保存/加载代码（localStorage）
+         * - 简单运行（模拟 scanf/printf）
+         * - 主题切换与 UI 状态更新
+         * 所有注释为中文，便于维护。
+         **********************************************************************/
+
+        // 默认代码（保持与 UI 功能一致的示例）
+        const DEFAULT_CODE = `#include &lt;stdio.h&gt;
+
+int main() {
+    int a, b;
+    // 读取两个整数并输出和
+    if (scanf(&quot;%d %d&quot;, &amp;a, &amp;b) == 2) {
+        printf(&quot;两数之和为：%d\n&quot;, a + b);
+    } else {
+        printf(&quot;输入格式错误\n&quot;);
+    }
+    return 0;
+}`;
+
+        // DOM 引用
+        const runBtn = document.getElementById(&#39;runBtn&#39;);
+        const saveBtn = document.getElementById(&#39;saveBtn&#39;);
+        const resetBtn = document.getElementById(&#39;resetBtn&#39;);
+        const themeBtn = document.getElementById(&#39;themeBtn&#39;);
+        const stdinEl = document.getElementById(&#39;stdin&#39;);
+        const stdoutEl = document.getElementById(&#39;stdout&#39;);
+        const saveStatus = document.getElementById(&#39;saveStatus&#39;);
+        const closeSb = document.getElementById(&#39;closeSb&#39;);
+
+        // Monaco 编辑器需要异步加载
+        require.config({ paths: { vs: &#39;https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs&#39; } });
+        require([&#39;vs/editor/editor.main&#39;], function () {
+            // 尝试从 localStorage 加载之前保存的代码
+            const saved = localStorage.getItem(&#39;deepseek_saved_c&#39;);
+            window.editor = monaco.editor.create(document.getElementById(&#39;editor&#39;), {
+                value: saved || DEFAULT_CODE,
+                language: &#39;c&#39;,
+                theme: &#39;vs-light&#39;,
+                automaticLayout: true,
+                minimap: { enabled: false },
+                fontSize: 13,
+                scrollBeyondLastLine: false
+            });
+
+            // 快捷键：Ctrl/Cmd+S 保存
+            window.addEventListener(&#39;keydown&#39;, (e) =&gt; {
+                if ((e.ctrlKey || e.metaKey) &amp;&amp; e.key.toLowerCase() === &#39;s&#39;) {
+                    e.preventDefault(); saveCode();
+                }
+            });
+        });
+
+    // ----------------- 功能函数 -----------------
+        // 保存当前编辑器内容到 localStorage，并提示状态
+        function saveCode() {
+            if (!window.editor) return;
+            localStorage.setItem(&#39;deepseek_saved_c&#39;, window.editor.getValue());
+            saveStatus.textContent = &#39;已保存&#39;;
+            saveStatus.style.color = &#39;#22c55e&#39;;
+            setTimeout(() =&gt; { saveStatus.style.color = &#39;&#39;; }, 1200);
+        }
+
+        // 将编辑器内容重置为默认代码（不会清除 localStorage）
+        function resetCode() {
+            if (!window.editor) return;
+            if (!confirm(&#39;确定重置代码？未保存的更改将丢失。&#39;)) return;
+            window.editor.setValue(DEFAULT_CODE);
+        }
+
+        // runCode: 优先尝试 Wandbox（真实编译器），若失败尝试加载本地 WASM 运行器（若你已部署）
+        // 最后回退到原有的模拟（simulateRun）。Wandbox API: https://wandbox.org
+        async function tryWandboxCompile(code, stdin) {
+            const wandboxUrl = &#39;https://wandbox.org/api/compile.json&#39;;
+            const payload = {
+                code,
+                compiler: &#39;gcc-head&#39;, // 可改为 clang-head 或其他
+                stdin: stdin || undefined,
+                save: false
+            };
+
+            const fetchWithTimeout = (url, opts, timeout = 8000) =&gt; {
+                return Promise.race([
+                    fetch(url, opts),
+                    new Promise((_, rej) =&gt; setTimeout(() =&gt; rej(new Error(&#39;timeout&#39;)), timeout))
+                ]);
+            };
+
+            const resp = await fetchWithTimeout(wandboxUrl, {
+                method: &#39;POST&#39;,
+                headers: { &#39;Content-Type&#39;: &#39;application/json&#39; },
+                body: JSON.stringify(payload)
+            }, 10000);
+
+            if (!resp.ok) throw new Error(&#39;Wandbox 返回 &#39; + resp.status);
+            const json = await resp.json();
+
+            // Wandbox 返回字段不总是固定，常见有: program_output / program_error / compiler_output
+            const out = (json.program_output || json.program_stdout || json.program || json.result || &#39;&#39;) || &#39;&#39;;
+            const err = (json.program_error || json.program_stderr || json.compiler_error || json.compiler_output || &#39;&#39;) || &#39;&#39;;
+            const status = json.status ?? 0;
+            return { stdout: out, stderr: err, exitCode: status };
+        }
+
+        // 动态加载前端 WASM 运行器（如果你在 repo 下放置了 /wasm/tcc_runner.js）
+        function loadScript(url) {
+            return new Promise((resolve, reject) =&gt; {
+                const s = document.createElement(&#39;script&#39;);
+                s.src = url;
+                s.onload = () =&gt; resolve();
+                s.onerror = (e) =&gt; reject(new Error(&#39;加载失败: &#39; + url));
+                document.head.appendChild(s);
+            });
+        }
+
+        // 如果用户在仓库中放置了一个基于 tcc/clang 的 wasm 运行器并暴露 window.wasmRun(code, stdin)
+        async function tryWasmRun(code, stdin) {
+            // 常用路径：/wasm/tcc_runner.js（你需要把相应的脚本和 wasm 放到该路径）
+            if (typeof window.wasmRun === &#39;function&#39;) {
+                return await window.wasmRun(code, stdin);
+            }
+
+            // 尝试动态加载预期的脚本（如果你已上传）
+            try {
+                await loadScript(&#39;/wasm/tcc_runner.js&#39;);
+                if (typeof window.wasmRun === &#39;function&#39;) {
+                    return await window.wasmRun(code, stdin);
+                } else {
+                    throw new Error(&#39;wasmRun 未在脚本中暴露&#39;);
+                }
+            } catch (e) {
+                throw e;
+            }
+        }
+
+        async function runCode() {
+            if (!window.editor) return;
+            stdoutEl.textContent = &#39;运行中（尝试 Wandbox 公共 API）...&#39;;
+
+            const code = window.editor.getValue();
+            const stdin = (stdinEl.value || &#39;&#39;).trim();
+
+            // 1) 先尝试 Wandbox（真实编译器）
+            try {
+                const res = await tryWandboxCompile(code, stdin);
+                let out = &#39;&#39;;
+                if (res.stdout) out += res.stdout;
+                if (res.stderr) out += &#39;\n[stderr]\n&#39; + res.stderr;
+                out += `\n[exit code] ${res.exitCode ?? 0}`;
+                stdoutEl.textContent = out.trim();
+                return;
+            } catch (e) {
+                console.warn(&#39;Wandbox 调用失败：&#39;, e);
+                stdoutEl.textContent = &#39;Wandbox 不可用或被阻止，尝试浏览器端 WASM（若已部署）...&#39;;
+            }
+
+            // 2) 尝试浏览器端 WASM 运行器（如果你在仓库放置了对应文件）
+            try {
+                const wasmRes = await tryWasmRun(code, stdin);
+                // 约定 wasmRun 返回 { stdout, stderr, exitCode }
+                let out = &#39;&#39;;
+                if (wasmRes.stdout) out += wasmRes.stdout;
+                if (wasmRes.stderr) out += &#39;\n[stderr]\n&#39; + wasmRes.stderr;
+                out += `\n[exit code] ${wasmRes.exitCode ?? 0}`;
+                stdoutEl.textContent = out.trim();
+                return;
+            } catch (e) {
+                console.warn(&#39;WASM 运行器不可用：&#39;, e);
+                stdoutEl.textContent = &#39;本地 WASM 运行器不可用，回退到本地模拟。&#39;;
+            }
+
+            // 3) 最后回退到简单模拟
+            simulateRun(code, stdin);
+        }
+
+        // 本地回退：简单模拟 scanf/printf 行为（仅作演示）
+        function simulateRun(code, input) {
+            stdoutEl.textContent = &#39;本地模拟运行...&#39;;
+            setTimeout(() =&gt; {
+                if (/scanf\s*\(/.test(code) &amp;&amp; (!input || input.trim() === &#39;&#39;)) {
+                    stdoutEl.textContent = &#39;错误：程序需要输入但未提供 stdin。&#39;;
+                    return;
+                }
+
+                if (!input || input.trim() === &#39;&#39;) {
+                    stdoutEl.textContent = &#39;提示：请在左侧输入两个整数，例如：10 20&#39;;
+                    return;
+                }
+
+                const parts = input.split(/\s+/).map(s =&gt; parseInt(s, 10));
+                if (parts.length &gt;= 2 &amp;&amp; parts.every(n =&gt; Number.isFinite(n))) {
+                    const [a, b] = parts;
+                    stdoutEl.textContent = `两数之和为：${a + b}`;
+                } else {
+                    stdoutEl.textContent = &#39;错误：输入格式不正确，请输入两个整数（例如：10 20）&#39;;
+                }
+            }, 300);
+        }
+
+        // 切换主题（轻/暗），默认暗黑
+        let isDark = true;
+        function toggleTheme() {
+            isDark = !isDark;
+            try { monaco.editor.setTheme(isDark ? &#39;vs-dark&#39; : &#39;vs-light&#39;); } catch (e) {}
+            themeBtn.innerHTML = isDark ? &#39;&lt;i class=&quot;fas fa-sun&quot;&gt;&lt;/i&gt; 明亮&#39; : &#39;&lt;i class=&quot;fas fa-moon&quot;&gt;&lt;/i&gt; 暗色&#39;;
+        }
+
+        // ----------------- 事件绑定 -----------------
+        runBtn.addEventListener(&#39;click&#39;, runCode);
+        saveBtn.addEventListener(&#39;click&#39;, saveCode);
+        resetBtn.addEventListener(&#39;click&#39;, resetCode);
+        themeBtn.addEventListener(&#39;click&#39;, toggleTheme);
+
+        // 侧栏折叠/展开逻辑：使用 class &#39;collapsed&#39;，便于动画与恢复
+        const sidebar = document.getElementById(&#39;sidebar&#39;);
+        const sidebarToggle = document.getElementById(&#39;sidebarToggle&#39;);
+        closeSb.addEventListener(&#39;click&#39;, () =&gt; {
+            sidebar.classList.add(&#39;collapsed&#39;);
+            sidebarToggle.style.display = &#39;flex&#39;;
+        });
+        sidebarToggle.addEventListener(&#39;click&#39;, () =&gt; {
+            sidebar.classList.remove(&#39;collapsed&#39;);
+            sidebarToggle.style.display = &#39;none&#39;;
+        });
+
+        // 全屏按钮
+        const fsBtn = document.getElementById(&#39;fsBtn&#39;);
+        fsBtn.addEventListener(&#39;click&#39;, () =&gt; {
+            const el = document.querySelector(&#39;.frame&#39;);
+            if (!document.fullscreenElement) {
+                el.requestFullscreen?.();
+            } else {
+                document.exitFullscreen?.();
+            }
+        });
+
+        // 页面卸载时自动保存（可选）
+        window.addEventListener(&#39;beforeunload&#39;, () =&gt; {
+            if (window.editor) localStorage.setItem(&#39;deepseek_saved_c&#39;, window.editor.getValue());
+        });
+
+        // 页面加载时：设置编辑器为暗黑主题（若 monaco 已加载则在创建时设置，若晚加载则尝试设置）
+        window.addEventListener(&#39;load&#39;, () =&gt; {
+            try { if (window.monaco) monaco.editor.setTheme(&#39;vs-dark&#39;); } catch (e) {}
+            // 初始时隐藏侧栏恢复按钮（默认展开）
+            document.getElementById(&#39;sidebarToggle&#39;).style.display = &#39;none&#39;;
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div></p> <p><u>现在的行为</u> runCode() 会： - 尝试调用 Wandbox 公共 API，带超时与错误处理； - 若 Wandbox 不可用，则尝试动态加载并调用位于 /wasm/tcc_runner.js 的本地 WASM 运行器（调用约定：window.wasmRun(code, stdin) -&gt; {stdout, stderr, exitCode}）； - 两者都不可用则回退到原先的 simulateRun（两数求和演示）。</p> <p><strong>继续实现</strong> 在Agent帮助下搭建wasm，最终push到Github的repo上 其中，还利用到了之前被我抛弃的Github Actions来进行wasm的自动化调整 完整代码不作展示，项目呈现<a href=https://danielhe666.github.io/projects/compiler/ >点击此处</a></p> <p><strong>优化调整</strong> 11.3 21:26 1) 调整侧栏折叠的 CSS 和脚本，使编辑器在侧栏折叠后扩展填满区域并触发 Monaco 布局； 2) 为主题添加全局 CSS 变量切换与平滑过渡，并在脚本中平滑切换 Monaco 主题； 3) 在工具栏新增“打开本地文件”按钮与隐藏的 file input，并实现文件读取与确认覆盖逻辑。</p> <p>11.3 21:40 1) 出现bug:侧边栏收起后再弹出被遮挡；（令人头大的css，一直在和sidebar斗智斗勇） 2) 以更为简单的输出"By ZJU C. He"作为样例代码（因为不需要编译调试了）； 3) 扩展文件类型； 4) 主题持久化;</p> <p>11.4 22:02 增添CHANGELOG.MD更新日志 不再向博客中增添更新内容 <a href=https://danielhe666.github.io/projects/compiler/CHANGELOG.md>查看更新日志</a></p> <h2 id=_8>小结<a class=headerlink href=#_8 title="Permanent link">&para;</a></h2> <p>六年前，小学刚刚毕业的我开始第一次尝试在Github上搭建自己的个人博客。最初，我天真地以为那些网站页面背后的代码都是程序员一手敲定，所以去粗浅地学习了html和javescript的语法，然后手写了最初的<code>index.html</code>。然后，我接触到一款同样是搭建在Github Pages上的游戏“膜Siyuan“，我在Github上找到了那位大佬的repo，看光了他所有的前端，却没有办法通关游戏，那时，我认识到想要搭建一个网站是一件非常需要经验和技术的事情。</p> <p>后来，通过同学的介绍认识了像Hugo、Hexo这种搭建个人博客的工具，我感到十分新奇。对照着各种社区博客照搬照抄地建了非常幼稚的博客。</p> <p>渐渐的，普通的静态网页已经无法吸引我更多的兴趣，Github Pages也成为了我生成下载文件直链的工具，我不再管理我的博客。</p> <p>直到现在，一个崭新的，完全改变（在我看来）Programming格局的工具诞生并迅速成熟，它完全打破了技术与非技术的边界。</p> <p>从“会实现”到“会描述”，这是超越程序语言对于机器语言提升的跨越。人工智能的Agent真正意义上的实现了“代理”。我只需要向他描述我的诉求，然后构思与设计，完成一些像push这样简单的工作，我便可以实现很多我完全不了解的功能与代码。就比如Online C Compiler这个project，它源自于我在Mac上对于复杂环境配置的厌烦这一灵光乍现。然而，就是这么一个小小的spark，大模型带我走向了实现。</p> <p>那么我们不禁反思，当“不可能”成为“可能”，人类的学习方式是否应该做出改变？当我们不需要再满社区地大海捞针，这些Easy Work的省略就一定会迫使人们的思维转向更高效的Solutions，由是我们又可以继续印证那句老话：</p> <div class=codehilite><pre><span></span><code>&gt; 人类的最大优势在于使用工具。
+</code></pre></div> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title=最后更新> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="2025年11月9日 03:29:43 UTC"><span class=timeago datetime=2025-11-09T03:29:43+00:00 locale=zh></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="2025年11月9日 03:29:43 UTC">2025-11-09</span> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> <div class=md-copyright__highlight> Copyright &copy; 2019 - 2025 Chenyu He </div> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> <div class=md-social> <a href=mailto:hechenyu@zju.edu.cn target=_blank rel=noopener title="mail to me" class=md-social__link> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 576 512"><!-- Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M536.4-26.3c9.8-3.5 20.6-1 28 6.3s9.8 18.2 6.3 28l-178 496.9c-5 13.9-18.1 23.1-32.8 23.1-14.2 0-27-8.6-32.3-21.7l-64.2-158c-4.5-11-2.5-23.6 5.2-32.6l94.5-112.4c5.1-6.1 4.7-15-.9-20.6s-14.6-6-20.6-.9l-112.4 94.3c-9.1 7.6-21.6 9.6-32.6 5.2L38.1 216.8c-13.1-5.3-21.7-18.1-21.7-32.3 0-14.7 9.2-27.8 23.1-32.8z"/></svg> </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../..", "features": ["search.highlight", "search.share", "navigation.instant", "content.code.copy", "header.autohide", "toc.integrate", "navigation.sections"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": {"method": "mike"}}</script> <script src=../../assets/javascripts/bundle.f55a23d4.min.js></script> <script src=../../js/timeago.min.js></script> <script src=../../js/timeago_mkdocs_material.js></script> <script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script> <script src=../../js/custom.js></script> </body> </html>
