@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Chenyu He icon (light)">
+  <defs>
+    <linearGradient id="gl" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#F3F6FB"/>
+      <stop offset="100%" stop-color="#E9F2FF"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="url(#gl)"/>
+  <g font-family="Inter, -apple-system, system-ui, 'Helvetica Neue', Arial" font-weight="700" text-anchor="middle" fill="#0A84FF">
+    <text x="256" y="300" font-size="200">CH</text>
+  </g>
+</svg>

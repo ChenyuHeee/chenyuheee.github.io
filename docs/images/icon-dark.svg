@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Chenyu He icon (dark)">
+  <defs>
+    <linearGradient id="gd" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#1c1c1e"/>
+      <stop offset="100%" stop-color="#0f0f10"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="url(#gd)"/>
+  <circle cx="256" cy="180" r="72" fill="#0A84FF" opacity="0.12" />
+  <g font-family="Inter, -apple-system, system-ui, 'Helvetica Neue', Arial" font-weight="700" text-anchor="middle" fill="#E6E6E6">
+    <text x="256" y="300" font-size="200">CH</text>
+  </g>
+</svg>
