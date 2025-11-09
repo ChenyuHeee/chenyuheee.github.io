@@ -124,3 +124,82 @@ pre {
   .hero{ padding: 46px 12px; }
   .hero h1{ font-size: 1.8rem; }
 }
+
+/* Subtle animations and polish */
+.fade-in{
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeInUp .6s ease forwards;
+}
+@keyframes fadeInUp{
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero glass effect */
+.hero-inner{
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(6px) saturate(120%);
+  border-radius: 16px;
+  padding: 28px;
+}
+
+/* Tag badges under cards */
+.tag-badges{ margin-top: 12px; }
+.tag{ display: inline-block; padding: 6px 10px; margin-right: 8px; border-radius: 999px; background: rgba(17,24,39,0.06); color: #111827; font-size: 0.85rem; }
+
+/* Footer styling */
+.site-footer{ margin-top: 48px; padding: 24px 0; background: linear-gradient(180deg,#f8f9fb,#ffffff); }
+.footer-inner{ max-width: var(--site-max-width); margin: 0 auto; display:flex; align-items:center; justify-content:space-between; gap:12px; padding: 0 16px; }
+.footer-logo{ width:56px; height:auto; border-radius:8px; }
+.copyright{ color:#9ca3af; font-size:0.95rem; margin-top:6px; }
+.footer-links a{ margin-right:16px; color:#374151; text-decoration:none; }
+.footer-right{ display:flex; flex-direction:column; align-items:flex-end; }
+
+/* Hover subtle lift for hero buttons */
+.hero-ctas .btn:hover{ transform: translateY(-3px); transition: transform .18s ease; }
+
+/* Apple-like deep dark theme variables and overrides */
+:root.apple-dark, :root {
+  --apple-bg: #0b0b0c; /* very dark canvas */
+  --apple-surface: #1c1c1e; /* panels */
+  --apple-muted: #8e8e93; /* secondary text */
+  --apple-accent: #0a84ff; /* macOS accent blue */
+  --apple-card: rgba(255,255,255,0.03);
+  --apple-elev: rgba(255,255,255,0.04);
+  --apple-border: rgba(255,255,255,0.06);
+}
+
+@media (prefers-color-scheme: dark), .apple-dark {
+  html { background: var(--apple-bg); color: #fff; }
+  body, .md-main__inner, .md-typeset { background: transparent; color: #e6e6e6; }
+
+  /* Page background */
+  .md-main { background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); }
+
+  /* Hero adjustments */
+  .hero{ background: linear-gradient(180deg, #0b0b0c 0%, #0b0b0c 100%); }
+  .hero-inner{ background: rgba(255,255,255,0.02); box-shadow: none; }
+  .hero h1{ color: #ffffff; }
+  .subtitle{ color: #c7c7cc; }
+  .hero-logo{ filter: none; }
+
+  /* Cards */
+  .card{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid var(--apple-border); }
+  .card-body p{ color: var(--apple-muted); }
+
+  /* Buttons */
+  .btn.primary{ background: var(--apple-accent); color: #fff; }
+  .btn.ghost{ background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.06); }
+
+  /* Code blocks */
+  pre, code { background: #0f0f10; color: #e6e6e6; }
+
+  /* Footer */
+  .site-footer{ background: linear-gradient(180deg,#0b0b0c,#0b0b0c); }
+  .footer-links a{ color:#d1d1d6; }
+  .copyright{ color:#8e8e93; }
+
+  /* In dark, make search and top nav slightly translucent */
+  .md-header, .md-footer { background: rgba(255,255,255,0.02); }
+}
+
