@@ -12,16 +12,28 @@ theme:
   features:
     - search.highlight
     - search.share
+    - navigation.instant
+    - content.code.copy
+    - header.autohide
+    - toc.integrate
+    - navigation.sections
   icon:
     repo: fontawesome/brands/git-alt
   # 可选：自定义 logo（把图片放到 docs/images/logo.png）
   # logo: images/logo.png
+  # 字体设置（需要在 extra_css 中引入 Google Fonts）
+  font:
+    text: 'Inter'
+    code: 'Fira Code'
 plugins:
   - search:
       lang:
         - en
         - zh
       separator: '[\s\-]+'
+  - mermaid2:
+      arguments:
+        startOnLoad: false
   # sitemap plugin removed to avoid extra dependency; MkDocs outputs sitemap.xml by default
   - git-revision-date-localized:
       type: timeago
@@ -34,6 +46,8 @@ extra:
     - icon: fontawesome/solid/paper-plane
       link: mailto:hechenyu@zju.edu.cn
       name: mail to me
+  search:
+    language: zh
       
 copyright: Copyright &copy; 2019 - 2025 Chenyu He
 
@@ -50,6 +64,7 @@ markdown_extensions:
   - attr_list
 
 extra_css:
+  - https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;700&display=swap
   - styles/overrides.css
 
 extra_javascript:
@@ -59,10 +74,3 @@ extra_javascript:
   - js/custom.js
 
 # Theme customization (Material 支持更多 options, 参考文档按需启用)
-extra:
-  social:
-    - icon: fontawesome/solid/paper-plane
-      link: mailto:hechenyu@zju.edu.cn
-      name: mail to me
-  search:
-    language: zh
