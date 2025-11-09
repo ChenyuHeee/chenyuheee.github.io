@@ -4,7 +4,7 @@ title: 首页
 
 <div class="hero">
   <div class="hero-inner">
-    <img class="hero-logo" src="/docs/images/logo.svg" alt="logo" />
+  <img class="hero-logo" src="/images/logo.svg" alt="logo" />
     <h1>Chenyu He 的笔记</h1>
     <p class="subtitle">简洁、清晰、优雅 —— 收藏我对编程、数学与笔记的一点思考。</p>
     <p class="hero-ctas">
@@ -59,6 +59,29 @@ title: 首页
 ---
 
 （本站已使用 MkDocs + Material 风格定制，若需更多视觉调整可告诉我你偏好的配色或字体。）
+
+---
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+        <img src="/images/logo.svg" alt="logo" class="footer-logo" />
+      <div class="copyright">© 2019 - 2025 Chenyu He</div>
+    </div>
+    <div class="footer-right">
+      <div class="footer-links">
+        <a href="/GithubVisitingProblems/">访问问题</a>
+        <a href="/MkDocs/">MkDocs 说明</a>
+        <a href="mailto:hechenyu@zju.edu.cn">联系我</a>
+      </div>
+      <div class="social">
+        <a href="https://github.com/ChenyuHeee" aria-label="GitHub" class="social-icon">GitHub</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
 # Welcome to MkDocs
 
 For full documentation visit [mkdocs.org](https://mkdocs.org).
