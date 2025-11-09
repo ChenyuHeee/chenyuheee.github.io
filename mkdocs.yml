@@ -20,7 +20,7 @@ theme:
   icon:
     repo: fontawesome/brands/git-alt
   # 可选：自定义 logo（把图片放到 docs/images/logo.png）
-  # logo: images/logo.png
+  logo: images/logo.svg
   # 字体设置（需要在 extra_css 中引入 Google Fonts）
   font:
     text: 'Inter'
@@ -72,5 +72,6 @@ extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   # 可添加自定义脚本
   - js/custom.js
+  - js/ux.js
 
 # Theme customization (Material 支持更多 options, 参考文档按需启用)
