@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{#
+  Append-only head injection:
+  - Keep Material's default <head> content via {{ super() }}
+  - Add apple-touch-icon and explicit PNG favicons
+  - Avoid setting theme-color here (Material handles it based on palette)
+#}
+{% block extrahead %}
+  {{ super() }}
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ base_url }}/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ base_url }}/images/logo-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ base_url }}/images/logo-16.png">
+{% endblock %}

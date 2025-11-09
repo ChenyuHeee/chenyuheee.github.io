@@ -23,6 +23,8 @@ theme:
   logo: images/logo.svg
   # 网站 favicon（在构建输出中会被复制到 site/ 下）
   favicon: images/favicon.ico
+  # 启用主题覆盖目录，用于追加自定义 <head> 等（位于仓库根目录的 overrides/）
+  custom_dir: overrides
   # 字体设置（需要在 extra_css 中引入 Google Fonts）
   font:
     text: 'Inter'
