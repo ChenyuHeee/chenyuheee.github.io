@@ -21,6 +21,8 @@ theme:
     repo: fontawesome/brands/git-alt
   # 可选：自定义 logo（把图片放到 docs/images/logo.png）
   logo: images/logo.svg
+  # 网站 favicon（在构建输出中会被复制到 site/ 下）
+  favicon: images/favicon.ico
   # 字体设置（需要在 extra_css 中引入 Google Fonts）
   font:
     text: 'Inter'
