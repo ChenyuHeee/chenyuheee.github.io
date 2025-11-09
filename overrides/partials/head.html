@@ -1,0 +1,21 @@
+{#
+  overrides/partials/head.html
+  注：此文件会被 MkDocs/Material 作为 head 部分的覆盖片段加载。
+  它在构建时注入到每个页面的 <head> 中，用来添加自定义 favicon、apple-touch-icon、theme-color 等。
+#}
+
+<!-- Apple touch icon -->
+<link rel="apple-touch-icon" sizes="180x180" href="{{ config.site_url | default('') }}/images/apple-touch-icon.png">
+
+<!-- Standard PNG favicons -->
+<link rel="icon" type="image/png" sizes="32x32" href="{{ config.site_url | default('') }}/images/logo-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ config.site_url | default('') }}/images/logo-16.png">
+
+<!-- Fallback shortcut icon -->
+<link rel="shortcut icon" href="{{ config.site_url | default('') }}/images/favicon.ico">
+
+<!-- theme-color for mobile browsers (light/dark) -->
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1020" media="(prefers-color-scheme: dark)">
+
+{# 额外：如果你需要按深色/浅色动态切换 favicon，可以在这里添加小脚本。#}
