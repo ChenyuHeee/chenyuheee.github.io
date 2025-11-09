@@ -14,11 +14,19 @@ theme:
     - search.share
   icon:
     repo: fontawesome/brands/git-alt
+  # 可选：自定义 logo（把图片放到 docs/images/logo.png）
+  # logo: images/logo.png
 plugins:
   - search:
       lang:
-          - en
-          - zh
+        - en
+        - zh
+      separator: '[\s\-]+'
+  # sitemap plugin removed to avoid extra dependency; MkDocs outputs sitemap.xml by default
+  - git-revision-date-localized:
+      type: timeago
+  - minify:
+      minify_html: true
 extra:
   version:
     method: mike
@@ -28,3 +36,33 @@ extra:
       name: mail to me
       
 copyright: Copyright &copy; 2019 - 2025 Chenyu He
+
+# Markdown extensions and extra assets for improved rendering
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - codehilite
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.arithmatex
+  - pymdownx.betterem
+  - attr_list
+
+extra_css:
+  - styles/overrides.css
+
+extra_javascript:
+  # MathJax for math rendering (pymdownx.arithmatex 配合)
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  # 可添加自定义脚本
+  - js/custom.js
+
+# Theme customization (Material 支持更多 options, 参考文档按需启用)
+extra:
+  social:
+    - icon: fontawesome/solid/paper-plane
+      link: mailto:hechenyu@zju.edu.cn
+      name: mail to me
+  search:
+    language: zh
